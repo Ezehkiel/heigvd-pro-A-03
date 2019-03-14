@@ -1,50 +1,39 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.scenes.*;
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Game implements ApplicationListener {
 
     static public final String TITLE = "Tower Defense";
-    static public final int WIDTH = 800;
-    static public final int HEIGHT = 480;
+    static public final int WIDTH = 1280;
+    static public final int HEIGHT = 768;
 
-    SpriteBatch spriteBatch;
-    Texture helloWorldTexture;
+    Scene scene;
 
     @Override
     public void create () {
-        spriteBatch = new SpriteBatch();
-        helloWorldTexture = new Texture(Gdx.files.internal("./assets/HelloWorld.png"));
 
-        System.out.println(HelloWorld.greet("Jack"));
+        scene = new MainMenu();
     }
 
     @Override
     public void render () {
-        Gdx.gl.glClearColor(0.4f, 0.4f, 0.4f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        spriteBatch.begin();
+        scene.update(Gdx.graphics.getDeltaTime());
 
-        spriteBatch.draw(
-                helloWorldTexture,
-                WIDTH / 2f - helloWorldTexture.getWidth() / 2f ,
-                HEIGHT / 2f - helloWorldTexture.getHeight() / 2f
-        );
-
-        spriteBatch.end();
+        scene.draw();
     }
 
     @Override
     public void dispose () {
-        spriteBatch.dispose();
-        helloWorldTexture.dispose();
+
     }
 
     @Override
