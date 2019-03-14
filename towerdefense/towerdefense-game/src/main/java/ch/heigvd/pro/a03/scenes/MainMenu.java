@@ -27,7 +27,7 @@ public class MainMenu extends Scene {
 
         Table menuTable = new Table();
         menuTable.setPosition(0, 0);
-        menuTable.setSize(Game.WIDTH / 2, Game.HEIGHT);
+        menuTable.setSize(Game.WIDTH / 2f, Game.HEIGHT);
 
         //menuTable.setDebug(true);
         stage.addActor(menuTable);
@@ -41,6 +41,15 @@ public class MainMenu extends Scene {
         // Buttons
         TextButton onlineButton = new TextButton("Play Online", skin, "default");
         TextButton offlineButton = new TextButton("Play Offline", skin, "default");
+        offlineButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+
+                Game.getInstance().addScene(new GameScene());
+            }
+        });
+
         TextButton settingsButton = new TextButton("Settings", skin, "default");
 
         TextButton exitButton = new TextButton("Exit", skin, "default");
@@ -74,5 +83,12 @@ public class MainMenu extends Scene {
     @Override
     public void draw() {
         stage.draw();
+    }
+
+    @Override
+    public void dispose() {
+
+        stage.dispose();
+        skin.dispose();
     }
 }

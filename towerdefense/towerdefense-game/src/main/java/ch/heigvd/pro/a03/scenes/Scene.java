@@ -12,4 +12,9 @@ public abstract class Scene {
      * Draws its elements on the screen
      */
     public abstract void draw();
+
+    /**
+     * Dispose memory
+     */
+    public abstract void dispose();
 }
