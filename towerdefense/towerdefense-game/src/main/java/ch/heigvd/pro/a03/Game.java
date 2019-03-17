@@ -44,7 +44,8 @@ public class Game implements ApplicationListener {
     public void create () {
 
         scenes = new Stack<>();
-        scenes.add(new MainMenu());
+
+        addScene(new MainMenu());
     }
 
     @Override
@@ -52,7 +53,6 @@ public class Game implements ApplicationListener {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         scenes.peek().update(Gdx.graphics.getDeltaTime());
-
         scenes.peek().draw();
     }
 
@@ -62,8 +62,8 @@ public class Game implements ApplicationListener {
     }
 
     @Override
-    public void resize(int i, int i1) {
-
+    public void resize(int width, int height) {
+        scenes.peek().resize(width, height);
     }
 
     @Override
@@ -89,19 +89,33 @@ public class Game implements ApplicationListener {
     // Scene managment functions
 
     public void addScene(Scene scene) {
+
+        // Call leave on current scene
+        if (!scenes.empty()) {
+            scenes.peek().leave();
+        }
+
         scenes.add(scene);
+
+        // Call enter on new scene
+        scenes.peek().enter();
     }
 
-    /**
-     *
-     * @return
-     */
+
     public void popScene() {
 
         if (!scenes.empty()) {
 
+            // call leave on current scene
+            scenes.peek().leave();
+
             scenes.peek().dispose();
             scenes.pop();
+
+            if (!scenes.empty()) {
+                // Call enter on new scene
+                scenes.peek().enter();
+            }
         }
     }
 }

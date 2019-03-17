@@ -23,7 +23,6 @@ public class MainMenu extends Scene {
         // Create Scene2D skin and stage
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());
-        Gdx.input.setInputProcessor(stage);
 
         Table menuTable = new Table();
         menuTable.setPosition(0, 0);
@@ -73,16 +72,34 @@ public class MainMenu extends Scene {
         menuTable.add(exitButton).spaceBottom(50);
         menuTable.row();
         menuTable.add();// cell for spacing
+
+    }
+
+    @Override
+    public void enter() {
+        Gdx.input.setInputProcessor(stage);
+        System.out.println("Entering Main Menu");
+    }
+
+    @Override
+    public void leave() {
+        Gdx.input.setInputProcessor(null);
+        System.out.println("Leaving Main Menu");
     }
 
     @Override
     public void update(float deltaTime) {
-        stage.act(deltaTime);
+        //stage.act(deltaTime);
     }
 
     @Override
     public void draw() {
         stage.draw();
+    }
+
+    @Override
+    public void resize(int width, int height) {
+
     }
 
     @Override
