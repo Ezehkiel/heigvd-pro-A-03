@@ -5,10 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -24,12 +21,56 @@ public class MainMenu extends Scene {
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(new ScreenViewport());
 
-        Table menuTable = new Table();
-        menuTable.setPosition(0, 0);
-        menuTable.setSize(Game.WIDTH / 2f, Game.HEIGHT);
+        setupMenu();
+        setupConnectionMenu();
+    }
+
+    /**
+     * Create the connection form
+     */
+    private void setupConnectionMenu() {
+
+        Table menu = new Table();
+        menu.setPosition(Game.WIDTH / 2f, 0);
+        menu.setSize(Game.WIDTH / 2f, Game.HEIGHT);
+        menu.bottom();
+        menu.setDebug(true);
+
+        // Label
+        Label label = new Label("Connection", skin);
+
+        // Tex fields
+        TextField usernameField = new TextField("", skin);
+        TextField passwordField = new TextField("", skin);
+
+        // Buttons
+        TextButton connectButton = new TextButton("Log in", skin);
+
+        menu.defaults().prefWidth(250).prefHeight(50).spaceBottom(50);
+        menu.add(label);
+        menu.row();
+        menu.add(usernameField);
+        menu.row();
+        menu.add(passwordField);
+        menu.row();
+        menu.add(connectButton);
+        menu.row();
+        menu.add();
+
+        stage.addActor(menu);
+    }
+
+    /**
+     * Create the main menu buttons and their behavior
+     */
+    private void setupMenu() {
+
+        Table menu = new Table();
+        menu.setPosition(0, 0);
+        menu.setSize(Game.WIDTH / 2f, Game.HEIGHT);
 
         //menuTable.setDebug(true);
-        stage.addActor(menuTable);
+        stage.addActor(menu);
 
         // Title
         Label title = new Label("Game Title", skin);
@@ -60,19 +101,18 @@ public class MainMenu extends Scene {
             }
         });
 
-        menuTable.defaults().prefWidth(250).prefHeight(50);
-        menuTable.add(title).expandY();
-        menuTable.row();
-        menuTable.add(onlineButton).spaceBottom(50);
-        menuTable.row();
-        menuTable.add(offlineButton).spaceBottom(50);
-        menuTable.row();
-        menuTable.add(settingsButton).spaceBottom(50);
-        menuTable.row();
-        menuTable.add(exitButton).spaceBottom(50);
-        menuTable.row();
-        menuTable.add();// cell for spacing
-
+        menu.defaults().prefWidth(250).prefHeight(50);
+        menu.add(title).expandY();
+        menu.row();
+        menu.add(onlineButton).spaceBottom(50);
+        menu.row();
+        menu.add(offlineButton).spaceBottom(50);
+        menu.row();
+        menu.add(settingsButton).spaceBottom(50);
+        menu.row();
+        menu.add(exitButton).spaceBottom(50);
+        menu.row();
+        menu.add();// cell for spacing
     }
 
     @Override
@@ -89,7 +129,7 @@ public class MainMenu extends Scene {
 
     @Override
     public void update(float deltaTime) {
-        //stage.act(deltaTime);
+        stage.act(deltaTime);
     }
 
     @Override
