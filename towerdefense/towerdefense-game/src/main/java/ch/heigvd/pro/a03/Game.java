@@ -45,7 +45,7 @@ public class Game implements ApplicationListener {
 
         scenes = new Stack<>();
 
-        addScene(new MainMenu());
+        addScene(new MainMenuScene());
     }
 
     @Override

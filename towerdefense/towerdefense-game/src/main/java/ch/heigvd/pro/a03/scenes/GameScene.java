@@ -71,7 +71,7 @@ public class GameScene extends Scene {
     @Override
     public void update(float deltaTime) {
 
-        // Return to main menu if "M" is pressed
+        // Return to main menu if "ESCAPE" is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             Game.getInstance().popScene();
         }
@@ -92,10 +92,10 @@ public class GameScene extends Scene {
 
         // Zoom camera
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            camera.zoom += CAMERA_SPEED / 10;
+            camera.zoom += CAMERA_SPEED / 100;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            camera.zoom -= CAMERA_SPEED / 10; 
+            camera.zoom -= CAMERA_SPEED / 100;
         }
 
 
