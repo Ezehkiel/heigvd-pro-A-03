@@ -3,7 +3,6 @@ package ch.heigvd.pro.a03.menus;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import org.lwjgl.Sys;
 
 public class ConnectionMenu extends Menu {
 

@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.menus.GameMenu;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -12,8 +13,11 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.utils.viewport.FillViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.viewport.*;
 
 public class GameScene extends Scene {
 
@@ -24,7 +28,11 @@ public class GameScene extends Scene {
     private final int TILE_SIZE = 64;
 
     private OrthographicCamera camera;
-    private Viewport viewport;
+    private Viewport gameViewport;
+
+    private Skin menuSkin;
+    private Stage menuStage;
+    private Viewport menuViewport;
 
     private Texture turretTexture;
     private Texture tileTexture;
@@ -32,12 +40,19 @@ public class GameScene extends Scene {
     private TiledMap map;
     private TiledMapRenderer mapRenderer;
 
-
     public GameScene() {
 
         camera = new OrthographicCamera();
-        viewport = new FillViewport(Game.WIDTH, Game.HEIGHT, camera);
-        viewport.update(Game.WIDTH, Game.HEIGHT, true);
+        gameViewport = new FillViewport(Game.WIDTH, Game.HEIGHT, camera);
+        gameViewport.update(Game.WIDTH, Game.HEIGHT, true);
+
+        // Create Game Menu
+        menuViewport = new ScreenViewport();
+
+        menuSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        menuStage = new Stage(menuViewport);
+
+        menuStage.addActor(new GameMenu(menuSkin, this).getMenu());
 
         turretTexture = new Texture(Gdx.files.internal("assets/Turret.png"));
         tileTexture = new Texture(Gdx.files.internal("assets/Tile.png"));
@@ -60,11 +75,13 @@ public class GameScene extends Scene {
 
     @Override
     public void enter() {
+        Gdx.input.setInputProcessor(menuStage);
         System.out.println("Entering Game Scene");
     }
 
     @Override
     public void leave() {
+        Gdx.input.setInputProcessor(null);
         System.out.println("Leaving Game Scene");
     }
 
@@ -98,38 +115,25 @@ public class GameScene extends Scene {
             camera.zoom -= CAMERA_SPEED / 100;
         }
 
-
-        if (Gdx.input.justTouched()) {
-            Vector3 mousePosition = camera.unproject(new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0));
-            int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
-            int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
-            System.out.println("(" + x + ", " + y + ")");
-
-            TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(TURRET_LAYER);
-            TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-            if (cell == null) {
-                cell = new TiledMapTileLayer.Cell();
-                cell.setTile(new StaticTiledMapTile(new TextureRegion(turretTexture)));
-                cell.setRotation(TiledMapTileLayer.Cell.ROTATE_90);
-                layer.setCell(x, y, cell);
-
-            } else {
-                cell.setRotation((cell.getRotation() + 1) % 4);
-            }
-        }
-
         camera.update();
         mapRenderer.setView(camera);
+
+        menuStage.act(deltaTime);
     }
 
     @Override
     public void draw() {
+        gameViewport.apply();
         mapRenderer.render();
+
+        menuViewport.apply();
+        menuStage.draw();
     }
 
     @Override
     public void resize(int width, int height) {
-        viewport.update(width, height, true);
+        gameViewport.update(width, height, true);
+        menuViewport.update(width, height, true);
     }
 
     @Override
@@ -138,5 +142,24 @@ public class GameScene extends Scene {
         map.dispose();
         turretTexture.dispose();
         tileTexture.dispose();
+    }
+
+    public void click(float mouseX, float mouseY) {
+
+        Vector3 mousePosition = camera.unproject(new Vector3(mouseX, mouseY, 0));
+        int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
+        int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
+
+        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(TURRET_LAYER);
+        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+        if (cell == null) {
+            cell = new TiledMapTileLayer.Cell();
+            cell.setTile(new StaticTiledMapTile(new TextureRegion(turretTexture)));
+            cell.setRotation(TiledMapTileLayer.Cell.ROTATE_90);
+            layer.setCell(x, y, cell);
+
+        } else {
+            cell.setRotation((cell.getRotation() + 1) % 4);
+        }
     }
 }

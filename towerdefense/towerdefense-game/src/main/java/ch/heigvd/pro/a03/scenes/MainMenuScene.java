@@ -8,12 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MainMenuScene extends Scene {
 
-    private final boolean DEBUG = true;
+    private final boolean DEBUG = false;
 
     private Viewport viewport;
     private Skin skin;
