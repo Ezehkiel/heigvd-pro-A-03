@@ -8,6 +8,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.OutputStreamWriter;
 
+import ch.heigvd.pro.a03.state.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -32,17 +33,25 @@ class Person {
 // RES Exemple
 public class MultiThreadedServer {
 
+    ServerState noClient;
+    ServerState matchmaking;
+    ServerState firstRound;
+    ServerState round;
+    ServerState simulation;
+
+    ServerState currentState;
+
     final static Logger LOG = Logger.getLogger(MultiThreadedServer.class.getName());
 
     int port;
 
-    /**
-     * Constructor
-     *
-     * @param port the port to listen on
-     */
     public MultiThreadedServer(int port) {
         this.port = port;
+        noClient = new noClient(this);
+        noClient = new matchmaking(this);
+        noClient = new firstRound(this);
+        noClient = new round(this);
+        noClient = new simulation(this);
     }
 
     public void serveClients() {
@@ -114,7 +123,7 @@ public class MultiThreadedServer {
                     out.close();
                     clientSocket.close();
 
-                } catch (Exception ex) {
+                } catch (IOException ex) {
                     if (in != null) {
                         try {
                             in.close();

@@ -1,20 +1,13 @@
 package ch.heigvd.pro.a03;
 
-import org.eclipse.jetty.websocket.api.Session;
-import org.json.JSONObject;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import static j2html.TagCreator.*;
-import static spark.Spark.*;
 
 public class Server {
 
     public static void main(String[] args) {
 
+
+
+        // Run HTTP on other thread;
 
         MultiThreadedServer multi = new MultiThreadedServer(4567);
         multi.serveClients();
