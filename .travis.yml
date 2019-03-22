@@ -6,5 +6,5 @@ cache:
 
 script:
   - 
-  - cd heigvd-pro-A-03
+  - cd heigvd-pro-A-03/towerdefense
   - mvn clean package
