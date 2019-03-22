@@ -13,10 +13,10 @@ public class Server {
         multi.serveClients();
 
         try{
-            Thread.sleep(50);
+            //Thread.sleep(50);
         }catch(Exception e){}
         try{
-            Client.main(new String[]{});
+          //  FakeClient.main(new String[]{});
         }catch (Exception e){
             System.out.println(e.getMessage());
         }

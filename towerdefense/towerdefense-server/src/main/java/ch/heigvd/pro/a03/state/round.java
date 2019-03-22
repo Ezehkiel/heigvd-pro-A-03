@@ -1,11 +1,12 @@
 package ch.heigvd.pro.a03.state;
 
+import ch.heigvd.pro.a03.GameServer;
 import ch.heigvd.pro.a03.MultiThreadedServer;
 
 public class round implements ServerState{
-    MultiThreadedServer srv;
+    GameServer srv;
 
-    public round(MultiThreadedServer srv) {
+    public round(GameServer srv) {
         this.srv = srv;
     }
 

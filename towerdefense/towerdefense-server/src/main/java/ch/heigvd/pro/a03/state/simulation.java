@@ -1,11 +1,13 @@
 package ch.heigvd.pro.a03.state;
 
+import ch.heigvd.pro.a03.GameServer;
 import ch.heigvd.pro.a03.MultiThreadedServer;
 
 public class simulation implements ServerState {
-    MultiThreadedServer srv;
 
-    public simulation(MultiThreadedServer srv) {
+    GameServer srv;
+
+    public simulation(GameServer srv) {
         this.srv = srv;
     }
 

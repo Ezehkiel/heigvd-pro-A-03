@@ -1,50 +1,56 @@
 package ch.heigvd.pro.a03;
 
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
-import java.util.ArrayList;
-
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class Client {
-    static final String serverName = "localhost";
-    static final int serverPort = 4567;
+    Socket socket;
+    InputStreamReader in = null;
+    OutputStreamWriter out = null;
 
-    public static void main(String[] args) throws Exception {
+    Boolean isReady;
 
-        // On créer le socket
-        Socket socket = new Socket(serverName, serverPort);
+    public Client(Socket socket) {
 
-        // Créer l'output Stream
-        OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
-        out.flush();
+        this.socket = socket;
+        isReady = false;
+        try {
+            this.in =  new InputStreamReader(socket.getInputStream());
 
 
-        ArrayList<Person> personnes = new ArrayList<>();
-        personnes.add(new Person(1,"Alice"));
-        personnes.add(new Person(2,"Bob"));
+            this.out =  new OutputStreamWriter(socket.getOutputStream());
+            out.flush();
 
-        writeJsonStream(out, personnes);
-        out.close();
-        socket.close();
-    }
-
-    static void writeJsonStream(OutputStreamWriter out, ArrayList<Person> personList) throws IOException {
-        Gson json = new Gson();
-
-        JsonWriter writer = new JsonWriter(out);
-        writer.setIndent("  ");
-        writer.beginArray();
-        for (Person p : personList) {
-            System.out.println(p);
-            json.toJson(p, Person.class, writer);
+        } catch (IOException ex) {
+            Logger.getLogger(MultiThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
         }
-        writer.endArray();
-        writer.close();
     }
 
+    public InputStreamReader getIn() {
+        return in;
+    }
 
+    public void setIn(InputStreamReader in) {
+        this.in = in;
+    }
 
+    public OutputStreamWriter getOut() {
+        return out;
+    }
+
+    public boolean isReady(){
+        return isReady;
+    }
+
+    public Boolean getReady() {
+        return isReady;
+    }
+
+    public void setReady(Boolean ready) {
+        isReady = ready;
+    }
 }

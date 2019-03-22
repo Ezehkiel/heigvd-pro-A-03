@@ -4,11 +4,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.io.OutputStreamWriter;
 
-import ch.heigvd.pro.a03.state.*;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -33,25 +33,14 @@ class Person {
 // RES Exemple
 public class MultiThreadedServer {
 
-    ServerState noClient;
-    ServerState matchmaking;
-    ServerState firstRound;
-    ServerState round;
-    ServerState simulation;
-
-    ServerState currentState;
-
     final static Logger LOG = Logger.getLogger(MultiThreadedServer.class.getName());
+    static ArrayList<Socket> allClientConnected;
 
     int port;
 
     public MultiThreadedServer(int port) {
         this.port = port;
-        noClient = new noClient(this);
-        noClient = new matchmaking(this);
-        noClient = new firstRound(this);
-        noClient = new round(this);
-        noClient = new simulation(this);
+
     }
 
     public void serveClients() {
@@ -61,9 +50,11 @@ public class MultiThreadedServer {
 
     private class ReceptionistWorker implements Runnable {
 
+
         @Override
         public void run() {
             ServerSocket serverSocket;
+            allClientConnected = new ArrayList<>();
 
             try {
                 serverSocket = new ServerSocket(port);
@@ -71,13 +62,19 @@ public class MultiThreadedServer {
                 LOG.log(Level.SEVERE, null, ex);
                 return;
             }
+            ArrayList<Socket> matchmakingPlayer = new ArrayList<>();
 
             while (true) {
                 LOG.log(Level.INFO, "Waiting (blocking) for a new client on port {0}", port);
                 try {
-                    Socket clientSocket = serverSocket.accept();
-                    LOG.info("A new client has arrived. Starting a new thread and delegating work to a new servant...");
-                    new Thread(new ServantWorker(clientSocket)).start();
+                    while (matchmakingPlayer.size() < 2){
+                        Socket clientSocket = serverSocket.accept();
+                        allClientConnected.add(clientSocket);
+                        matchmakingPlayer.add(clientSocket);
+                    }
+
+                    new Thread(new GameServer(matchmakingPlayer)).start();
+                    matchmakingPlayer.clear();
                 } catch (IOException ex) {
                     Logger.getLogger(MultiThreadedServer.class.getName()).log(Level.SEVERE, null, ex);
                 }
