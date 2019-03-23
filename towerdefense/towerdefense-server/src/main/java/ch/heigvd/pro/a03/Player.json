@@ -1,0 +1,12 @@
+{
+	"users": [{
+		"userName": "Fabrice",
+		"mdp": "12345"
+	}, {
+		"userName": "Arno",
+		"mdp": "123456"
+	}, {
+		"userName": "Username",
+		"mdp": "Password"
+	}]
+}
