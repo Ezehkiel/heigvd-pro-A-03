@@ -7,6 +7,8 @@ import static spark.Spark.*;
 import ch.heigvd.pro.a03.httpServer.HttpServer;
 import ch.heigvd.pro.a03.socketServer.MultiThreadedServer;
 
+public class Server{
+
 
     public static void main(String[] args) {
 
