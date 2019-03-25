@@ -14,6 +14,8 @@ import com.google.gson.stream.JsonWriter;*/
 public class FakeClient {
     static final String serverName = "localhost";
     static final int serverPort = 4567;
+    static OutputStreamWriter out;
+    static InputStreamReader in;
 
     public static void main(String[] args) throws Exception {
         System.out.println("Client start");
@@ -22,39 +24,32 @@ public class FakeClient {
         Socket socket = new Socket(serverName, serverPort);
 
         // Créer l'output Stream
-        OutputStreamWriter out = new OutputStreamWriter(socket.getOutputStream());
+        out = new OutputStreamWriter(socket.getOutputStream());
         out.flush();
 
-        InputStreamReader in = new InputStreamReader(socket.getInputStream());
+        in = new InputStreamReader(socket.getInputStream());
 
-        System.out.println("Client wait for the server");
-        int data = in.read();
+        writeProtocol(Protocole.CLIENTWANTPLAYMULTI);
 
-        while(data != 65535){
-            System.out.println(data);
-            data = in.read();
-        }
-        System.out.println("Client has recieved protocol from the server");
+        System.out.println("Client wait server validation");
+        int protocole = readProtocol();
 
-        try{
-            System.out.println("Client write protocol to server");
-            out.write(51);
-            out.flush();
-            System.out.println("client write end of transmission : -1");
-            out.write(-1);
-            out.flush();
-            System.out.println("Client writed");
-        }catch (IOException e){
-            System.out.println(e.getMessage());
+
+        if(protocole == Protocole.ISCLIENTREADY){
+            System.out.println("Is client ready ?");
+            writeProtocol(Protocole.CLIENTREADY);
+        }else {
+            throw new Exception("Patate" + protocole);
         }
 
+        // Wait ACK ?
 
 
-        /*ArrayList<Person> personnes = new ArrayList<>();
-        personnes.add(new Person(1,"Alice"));
-        personnes.add(new Person(2,"Bob"));
+            /*ArrayList<Person> personnes = new ArrayList<>();
+            personnes.add(new Person(1,"Alice"));
+            personnes.add(new Person(2,"Bob"));
 
-        writeJsonStream(out, personnes);*/
+            writeJsonStream(out, personnes);*/
         System.out.println("Client quit");
         out.close();
         socket.close();
@@ -75,5 +70,27 @@ public class FakeClient {
     }*/
 
 
-
+    static void writeProtocol(int protocol){
+        try{
+            System.out.println("Client write protocol to server "+protocol);
+            out.write(protocol);
+            out.flush();
+            System.out.println("client write end of transmission : -1");
+            out.write(-1);
+            out.flush();
+        }catch (IOException e){
+            System.out.println(e.getMessage());
+        }
+    }
+    static int readProtocol() throws IOException {
+        int receivedProtocole=-1;
+        System.out.println("Client wait for protocol");
+        int data = in.read();
+        while(data != 65535){
+            receivedProtocole = data;
+            data = in.read();
+        }
+        return receivedProtocole;
+    }
 }
+

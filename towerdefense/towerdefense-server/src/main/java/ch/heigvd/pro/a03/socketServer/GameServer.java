@@ -1,6 +1,5 @@
 package ch.heigvd.pro.a03.socketServer;
 
-import ch.heigvd.pro.a03.Client;
 import ch.heigvd.pro.a03.socketServer.state.*;
 
 
@@ -10,8 +9,7 @@ import java.util.ArrayList;
 public class GameServer implements Runnable{
 
     // Liste des sockets de joueur (Max 2) mais on pourrait imaginer jouer à beaucoup plus
-    ArrayList<Client> clients = new ArrayList<>();
-
+    ArrayList<Player> players;
     public ServerState validation;
     public ServerState firstRound;
     public ServerState round;
@@ -20,11 +18,9 @@ public class GameServer implements Runnable{
     public ServerState currentState;
 
 
-    public GameServer(ArrayList<Socket> clientSockets) {
+    public GameServer(ArrayList<Player> players) {
 
-        for(Socket s : clientSockets){
-            clients.add(new Client(s));
-        }
+        this.players = players;
 
         validation = new validation(this);
         firstRound = new firstRound(this);
@@ -40,12 +36,13 @@ public class GameServer implements Runnable{
         currentState.master();
     }
 
-    public ArrayList<Client> getClients() {
-        return clients;
-    }
 
     public ServerState getCurrentState() {
         return currentState;
+    }
+
+    public ArrayList<Player> getPlayers() {
+        return players;
     }
 
     public void setCurrentState(ServerState newState) {

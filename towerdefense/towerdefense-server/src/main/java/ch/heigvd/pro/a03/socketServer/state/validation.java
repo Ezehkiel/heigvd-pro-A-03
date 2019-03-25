@@ -1,59 +1,48 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
-import ch.heigvd.pro.a03.Client;
 import ch.heigvd.pro.a03.Protocole;
 import ch.heigvd.pro.a03.socketServer.GameServer;
+import ch.heigvd.pro.a03.socketServer.Player;
+import ch.heigvd.pro.a03.socketServer.SocketServer;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class validation implements ServerState {
 
     GameServer srv;
-    int clientId =0;
     public validation(GameServer srv) {
         this.srv = srv;
     }
 
     @Override
     public void master() {
-        for (Client c : srv.getClients()){
-            clientId++;
-            this.request(c, Protocole.ISCLIENTREADY);
-            if(!c.isReady())
-                try {
-                    throw new Exception("Client not ready");
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            System.out.println("client" + clientId+ " ready");
-
+        for (Player p : srv.getPlayers()){
+            if(!isPlayerReady(p)){
+                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready ");
+            }
+            //TODO : Gérér si un client est pas prêt
         }
         srv.setCurrentState(srv.firstRound);
     }
-    void request(Client c,int protocolValue){
-        System.out.println("Request Client"+ clientId);
+    boolean isPlayerReady(Player p){
+        int receivedProtocole=-1;
+
         try{
-            System.out.println("Server write protocol :" + protocolValue);
-            c.getOut().write(protocolValue);
-            c.getOut().flush();
-            System.out.println("Server write end of transmission : -1");
-            c.getOut().write(-1);
-            c.getOut().flush();
-            System.out.println("SRV writed");
-
-            System.out.println("Server wait for client"+ clientId +" response");
-
-            int data = c.getIn().read();
+            p.getOut().write(Protocole.ISCLIENTREADY);
+            p.getOut().flush();
+            p.getOut().write(-1);
+            p.getOut().flush();
+            int data = p.getIn().read();
             while(data != 65535){
-                data = c.getIn().read();
+                receivedProtocole=data;
+                data = p.getIn().read();
             }
-            System.out.println("Server get response of client" + clientId);
-
         }catch (IOException e){
-            System.out.println("oksjdbvoyj");
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
         }
-        //c.getOut().write(protocolValue);
-        c.setReady(true);
 
+        return receivedProtocole == Protocole.CLIENTREADY;
     }
 }
