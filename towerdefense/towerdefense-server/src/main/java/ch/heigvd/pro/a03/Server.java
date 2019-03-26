@@ -7,9 +7,8 @@ import static spark.Spark.*;
 public class Server {
 
     public Server() {
-        Gson gson = new Gson();
 
-        get("/hello/:name", (request, response) -> HelloWorld.greet(request.params(":name")), gson::toJson);
+        get("/hello/:name", (request, response) -> HelloWorld.greet(request.params(":name")));
     }
 
     public static void main(String[] args) {
