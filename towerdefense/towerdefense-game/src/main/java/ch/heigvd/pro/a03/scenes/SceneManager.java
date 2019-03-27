@@ -57,6 +57,26 @@ public class SceneManager {
     }
 
     /**
+     * Replace the current scene.
+     * Calls leave() and dispose() on the current scene and enter() on the new scene.
+     * @param scene The new scene to enter
+     */
+    public void set(Scene scene) {
+
+        // Remove current scene
+        if (hasScene()) {
+
+            scenes.peek().leave();
+            scenes.peek().dispose();
+            scenes.pop();
+        }
+
+        // Enter new scene
+        scenes.push(scene);
+        scene.enter();
+    }
+
+    /**
      * Check is there is still at least one scene.
      * @return Boolean
      */
