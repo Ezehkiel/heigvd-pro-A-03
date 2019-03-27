@@ -4,6 +4,7 @@ public class Position {
 
     private int heuristic;
     private int cost;
+    private int finalCost;
     private int row;
     private int col;
     private boolean isBlock;
@@ -22,32 +23,33 @@ public class Position {
         int tmpCost = current.cost + cost;
         parent=current;
         this.cost=tmpCost;
-       // calculateFinalCost();
+        calculateFinalCost();
     }
 
-    /*public boolean checkBetterPath(Position current, int cost) {
-        int gCost = current.cost + cost;
-        if (gCost < this.cost) {
-            setNodeData(currentNode, cost);
+    public boolean checkBetterPath(Position current, int cost) {
+        int tmpCost = current.cost + cost;
+        if (tmpCost < this.cost) {
+            setPositionData(current, cost);
             return true;
         }
         return false;
     }
 
+
     private void calculateFinalCost() {
-        int finalCost = getG() + getH();
-        setF(finalCost);
+        int finalCost = this.cost + this.heuristic;
+        this.finalCost=finalCost;
     }
 
-    @Override
+    /*@Override
     public boolean equals(Object arg0) {
         Position other = (Position) arg0;
         return this.getRow() == other.getRow() && this.getCol() == other.getCol();
-    }
+    }*/
 
     @Override
     public String toString() {
-        return "Node [row=" + row + ", col=" + col + "]";
-    }*/
+        return "Position [row=" + row + ", col=" + col + "]";
+    }
 
 }
