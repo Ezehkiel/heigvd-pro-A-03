@@ -4,7 +4,6 @@ import ch.heigvd.pro.a03.Protocole;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Player;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
-
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,10 +19,11 @@ public class validation implements ServerState {
     public void master() {
         for (Player p : srv.getPlayers()){
             if(!isPlayerReady(p)){
-                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready ");
+                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready");
             }
             //TODO : Gérér si un client est pas prêt
         }
+
         srv.setCurrentState(srv.firstRound);
     }
     boolean isPlayerReady(Player p){

@@ -1,10 +1,12 @@
 package ch.heigvd.pro.a03.socketServer;
 
 import ch.heigvd.pro.a03.socketServer.state.*;
-
-
-import java.net.Socket;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class GameServer implements Runnable{
 
@@ -50,4 +52,5 @@ public class GameServer implements Runnable{
         this.currentState = newState;
         currentState.master();
     }
+
 }

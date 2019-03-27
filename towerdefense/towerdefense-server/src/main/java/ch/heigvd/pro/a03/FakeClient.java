@@ -1,15 +1,18 @@
 package ch.heigvd.pro.a03;
 
 
+import ch.heigvd.pro.a03.utils.Communication;
+import ch.heigvd.pro.a03.warentities.units.Scoot;
+import ch.heigvd.pro.a03.warentities.units.Unit;
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonWriter;
+
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
 import java.net.Socket;
-/*import java.util.ArrayList;
+import java.util.ArrayList;
 
-import ServerState;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;*/
 
 public class FakeClient {
     static final String serverName = "localhost";
@@ -17,7 +20,7 @@ public class FakeClient {
     static OutputStreamWriter out;
     static InputStreamReader in;
 
-    public static void main(String[] args) throws Exception {
+    public static void main (String ... args) throws Exception {
         System.out.println("Client start");
 
         // On créer le socket
@@ -29,68 +32,42 @@ public class FakeClient {
 
         in = new InputStreamReader(socket.getInputStream());
 
-        writeProtocol(Protocole.CLIENTWANTPLAYMULTI);
+        Communication.writeProtocol(out,Protocole.CLIENTWANTPLAYMULTI);
 
         System.out.println("Client wait server validation");
-        int protocole = readProtocol();
+        int protocole = Communication.readProtocol(in);
 
 
         if(protocole == Protocole.ISCLIENTREADY){
             System.out.println("Is client ready ?");
-            writeProtocol(Protocole.CLIENTREADY);
+            Communication.writeProtocol(out,Protocole.CLIENTREADY);
         }else {
             throw new Exception("Patate" + protocole);
+        }
+       /* ArrayList<Person> personnes = new ArrayList<>();
+        personnes.add(new Person(1,"Alice"));
+        personnes.add(new Person(2,"Bob"));
+
+        writeJsonStream(out, personnes);*/
+
+        ArrayList<Scoot> scoots = new ArrayList<>();
+        scoots.add(new Scoot("Scoot1"));
+        scoots.add(new Scoot("Scoot2"));
+        scoots.add(new Scoot("Scoot3"));
+
+
+        if(Communication.readProtocol(in) == Protocole.SERVERINSTATUSFIRSTROUND){
+            System.out.println("Server in first round");
+            Communication.writeJsonStream(out, scoots);
+        }else {
+            throw new Exception("Patate2");
         }
 
         // Wait ACK ?
 
-
-            /*ArrayList<Person> personnes = new ArrayList<>();
-            personnes.add(new Person(1,"Alice"));
-            personnes.add(new Person(2,"Bob"));
-
-            writeJsonStream(out, personnes);*/
         System.out.println("Client quit");
         out.close();
         socket.close();
-    }
-
-    /*static void writeJsonStream(OutputStreamWriter out, ArrayList<Person> personList) throws IOException {
-        Gson json = new Gson();
-
-        JsonWriter writer = new JsonWriter(out);
-        writer.setIndent("  ");
-        writer.beginArray();
-        for (Person p : personList) {
-            System.out.println(p);
-            json.toJson(p, Person.class, writer);
-        }
-        writer.endArray();
-        writer.close();
-    }*/
-
-
-    static void writeProtocol(int protocol){
-        try{
-            System.out.println("Client write protocol to server "+protocol);
-            out.write(protocol);
-            out.flush();
-            System.out.println("client write end of transmission : -1");
-            out.write(-1);
-            out.flush();
-        }catch (IOException e){
-            System.out.println(e.getMessage());
-        }
-    }
-    static int readProtocol() throws IOException {
-        int receivedProtocole=-1;
-        System.out.println("Client wait for protocol");
-        int data = in.read();
-        while(data != 65535){
-            receivedProtocole = data;
-            data = in.read();
-        }
-        return receivedProtocole;
     }
 }
 

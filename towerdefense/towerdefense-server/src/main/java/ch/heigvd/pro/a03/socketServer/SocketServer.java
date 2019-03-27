@@ -2,7 +2,6 @@ package ch.heigvd.pro.a03.socketServer;
 
 
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
@@ -46,18 +45,3 @@ public class SocketServer implements Runnable{
         }
     }
 }
-
-
-                    /*JsonReader reader = new JsonReader(in);
-                    Gson gson = new GsonBuilder().create();
-
-
-                    reader.beginArray();
-                    while (reader.hasNext()) {
-                        Person person = gson.fromJson(reader, Person.class);
-                        System.out.println(person.toString());
-                    }
-                    reader.close();
-                    in.close();
-                    out.close();
-                    clientSocket.close();*/
