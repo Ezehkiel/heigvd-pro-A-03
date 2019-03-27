@@ -28,7 +28,7 @@ public class MainMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                Game.getInstance().addScene(new GameScene());
+                Game.getInstance().getSceneManager().add(new GameScene());
             }
         });
 

@@ -13,10 +13,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.*;
 
 public class GameScene extends Scene {
@@ -90,7 +88,7 @@ public class GameScene extends Scene {
 
         // Return to main menu if "ESCAPE" is pressed
         if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Game.getInstance().popScene();
+            Game.getInstance().getSceneManager().pop();
         }
 
         // Move camera
