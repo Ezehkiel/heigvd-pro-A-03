@@ -38,18 +38,25 @@ public class Position {
 
     private void calculateFinalCost() {
         int finalCost = this.cost + this.heuristic;
-        this.finalCost=finalCost;
+        this.setFinalCost(finalCost);
     }
 
-    /*@Override
+    @Override
     public boolean equals(Object arg0) {
         Position other = (Position) arg0;
-        return this.getRow() == other.getRow() && this.getCol() == other.getCol();
-    }*/
+        return this.row == other.row && this.col == other.col;
+    }
 
     @Override
     public String toString() {
         return "Position [row=" + row + ", col=" + col + "]";
     }
 
+    public int getFinalCost() {
+        return finalCost;
+    }
+
+    public void setFinalCost(int finalCost) {
+        this.finalCost = finalCost;
+    }
 }
