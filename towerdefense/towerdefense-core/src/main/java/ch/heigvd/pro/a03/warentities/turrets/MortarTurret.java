@@ -1,5 +1,9 @@
 package ch.heigvd.pro.a03.warentities.turrets;
 
-public class MortarTurret extends Turret {
+import java.awt.*;
 
+public class MortarTurret extends Turret {
+    public MortarTurret(String name, Point position) {
+        super(name, position);
+    }
 }

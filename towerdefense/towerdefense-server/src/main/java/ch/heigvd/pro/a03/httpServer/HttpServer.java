@@ -1,13 +1,13 @@
 package ch.heigvd.pro.a03.httpServer;
 
 import ch.heigvd.pro.a03.HelloWorld;
-import ch.heigvd.pro.a03.socketServer.MultiThreadedServer;
+import ch.heigvd.pro.a03.socketServer.SocketServer;
 
 import java.util.logging.Logger;
 import static spark.Spark.*;
 
 public class HttpServer implements Runnable {
-    final static Logger LOG = Logger.getLogger(MultiThreadedServer.class.getName());
+    final static Logger LOG = Logger.getLogger(SocketServer.class.getName());
     int port;
 
     public HttpServer(int port) {
