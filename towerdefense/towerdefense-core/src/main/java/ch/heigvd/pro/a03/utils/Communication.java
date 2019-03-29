@@ -5,7 +5,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 
-import ch.heigvd.pro.a03.warentities.units.Scoot;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
@@ -27,14 +26,14 @@ public class Communication {
         in.close();
         return recievedObject;
     }
-    public static void writeJsonStream(OutputStreamWriter out, ArrayList<Scoot> units) throws IOException {
+    public static void writeJsonStream(OutputStreamWriter out, ArrayList objects,Class classname) throws IOException {
         Gson json = new Gson();
 
         JsonWriter writer = new JsonWriter(out);
         writer.setIndent("  ");
         writer.beginArray();
-        for (Scoot p : units) {
-            json.toJson(p, Scoot.class, writer);
+        for (Object o : objects) {
+            json.toJson(o, classname, writer);
         }
         writer.endArray();
         writer.close();

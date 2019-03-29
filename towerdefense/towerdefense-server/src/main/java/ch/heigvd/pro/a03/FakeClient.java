@@ -44,11 +44,6 @@ public class FakeClient {
         }else {
             throw new Exception("Patate" + protocole);
         }
-       /* ArrayList<Person> personnes = new ArrayList<>();
-        personnes.add(new Person(1,"Alice"));
-        personnes.add(new Person(2,"Bob"));
-
-        writeJsonStream(out, personnes);*/
 
         ArrayList<Scoot> scoots = new ArrayList<>();
         scoots.add(new Scoot("Scoot1"));
@@ -58,7 +53,7 @@ public class FakeClient {
 
         if(Communication.readProtocol(in) == Protocole.SERVERINSTATUSFIRSTROUND){
             System.out.println("Server in first round");
-            Communication.writeJsonStream(out, scoots);
+            Communication.writeJsonStream(out, scoots,Unit.class);
         }else {
             throw new Exception("Patate2");
         }
