@@ -5,16 +5,22 @@ import java.util.Objects;
 public class User {
 
     private String username;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
     private String password;
 
-    User(String userName,String motDePasse){
+    public User(String userName,String motDePasse){
         this.username = userName;
         this.password = motDePasse;
     }
 
-    public String getUserName() {
-        return this.username;
-    }
 
     public String toString(){
         return this.username + " " + this.password;
@@ -25,7 +31,7 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(this.username, user.getUserName()) &&
+        return Objects.equals(this.username, user.getUsername()) &&
                 Objects.equals(this.password, user.password);
     }
 }
