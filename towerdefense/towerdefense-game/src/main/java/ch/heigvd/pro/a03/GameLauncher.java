@@ -8,9 +8,12 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
 
-public class Game implements ApplicationListener {
+/**
+ * The Game launcher starts the game and creates the scene manager.
+ */
+public class GameLauncher implements ApplicationListener {
 
-    static private Game instance = null;
+    static private GameLauncher instance = null;
 
     static public final String TITLE = "Tower Defense";
     static public final int WIDTH = 1280;
@@ -21,18 +24,20 @@ public class Game implements ApplicationListener {
     /**
      * Default constructor, called by getInstance() if needed
      */
-    private Game() {
+    private GameLauncher() {
         super();
+
+        sceneManager = new SceneManager();
     }
 
     /**
      * Get the instance of the Singleton
-     * @return the instance of Game
+     * @return the instance of GameLauncher
      */
-    static public Game getInstance() {
+    static public GameLauncher getInstance() {
 
         if (instance == null) {
-            instance = new Game();
+            instance = new GameLauncher();
         }
 
         return instance;
@@ -44,8 +49,6 @@ public class Game implements ApplicationListener {
 
     @Override
     public void create () {
-
-        sceneManager = new SceneManager();
         sceneManager.add(new MainMenuScene());
     }
 
@@ -86,13 +89,17 @@ public class Game implements ApplicationListener {
 
     }
 
+    /**
+     * Application entry point
+     * @param args arguments
+     */
     public static void main(String[] args) {
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-        config.title = Game.TITLE;
-        config.width = Game.WIDTH;
-        config.height = Game.HEIGHT;
+        config.title = GameLauncher.TITLE;
+        config.width = GameLauncher.WIDTH;
+        config.height = GameLauncher.HEIGHT;
 
-        new LwjglApplication(Game.getInstance(), config);
+        new LwjglApplication(GameLauncher.getInstance(), config);
     }
 }

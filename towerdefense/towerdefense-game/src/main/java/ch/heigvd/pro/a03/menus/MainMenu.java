@@ -1,8 +1,7 @@
 package ch.heigvd.pro.a03.menus;
 
-import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.scenes.GameModeScene;
-import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.scenes.SettingsScene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -20,7 +19,7 @@ public class MainMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Game.getInstance().getSceneManager().add(new GameModeScene());
+                GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
             }
         });
 
@@ -30,7 +29,7 @@ public class MainMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                Game.getInstance().getSceneManager().add(new GameModeScene());
+                GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
             }
         });
 
@@ -39,7 +38,7 @@ public class MainMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                Game.getInstance().getSceneManager().add(new SettingsScene());
+                GameLauncher.getInstance().getSceneManager().add(new SettingsScene());
             }
         });
 

@@ -18,7 +18,7 @@ public class SceneManager {
 
     /**
      * Add a new scene on top. The ne scene will be the one to display.
-     * Calls leave() on the current scene and enter() on the new scene.
+     * Calls leave() on the current scene and changeState() on the new scene.
      * @param scene Scene to display
      */
     public void add(Scene scene) {
@@ -30,13 +30,13 @@ public class SceneManager {
 
         scenes.add(scene);
 
-        // Call enter on new scene
+        // Call changeState on new scene
         scenes.peek().enter();
     }
 
     /**
      * Remove the top scene. The scene under the top scene will become the top one.
-     * Calls leave() and dispose() on the current scene and enter() on the new top one.
+     * Calls leave() and dispose() on the current scene and changeState() on the new top one.
      * Nothing happens if there are no mor scenes.
      */
     public void pop() {
@@ -50,7 +50,7 @@ public class SceneManager {
             scenes.pop();
 
             if (hasScene()) {
-                // Call enter on new scene
+                // Call changeState on new scene
                 scenes.peek().enter();
             }
         }
@@ -58,8 +58,8 @@ public class SceneManager {
 
     /**
      * Replace the current scene.
-     * Calls leave() and dispose() on the current scene and enter() on the new scene.
-     * @param scene The new scene to enter
+     * Calls leave() and dispose() on the current scene and changeState() on the new scene.
+     * @param scene The new scene to changeState
      */
     public void set(Scene scene) {
 

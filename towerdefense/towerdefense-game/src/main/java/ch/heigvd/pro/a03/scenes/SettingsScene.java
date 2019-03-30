@@ -1,6 +1,6 @@
 package ch.heigvd.pro.a03.scenes;
 
-import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.GameLauncher;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -19,7 +19,7 @@ public class SettingsScene extends Scene {
 
     public SettingsScene() {
 
-        viewport = new FitViewport(Game.WIDTH, Game.HEIGHT);
+        viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
         // Create Scene2D skin and stage
         skin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -34,7 +34,7 @@ public class SettingsScene extends Scene {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                Game.getInstance().getSceneManager().pop();
+                GameLauncher.getInstance().getSceneManager().pop();
             }
         });
 
