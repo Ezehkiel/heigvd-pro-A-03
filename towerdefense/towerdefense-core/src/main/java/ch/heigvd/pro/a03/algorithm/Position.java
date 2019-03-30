@@ -7,7 +7,7 @@ public class Position {
     private int finalCost;
     private int row;
     private int col;
-    private boolean isBlock;
+    private boolean isBlock;//might be a rock or some kind of barrier
     private Position parent;
 
     public Position(int row, int col) {
@@ -21,7 +21,7 @@ public class Position {
 
     public void setPositionData(Position current, int cost) {
         int tmpCost = current.cost + cost;
-        parent=current;
+        setParent(current);
         this.cost=tmpCost;
         calculateFinalCost();
     }
@@ -58,5 +58,21 @@ public class Position {
 
     public void setFinalCost(int finalCost) {
         this.finalCost = finalCost;
+    }
+
+    public boolean isBlock() {
+        return isBlock;
+    }
+
+    public void setBlock(boolean block) {
+        isBlock = block;
+    }
+
+    public Position getParent() {
+        return parent;
+    }
+
+    public void setParent(Position parent) {
+        this.parent = parent;
     }
 }
