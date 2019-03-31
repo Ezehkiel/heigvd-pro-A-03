@@ -7,6 +7,7 @@ import ch.heigvd.pro.a03.warentities.units.Unit;
 import com.google.gson.Gson;
 import com.google.gson.stream.JsonWriter;
 
+import java.awt.*;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
@@ -46,14 +47,14 @@ public class FakeClient {
         }
 
         ArrayList<Scoot> scoots = new ArrayList<>();
-        scoots.add(new Scoot("Scoot1"));
-        scoots.add(new Scoot("Scoot2"));
-        scoots.add(new Scoot("Scoot3"));
+        scoots.add(new Scoot(new Point(0, 0)));
+        scoots.add(new Scoot(new Point(0, 0)));
+        scoots.add(new Scoot(new Point(0, 0)));
 
 
         if(Communication.readProtocol(in) == Protocole.SERVERINSTATUSFIRSTROUND){
             System.out.println("Server in first round");
-            Communication.writeJsonStream(out, scoots,Unit.class);
+            Communication.writeJsonStream(out, scoots, Unit.class);
         }else {
             throw new Exception("Patate2");
         }

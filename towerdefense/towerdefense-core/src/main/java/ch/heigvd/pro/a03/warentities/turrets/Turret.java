@@ -5,7 +5,7 @@ import ch.heigvd.pro.a03.warentities.Structure;
 import java.awt.*;
 
 public class Turret extends Structure {
-    public Turret(String name, Point position) {
-        super(name, position);
+    public Turret(Point position) {
+        super(position);
     }
 }
