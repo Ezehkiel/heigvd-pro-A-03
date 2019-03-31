@@ -1,7 +1,8 @@
 package ch.heigvd.pro.a03.menus;
 
-import ch.heigvd.pro.a03.Game;
-import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.scenes.GameModeScene;
+import ch.heigvd.pro.a03.scenes.SettingsScene;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -18,7 +19,7 @@ public class MainMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                System.out.println("Play online not implemented yet!");
+                GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
             }
         });
 
@@ -28,7 +29,7 @@ public class MainMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                Game.getInstance().addScene(new GameScene());
+                GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
             }
         });
 
@@ -37,7 +38,7 @@ public class MainMenu extends Menu {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                System.out.println("Settings not implemented yet!");
+                GameLauncher.getInstance().getSceneManager().add(new SettingsScene());
             }
         });
 
