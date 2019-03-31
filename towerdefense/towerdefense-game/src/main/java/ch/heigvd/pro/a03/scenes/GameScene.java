@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
+import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
 import ch.heigvd.pro.a03.warentities.turrets.SlowerTurret;
@@ -43,7 +44,10 @@ public class GameScene extends Scene {
     private Stage menuStage;
     private Viewport menuViewport;
 
-    private Texture turretTexture;
+    private Texture notFoundTexture;
+    private Texture machineGunTexture;
+    private Texture mortarTexture;
+    private Texture slowerTexture;
     private Texture tileTexture;
 
     private TiledMap tiledMap;
@@ -70,7 +74,10 @@ public class GameScene extends Scene {
 
         menuStage.addActor(new GameMenu(menuSkin, this).getMenu());
 
-        turretTexture = new Texture(Gdx.files.internal("assets/Turret.png"));
+        notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
+        machineGunTexture = new Texture(Gdx.files.internal("assets/MachineGun.png"));
+        mortarTexture = new Texture(Gdx.files.internal("assets/Mortar.png"));
+        slowerTexture = new Texture(Gdx.files.internal("assets/Slower.png"));
         tileTexture = new Texture(Gdx.files.internal("assets/Tile.png"));
 
         tiledMap = new TiledMap();
@@ -135,7 +142,7 @@ public class GameScene extends Scene {
     public void dispose() {
 
         tiledMap.dispose();
-        turretTexture.dispose();
+        machineGunTexture.dispose();
         tileTexture.dispose();
     }
 
@@ -202,8 +209,23 @@ public class GameScene extends Scene {
             for (int y = 0; y < TILE_MAP_HEIGHT; ++y) {
 
                 TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-                if (map.getStructureAt(x, y) != null) {
-                    cell.setTile(new StaticTiledMapTile(new TextureRegion(turretTexture)));
+                Structure structure = map.getStructureAt(x, y);
+                if (structure != null) {
+
+                    Texture texture = notFoundTexture;
+
+                    if (structure instanceof MachineGunTurret) {
+                        texture = machineGunTexture;
+
+                    } else if (structure instanceof MortarTurret) {
+                        texture = mortarTexture;
+
+                    } else if (structure instanceof SlowerTurret) {
+                        texture = slowerTexture;
+
+                    }
+
+                    cell.setTile(new StaticTiledMapTile(new TextureRegion(texture)));
                 }
             }
         }
