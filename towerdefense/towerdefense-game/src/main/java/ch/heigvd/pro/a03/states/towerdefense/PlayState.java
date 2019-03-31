@@ -6,6 +6,8 @@ import com.badlogic.gdx.Gdx;
 
 public class PlayState extends GameState {
 
+    private float timer;
+
     public PlayState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }
@@ -13,6 +15,8 @@ public class PlayState extends GameState {
     @Override
     public void enter() {
         super.enter();
+
+        timer = 0f;
 
         System.out.println("Turn started");
     }
@@ -28,13 +32,15 @@ public class PlayState extends GameState {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        if (Gdx.input.justTouched()) {
+        timer += deltaTime;
+
+        if (timer >= 5f) {
             changeState(TowerDefense.GameStateType.WAIT);
         }
     }
 
     @Override
     public boolean canEnterState(Class<?> stateClass) {
-        return stateClass == WaitingState.class;
+        return stateClass == WaitState.class;
     }
 }

@@ -3,11 +3,11 @@ package ch.heigvd.pro.a03.states.towerdefense;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.states.StateMachine;
 
-public class WaitingState extends GameState {
+public class WaitState extends GameState {
 
     int i = 0;
 
-    public WaitingState(StateMachine stateMachine, TowerDefense game) {
+    public WaitState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }
 

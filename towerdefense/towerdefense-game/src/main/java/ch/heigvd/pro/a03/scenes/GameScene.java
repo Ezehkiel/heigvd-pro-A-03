@@ -1,10 +1,13 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.TowerDefense;
-import ch.heigvd.pro.a03.menus.GameMenu;
-import ch.heigvd.pro.a03.states.StateMachine;
-import ch.heigvd.pro.a03.states.gamescene.StartState;
+import ch.heigvd.pro.a03.menus.game.GameMenu;
+import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
+import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
+import ch.heigvd.pro.a03.warentities.turrets.SlowerTurret;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,13 +23,18 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.*;
 
+import java.awt.*;
+
 public class GameScene extends Scene {
 
-    public static final float CAMERA_SPEED = 5f;
-    public static final int TURRET_LAYER = 1;
-    public static final int TILE_MAP_WIDTH = 20;
-    public static final int TILE_MAP_HEIGHT = 12;
-    public static final int TILE_SIZE = 64;
+    private static final float CAMERA_SPEED = 5f;
+
+    private static final int TILE_MAP_WIDTH = 20;
+    private static final int TILE_MAP_HEIGHT = 12;
+    private static final int TILE_SIZE = 64;
+
+    private static final int BACKGROUND_LAYER = 0;
+    private static final int TURRET_LAYER = 1;
 
     private OrthographicCamera camera;
     private Viewport gameViewport;
@@ -38,12 +46,15 @@ public class GameScene extends Scene {
     private Texture turretTexture;
     private Texture tileTexture;
 
-    private TiledMap map;
-    private TiledMapRenderer mapRenderer;
-
-    private StateMachine stateMachine;
+    private TiledMap tiledMap;
+    private TiledMapRenderer tiledMapRenderer;
 
     private TowerDefense game;
+    private TurretType selectedTurretType;
+
+    public enum TurretType {
+        MACHINE_GUN, MORTAR, SLOWER;
+    }
 
     public GameScene() {
 
@@ -62,23 +73,24 @@ public class GameScene extends Scene {
         turretTexture = new Texture(Gdx.files.internal("assets/Turret.png"));
         tileTexture = new Texture(Gdx.files.internal("assets/Tile.png"));
 
-        map = new TiledMap();
-        TiledMapTileLayer layer = new TiledMapTileLayer(TILE_MAP_WIDTH, TILE_MAP_HEIGHT, TILE_SIZE, TILE_SIZE);
-        for (int i = 0; i < 20; ++i) {
-            for (int j = 0; j < 12; ++j) {
+        tiledMap = new TiledMap();
+        TiledMapTileLayer backgroundLayer = new TiledMapTileLayer(TILE_MAP_WIDTH, TILE_MAP_HEIGHT, TILE_SIZE, TILE_SIZE);
+        TiledMapTileLayer turretLayer = new TiledMapTileLayer(TILE_MAP_WIDTH, TILE_MAP_HEIGHT, TILE_SIZE, TILE_SIZE);
+
+        for (int i = 0; i < TILE_MAP_WIDTH; ++i) {
+            for (int j = 0; j < TILE_MAP_HEIGHT; ++j) {
 
                 TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
                 cell.setTile(new StaticTiledMapTile(new TextureRegion(tileTexture)));
-                layer.setCell(i, j, cell);
+                backgroundLayer.setCell(i, j, cell);
+
+                turretLayer.setCell(i, j, new TiledMapTileLayer.Cell());
             }
         }
-        map.getLayers().add(layer); // Background Layer
-        map.getLayers().add(new TiledMapTileLayer(20, 12, 64, 64)); // Turret Layer
+        tiledMap.getLayers().add(backgroundLayer); // Background Layer
+        tiledMap.getLayers().add(turretLayer); // Turret Layer
 
-        mapRenderer = new OrthogonalTiledMapRenderer(map);
-
-        stateMachine = new StateMachine();
-        stateMachine.changeState(new StartState(stateMachine, this));
+        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
         game = new TowerDefense(this);
     }
@@ -98,17 +110,16 @@ public class GameScene extends Scene {
     @Override
     public void update(float deltaTime) {
 
-        stateMachine.update(deltaTime);
         game.getStateMachine().update(deltaTime);
 
-        mapRenderer.setView(camera);
+        tiledMapRenderer.setView(camera);
         menuStage.act(deltaTime);
     }
 
     @Override
     public void draw() {
         gameViewport.apply();
-        mapRenderer.render();
+        tiledMapRenderer.render();
 
         menuViewport.apply();
         menuStage.draw();
@@ -123,28 +134,9 @@ public class GameScene extends Scene {
     @Override
     public void dispose() {
 
-        map.dispose();
+        tiledMap.dispose();
         turretTexture.dispose();
         tileTexture.dispose();
-    }
-
-    public void click(float mouseX, float mouseY) {
-
-        Vector3 mousePosition = camera.unproject(new Vector3(mouseX, mouseY, 0));
-        int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
-        int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
-
-        TiledMapTileLayer layer = (TiledMapTileLayer) map.getLayers().get(TURRET_LAYER);
-        TiledMapTileLayer.Cell cell = layer.getCell(x, y);
-        if (cell == null) {
-            cell = new TiledMapTileLayer.Cell();
-            cell.setTile(new StaticTiledMapTile(new TextureRegion(turretTexture)));
-            cell.setRotation(TiledMapTileLayer.Cell.ROTATE_90);
-            layer.setCell(x, y, cell);
-
-        } else {
-            cell.setRotation((cell.getRotation() + 1) % 4);
-        }
     }
 
     public void updateCamera() {
@@ -172,5 +164,56 @@ public class GameScene extends Scene {
         }
 
         camera.update();
+    }
+
+    public void clickMap(float mouseX, float mouseY) {
+
+        Vector3 mousePosition = camera.unproject(new Vector3(mouseX, mouseY, 0));
+        int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
+        int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
+
+        if (selectedTurretType != null) {
+
+            Turret turret = null;
+            switch (selectedTurretType) {
+
+                case MACHINE_GUN:
+                    turret = new MachineGunTurret(new Point(x, y));
+                    break;
+
+                case MORTAR:
+                    turret = new MortarTurret(new Point(x, y));
+                    break;
+
+                case SLOWER:
+                    turret = new SlowerTurret(new Point(x, y));
+                    break;
+            }
+
+            game.placeTurret(turret);
+        }
+    }
+
+    public void updateMap(Map map) {
+
+        TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(TURRET_LAYER);
+
+        for (int x = 0; x < TILE_MAP_WIDTH; ++x) {
+            for (int y = 0; y < TILE_MAP_HEIGHT; ++y) {
+
+                TiledMapTileLayer.Cell cell = layer.getCell(x, y);
+                if (map.getStructureAt(x, y) != null) {
+                    cell.setTile(new StaticTiledMapTile(new TextureRegion(turretTexture)));
+                }
+            }
+        }
+    }
+
+    public void selectTurret(TurretType turretType) {
+        selectedTurretType = turretType;
+    }
+
+    public void clearSelectedTurret() {
+        selectedTurretType = null;
     }
 }

@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 
 public class FakeClient {
+
     static final String serverName = "localhost";
     static final int serverPort = 4567;
     static OutputStreamWriter out;
