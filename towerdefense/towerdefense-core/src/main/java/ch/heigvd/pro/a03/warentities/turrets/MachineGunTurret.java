@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class MachineGunTurret extends Turret {
 
-    public MachineGunTurret(String name, Point position) {
-        super(name, position);
+    public MachineGunTurret(Point position) {
+        super(position);
     }
 }

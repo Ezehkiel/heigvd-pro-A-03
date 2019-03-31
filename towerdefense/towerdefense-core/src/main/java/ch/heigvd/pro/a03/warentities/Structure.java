@@ -4,10 +4,7 @@ import java.awt.*;
 
 public class Structure extends WarEntity {
 
-    public Structure(String name, Point position) {
-        super(name);
-        this.position = position;
+    public Structure(Point position) {
+        super(position);
     }
-
-    private Point position;
 }
