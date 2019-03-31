@@ -11,12 +11,12 @@ public class Position {
     private Position parent;
 
     public Position(int row, int col) {
-        this.row = row;
-        this.col = col;
+        this.setRow(row);
+        this.setCol(col);
     }
 
     public void calculateHeuristic(Position finalPosition) {
-        heuristic = Math.abs(finalPosition.row - row) + Math.abs(finalPosition.col - col);
+        heuristic = Math.abs(finalPosition.getRow() - getRow()) + Math.abs(finalPosition.getCol() - getCol());
     }
 
     public void setPositionData(Position current, int cost) {
@@ -44,12 +44,12 @@ public class Position {
     @Override
     public boolean equals(Object arg0) {
         Position other = (Position) arg0;
-        return this.row == other.row && this.col == other.col;
+        return this.getRow() == other.getRow() && this.getCol() == other.getCol();
     }
 
     @Override
     public String toString() {
-        return "Position [row=" + row + ", col=" + col + "]";
+        return "Position [row=" + getRow() + ", col=" + getCol() + "]";
     }
 
     public int getFinalCost() {
@@ -74,5 +74,21 @@ public class Position {
 
     public void setParent(Position parent) {
         this.parent = parent;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
     }
 }
