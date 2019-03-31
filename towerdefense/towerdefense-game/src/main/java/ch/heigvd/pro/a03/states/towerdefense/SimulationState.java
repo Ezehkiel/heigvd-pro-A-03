@@ -50,6 +50,6 @@ public class SimulationState extends GameState {
 
     @Override
     public boolean canEnterState(Class<?> stateClass) {
-        return stateClass == WaitingState.class;
+        return stateClass == WaitState.class;
     }
 }

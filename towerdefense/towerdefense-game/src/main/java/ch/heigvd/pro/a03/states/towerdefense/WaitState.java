@@ -2,13 +2,12 @@ package ch.heigvd.pro.a03.states.towerdefense;
 
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.states.StateMachine;
-import com.badlogic.gdx.Gdx;
 
-public class PlayState extends GameState {
+public class WaitState extends GameState {
 
-    private float timer;
+    int i = 0;
 
-    public PlayState(StateMachine stateMachine, TowerDefense game) {
+    public WaitState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }
 
@@ -16,31 +15,31 @@ public class PlayState extends GameState {
     public void enter() {
         super.enter();
 
-        timer = 0f;
-
-        System.out.println("Turn started");
+        i++;
+        System.out.println("Now waiting!");
     }
 
     @Override
     public void leave() {
         super.leave();
 
-        System.out.println("Turn ended");
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        timer += deltaTime;
-
-        if (timer >= 5f) {
-            changeState(TowerDefense.GameStateType.WAIT);
+        if (i == 3) {
+            i = 0;
+            changeState(TowerDefense.GameStateType.SIMULATION);
+        } else {
+            changeState(TowerDefense.GameStateType.PLAY);
         }
     }
 
     @Override
     public boolean canEnterState(Class<?> stateClass) {
-        return stateClass == WaitState.class;
+        return stateClass == PlayState.class ||
+                stateClass == SimulationState.class;
     }
 }
