@@ -1,9 +1,10 @@
 package ch.heigvd.pro.a03.warentities.units;
 
-import ch.heigvd.pro.a03.utils.FloatPoint;
+import java.awt.*;
 
 public class Soldier extends Unit {
-    public Soldier(String name, FloatPoint position) {
-        super(name, position);
+
+    public Soldier(Point position) {
+        super(position);
     }
 }

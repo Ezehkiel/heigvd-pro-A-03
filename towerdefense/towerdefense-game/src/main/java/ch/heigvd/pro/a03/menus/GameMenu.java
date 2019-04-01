@@ -1,6 +1,6 @@
 package ch.heigvd.pro.a03.menus;
 
-import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
@@ -49,7 +49,7 @@ public class GameMenu extends Menu {
                 super.clicked(event, x, y);
 
                 if (event.getTarget() == getMenu()) {
-                    scene.click(x, Game.HEIGHT - y);
+                    scene.click(x, GameLauncher.HEIGHT - y);
                 }
             }
         });

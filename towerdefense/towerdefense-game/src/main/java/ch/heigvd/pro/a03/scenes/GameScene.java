@@ -1,7 +1,10 @@
 package ch.heigvd.pro.a03.scenes;
 
-import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.GameMenu;
+import ch.heigvd.pro.a03.states.StateMachine;
+import ch.heigvd.pro.a03.states.gamescene.StartState;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -13,19 +16,17 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.*;
 
 public class GameScene extends Scene {
 
-    private final float CAMERA_SPEED = 5f;
-    private final int TURRET_LAYER = 1;
-    private final int TILE_MAP_WIDTH = 20;
-    private final int TILE_MAP_HEIGHT = 12;
-    private final int TILE_SIZE = 64;
+    public static final float CAMERA_SPEED = 5f;
+    public static final int TURRET_LAYER = 1;
+    public static final int TILE_MAP_WIDTH = 20;
+    public static final int TILE_MAP_HEIGHT = 12;
+    public static final int TILE_SIZE = 64;
 
     private OrthographicCamera camera;
     private Viewport gameViewport;
@@ -40,13 +41,17 @@ public class GameScene extends Scene {
     private TiledMap map;
     private TiledMapRenderer mapRenderer;
 
+    private StateMachine stateMachine;
+
+    private TowerDefense game;
+
     public GameScene() {
 
         camera = new OrthographicCamera();
-        gameViewport = new FillViewport(Game.WIDTH, Game.HEIGHT, camera);
-        gameViewport.update(Game.WIDTH, Game.HEIGHT, true);
+        gameViewport = new FillViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT, camera);
+        gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
 
-        // Create Game Menu
+        // Create GameLauncher Menu
         menuViewport = new ScreenViewport();
 
         menuSkin = new Skin(Gdx.files.internal("uiskin.json"));
@@ -71,6 +76,11 @@ public class GameScene extends Scene {
         map.getLayers().add(new TiledMapTileLayer(20, 12, 64, 64)); // Turret Layer
 
         mapRenderer = new OrthogonalTiledMapRenderer(map);
+
+        stateMachine = new StateMachine();
+        stateMachine.changeState(new StartState(stateMachine, this));
+
+        game = new TowerDefense(this);
     }
 
     @Override
@@ -88,36 +98,10 @@ public class GameScene extends Scene {
     @Override
     public void update(float deltaTime) {
 
-        // Return to main menu if "ESCAPE" is pressed
-        if (Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
-            Game.getInstance().popScene();
-        }
+        stateMachine.update(deltaTime);
+        game.getStateMachine().update(deltaTime);
 
-        // Move camera
-        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.position.y += CAMERA_SPEED;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.position.y -= CAMERA_SPEED;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.position.x -= CAMERA_SPEED;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.position.x += CAMERA_SPEED;
-        }
-
-        // Zoom camera
-        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            camera.zoom += CAMERA_SPEED / 100;
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            camera.zoom -= CAMERA_SPEED / 100;
-        }
-
-        camera.update();
         mapRenderer.setView(camera);
-
         menuStage.act(deltaTime);
     }
 
@@ -161,5 +145,32 @@ public class GameScene extends Scene {
         } else {
             cell.setRotation((cell.getRotation() + 1) % 4);
         }
+    }
+
+    public void updateCamera() {
+
+        if (Gdx.input.isKeyPressed(Input.Keys.W)) {
+            camera.position.y += CAMERA_SPEED;
+        }
+
+        if (Gdx.input.isKeyPressed(Input.Keys.S)) {
+            camera.position.y -= CAMERA_SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.A)) {
+            camera.position.x -= CAMERA_SPEED;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.D)) {
+            camera.position.x += CAMERA_SPEED;
+        }
+
+        // Zoom camera
+        if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
+            camera.zoom += CAMERA_SPEED / 100;
+        }
+        if (Gdx.input.isKeyPressed(Input.Keys.E)) {
+            camera.zoom -= CAMERA_SPEED / 100;
+        }
+
+        camera.update();
     }
 }

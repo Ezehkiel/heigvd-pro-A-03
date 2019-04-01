@@ -1,9 +1,10 @@
 package ch.heigvd.pro.a03.warentities.units;
 
-import ch.heigvd.pro.a03.utils.FloatPoint;
+import java.awt.*;
 
 public class Tank extends Unit {
-    public Tank(String name, FloatPoint position) {
-        super(name, position);
+
+    public Tank(Point position) {
+        super(position);
     }
 }

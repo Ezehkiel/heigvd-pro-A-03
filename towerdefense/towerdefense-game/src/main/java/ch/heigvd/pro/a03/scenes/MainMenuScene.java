@@ -1,6 +1,6 @@
 package ch.heigvd.pro.a03.scenes;
 
-import ch.heigvd.pro.a03.Game;
+import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.menus.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -20,14 +20,14 @@ public class MainMenuScene extends Scene {
 
     public MainMenuScene() {
 
-        viewport = new FitViewport(Game.WIDTH, Game.HEIGHT);
+        viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
         // Create Scene2D skin and stage
         skin = new Skin(Gdx.files.internal("uiskin.json"));
         stage = new Stage(viewport);
 
         // Title
-        Label title = new Label("Game Titled", skin);
+        Label title = new Label("GameLauncher Titled", skin);
         title.setFontScale(1f);
         title.setAlignment(Align.center);
         title.setColor(Color.GOLDENROD);
