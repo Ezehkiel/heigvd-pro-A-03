@@ -25,8 +25,9 @@ public class validation implements ServerState {
     public void master() {
         ArrayList<Player> players = srv.getPlayers();
         for (Player p : players){
-            writeProtocol(p.getOut(),ISCLIENTREADY);
             try{
+                writeProtocol(p.getOut(),ISCLIENTREADY);
+
                 if(readProtocol(p.getIn())!= CLIENTREADY){
                     Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready");
                 }
@@ -41,8 +42,13 @@ public class validation implements ServerState {
         int playerOneIndex =rand.nextInt(players.size());
         int playerTwoIndex = (playerOneIndex != 0) ? 0:1;
 
-        writeProtocol(players.get(playerOneIndex).getOut(), YOURAREPLAYERONE);
-        writeProtocol(players.get(playerTwoIndex).getOut(), YOURAREPLAYERTWO);
+        try {
+            writeProtocol(players.get(playerOneIndex).getOut(), YOURAREPLAYERONE);
+            writeProtocol(players.get(playerTwoIndex).getOut(), YOURAREPLAYERTWO);
+        }catch (IOException e){
+            Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
+        }
+
         srv.setCurrentState(srv.firstRound);
     }
 

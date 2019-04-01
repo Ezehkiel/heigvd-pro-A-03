@@ -8,7 +8,7 @@ public abstract class State {
         this.stateMachine = stateMachine;
     }
 
-    // TODO: add from and to in changeState() and leave() if needed
+    // TODO: ADD from and to in changeState() and leave() if needed
 
     public void enter() { }
 
