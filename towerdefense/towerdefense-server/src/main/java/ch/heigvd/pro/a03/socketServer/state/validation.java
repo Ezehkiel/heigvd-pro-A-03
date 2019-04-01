@@ -1,12 +1,18 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
-import ch.heigvd.pro.a03.Protocole;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Player;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
+
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static ch.heigvd.pro.a03.utils.Protocole.*;
+import static ch.heigvd.pro.a03.utils.Communication.readProtocol;
+import static ch.heigvd.pro.a03.utils.Communication.writeProtocol;
 
 public class validation implements ServerState {
 
@@ -17,32 +23,33 @@ public class validation implements ServerState {
 
     @Override
     public void master() {
-        for (Player p : srv.getPlayers()){
-            if(!isPlayerReady(p)){
-                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready");
+        ArrayList<Player> players = srv.getPlayers();
+        for (Player p : players){
+            try{
+                writeProtocol(p.getOut(),ISCLIENTREADY);
+
+                if(readProtocol(p.getIn())!= CLIENTREADY){
+                    Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, "Player not ready");
+                }
+                //TODO : Gérér si un client est pas prêt
+            }catch (IOException e){
+                Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
             }
-            //TODO : Gérér si un client est pas prêt
+
         }
+        Random rand = new Random();
 
-        srv.setCurrentState(srv.firstRound);
-    }
-    boolean isPlayerReady(Player p){
-        int receivedProtocole=-1;
+        int playerOneIndex =rand.nextInt(players.size());
+        int playerTwoIndex = (playerOneIndex != 0) ? 0:1;
 
-        try{
-            p.getOut().write(Protocole.ISCLIENTREADY);
-            p.getOut().flush();
-            p.getOut().write(-1);
-            p.getOut().flush();
-            int data = p.getIn().read();
-            while(data != 65535){
-                receivedProtocole=data;
-                data = p.getIn().read();
-            }
+        try {
+            writeProtocol(players.get(playerOneIndex).getOut(), YOURAREPLAYERONE);
+            writeProtocol(players.get(playerTwoIndex).getOut(), YOURAREPLAYERTWO);
         }catch (IOException e){
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
         }
 
-        return receivedProtocole == Protocole.CLIENTREADY;
+        srv.setCurrentState(srv.firstRound);
     }
+
 }

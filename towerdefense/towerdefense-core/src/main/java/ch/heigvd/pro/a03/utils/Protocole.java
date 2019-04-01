@@ -1,4 +1,4 @@
-package ch.heigvd.pro.a03;
+package ch.heigvd.pro.a03.utils;
 
 public class Protocole {
 
@@ -9,12 +9,16 @@ public class Protocole {
     public static final int CLIENTWANTPLAYMULTI=21;
     //Maybe more gamemodes ...
 
+    public static final int YOURAREPLAYERONE=30;
+    public static final int YOURAREPLAYERTWO=31;
+
+
     public static final int ISCLIENTREADY=50;
     public static final int CLIENTREADY=51;
     public static final int CLIENTNOTREADY=52;
 
 
-    public static final int SERVERINSTATUSFIRSTROUND=71;
+    public static final int SERVERINSTATUSINITIALISATION =71;
     public static final int SERVERINSTATUSROUND=72;
     public static final int SERVERINSTATUSSIMULATION=73;
 
