@@ -1,13 +1,11 @@
 package ch.heigvd.pro.a03.socketServer;
 
-import ch.heigvd.pro.a03.Protocole;
-import ch.heigvd.pro.a03.utils.Communication;
+import ch.heigvd.pro.a03.utils.Protocole;
 
 import java.io.IOException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -45,7 +43,6 @@ class MatchMaker implements Runnable {
 
                     ArrayList<Player> match = new ArrayList<>();
                     match.add(player);
-                    // match.add(ai)
                     new Thread(new GameServer(new ArrayList<>(match))).start();
                     break;
                 default:

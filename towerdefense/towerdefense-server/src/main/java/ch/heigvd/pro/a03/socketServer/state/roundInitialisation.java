@@ -1,6 +1,6 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
-import ch.heigvd.pro.a03.Protocole;
+import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Player;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
@@ -13,28 +13,33 @@ import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Communication.*;
 
-public class firstRound implements ServerState {
+
+// TODO : Send units - units -> change state to round
+public class roundInitialisation implements ServerState {
     GameServer srv;
 
 
-    public firstRound(GameServer srv) {
+    public roundInitialisation(GameServer srv) {
         this.srv = srv;
     }
 
     @Override
     public void master() {
-        System.out.println("First round state");
         for(Player p :srv.getPlayers()){
-            writeProtocol(p.getOut(), Protocole.SERVERINSTATUSFIRSTROUND);
+            writeProtocol(p.getOut(), Protocole.SERVERINSTATUSINITIALISATION);
         }
-
         try{
-            ArrayList<Unit> unitFromA = readJson(srv.getPlayers().get(0).getIn(),Unit.class);
-            System.out.println(unitFromA);
 
+            for(Player p :srv.getPlayers()){
+                ArrayList<Unit> unitFromClient = readJson(p.getIn(),Unit.class);
+
+                System.out.println("+++++" +unitFromClient);
+            }
         }catch (IOException e){
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
 
         }
+
+        srv.setCurrentState(srv.round);
     }
 }

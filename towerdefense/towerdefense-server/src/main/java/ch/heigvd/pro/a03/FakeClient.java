@@ -2,17 +2,19 @@ package ch.heigvd.pro.a03;
 
 
 import ch.heigvd.pro.a03.utils.Communication;
+import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.warentities.units.Scoot;
 import ch.heigvd.pro.a03.warentities.units.Unit;
-import com.google.gson.Gson;
-import com.google.gson.stream.JsonWriter;
 
 import java.awt.*;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.InputStreamReader;
 import java.net.Socket;
 import java.util.ArrayList;
+
+import static ch.heigvd.pro.a03.utils.Communication.writeJsonStream;
+import static ch.heigvd.pro.a03.utils.Protocole.YOURAREPLAYERONE;
+import static ch.heigvd.pro.a03.utils.Communication.readProtocol;
 
 
 public class FakeClient {
@@ -20,6 +22,8 @@ public class FakeClient {
     static final int serverPort = 4567;
     static OutputStreamWriter out;
     static InputStreamReader in;
+
+    static boolean isPlayerOne;
 
     public static void main (String ... args) throws Exception {
         System.out.println("Client start");
@@ -33,10 +37,10 @@ public class FakeClient {
 
         in = new InputStreamReader(socket.getInputStream());
 
-        Communication.writeProtocol(out,Protocole.CLIENTWANTPLAYMULTI);
+        Communication.writeProtocol(out, Protocole.CLIENTWANTPLAYMULTI);
 
         System.out.println("Client wait server validation");
-        int protocole = Communication.readProtocol(in);
+        int protocole = readProtocol(in);
 
 
         if(protocole == Protocole.ISCLIENTREADY){
@@ -46,15 +50,19 @@ public class FakeClient {
             throw new Exception("Patate" + protocole);
         }
 
+        isPlayerOne = (readProtocol(in) == YOURAREPLAYERONE);
+
+        System.out.println("Am'I player One ? " + isPlayerOne);
+
+
         ArrayList<Scoot> scoots = new ArrayList<>();
         scoots.add(new Scoot(new Point(0, 0)));
         scoots.add(new Scoot(new Point(0, 0)));
         scoots.add(new Scoot(new Point(0, 0)));
 
 
-        if(Communication.readProtocol(in) == Protocole.SERVERINSTATUSFIRSTROUND){
-            System.out.println("Server in first round");
-            Communication.writeJsonStream(out, scoots, Unit.class);
+        if(readProtocol(in) == Protocole.SERVERINSTATUSINITIALISATION){
+            writeJsonStream(out, scoots, Unit.class);
         }else {
             throw new Exception("Patate2");
         }
