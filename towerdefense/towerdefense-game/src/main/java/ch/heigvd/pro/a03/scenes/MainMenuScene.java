@@ -37,7 +37,7 @@ public class MainMenuScene extends Scene {
 
         menuTable.defaults().expandX().bottom();
         menuTable.add(new MainMenu(skin).getMenu());
-        menuTable.add(new ConnectionMenu(skin).getMenu());
+        menuTable.add(new AuthSelectionMenu(skin).getMenu());
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
@@ -83,5 +83,9 @@ public class MainMenuScene extends Scene {
 
         stage.dispose();
         skin.dispose();
+    }
+
+    private void showRegistrationMenu() {
+
     }
 }
