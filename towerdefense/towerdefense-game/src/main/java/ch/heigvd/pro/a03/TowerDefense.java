@@ -43,7 +43,12 @@ public class TowerDefense {
             return false;
         }
 
-        map.setStructureAt(turret, turret.getPosition().x, turret.getPosition().y);
+        try {
+            map.setStructureAt(turret, turret.getPosition().x, turret.getPosition().y);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+
         scene.updateMap(map);
 
         return true;
