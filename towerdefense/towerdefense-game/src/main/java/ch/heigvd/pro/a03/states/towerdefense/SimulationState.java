@@ -42,7 +42,7 @@ public class SimulationState extends GameState {
             System.out.print(".");
         }
 
-        if (counter == 10) {
+        if (counter == 2) {
             changeState(TowerDefense.GameStateType.WAIT);
         }
 

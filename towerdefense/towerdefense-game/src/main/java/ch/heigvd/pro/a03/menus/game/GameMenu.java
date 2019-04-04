@@ -40,7 +40,7 @@ public class GameMenu extends Menu {
                 super.clicked(event, x, y);
 
                 if (event.getTarget() == getMenu()) {
-                    scene.clickMap(x, GameLauncher.HEIGHT - y);
+                    scene.clickMap(x, y);
                 }
             }
         });

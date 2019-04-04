@@ -3,7 +3,7 @@ package ch.heigvd.pro.a03.scenes;
 import java.util.Stack;
 
 /**
- * Manage scenes. You can add or remove scenes or get the current scene to display
+ * Manage scenes. You can ADD or remove scenes or get the current scene to display
  */
 public class SceneManager {
 
