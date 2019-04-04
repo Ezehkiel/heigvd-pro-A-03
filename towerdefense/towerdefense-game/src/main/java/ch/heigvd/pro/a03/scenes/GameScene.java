@@ -37,7 +37,7 @@ public class GameScene extends Scene {
     private static final int BACKGROUND_LAYER = 0;
     private static final int TURRET_LAYER = 1;
 
-    private OrthographicCamera camera;
+    private OrthographicCamera gameCamera;
     private Viewport gameViewport;
 
     private Skin menuSkin;
@@ -62,8 +62,8 @@ public class GameScene extends Scene {
 
     public GameScene() {
 
-        camera = new OrthographicCamera();
-        gameViewport = new FillViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT, camera);
+        gameCamera = new OrthographicCamera();
+        gameViewport = new ScreenViewport(gameCamera);
         gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
 
         // Create GameLauncher Menu
@@ -118,8 +118,9 @@ public class GameScene extends Scene {
     public void update(float deltaTime) {
 
         game.getStateMachine().update(deltaTime);
+        updateCamera();
 
-        tiledMapRenderer.setView(camera);
+        tiledMapRenderer.setView(gameCamera);
         menuStage.act(deltaTime);
     }
 
@@ -134,7 +135,7 @@ public class GameScene extends Scene {
 
     @Override
     public void resize(int width, int height) {
-        gameViewport.update(width, height, true);
+        gameViewport.update(width, height, false);
         menuViewport.update(width, height, true);
     }
 
@@ -149,33 +150,35 @@ public class GameScene extends Scene {
     public void updateCamera() {
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
-            camera.position.y += CAMERA_SPEED;
+            gameCamera.position.y += CAMERA_SPEED;
         }
 
         if (Gdx.input.isKeyPressed(Input.Keys.S)) {
-            camera.position.y -= CAMERA_SPEED;
+            gameCamera.position.y -= CAMERA_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.A)) {
-            camera.position.x -= CAMERA_SPEED;
+            gameCamera.position.x -= CAMERA_SPEED;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.D)) {
-            camera.position.x += CAMERA_SPEED;
+            gameCamera.position.x += CAMERA_SPEED;
         }
 
-        // Zoom camera
+        // Zoom gameCamera
         if (Gdx.input.isKeyPressed(Input.Keys.Q)) {
-            camera.zoom += CAMERA_SPEED / 100;
+            gameCamera.zoom += CAMERA_SPEED / 100;
         }
         if (Gdx.input.isKeyPressed(Input.Keys.E)) {
-            camera.zoom -= CAMERA_SPEED / 100;
+            gameCamera.zoom -= CAMERA_SPEED / 100;
         }
 
-        camera.update();
+        gameCamera.update();
     }
 
     public void clickMap(float mouseX, float mouseY) {
 
-        Vector3 mousePosition = camera.unproject(new Vector3(mouseX, mouseY, 0));
+        Vector3 mousePosition = new Vector3(mouseX, mouseY, 0);
+        mousePosition = gameCamera.unproject(menuViewport.getCamera().unproject(mousePosition));
+
         int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
         int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
 

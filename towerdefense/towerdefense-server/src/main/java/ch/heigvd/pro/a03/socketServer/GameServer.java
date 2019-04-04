@@ -1,12 +1,8 @@
 package ch.heigvd.pro.a03.socketServer;
 
 import ch.heigvd.pro.a03.socketServer.state.*;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class GameServer implements Runnable{
 
@@ -25,7 +21,7 @@ public class GameServer implements Runnable{
         this.players = players;
 
         validation = new validation(this);
-        firstRound = new firstRound(this);
+        firstRound = new roundInitialisation(this);
         round = new round(this);
         simulation = new simulation(this);
 
@@ -48,7 +44,7 @@ public class GameServer implements Runnable{
     }
 
     public void setCurrentState(ServerState newState) {
-        System.out.println("Changing state");
+        System.out.println("Changing state to "+ newState.getClass().getSimpleName());
         this.currentState = newState;
         currentState.master();
     }
