@@ -1,13 +1,16 @@
 package ch.heigvd.pro.a03.httpServer;
 
 import ch.heigvd.pro.a03.HelloWorld;
-import ch.heigvd.pro.a03.socketServer.SocketServer;
+import ch.heigvd.pro.a03.httpServer.userAPI.UserController;
+import ch.heigvd.pro.a03.httpServer.userAPI.UserService;
 import com.google.gson.Gson;
 
 import java.util.logging.Logger;
 
-import static ch.heigvd.pro.a03.httpServer.userAPI.UserController.*;
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.port;
+
+
 
 public class HttpServer implements Runnable {
     final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
@@ -18,6 +21,7 @@ public class HttpServer implements Runnable {
     public HttpServer(int port) {
         port(port);
         this.port = port;
+        new UserController(new UserService());
 
     }
 
@@ -27,10 +31,12 @@ public class HttpServer implements Runnable {
 
         get("/hello/:name", (request, response) -> HelloWorld.greet(request.params(":name")));
 
-        post("/user/login",userLogin);
-
-        post("/user/register", userCreation);
+        //post("/user/login",  userLogin,json());
+        //post("/user/register", userCreation, json());
+       // get("/users/all", userGetAll);
 
 
     }
 }
+
+
