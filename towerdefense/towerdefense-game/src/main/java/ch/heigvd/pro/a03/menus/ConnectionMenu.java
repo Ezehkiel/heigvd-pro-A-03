@@ -3,6 +3,15 @@ package ch.heigvd.pro.a03.menus;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.google.common.hash.Hashing;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class ConnectionMenu extends Menu {
 
@@ -27,6 +36,40 @@ public class ConnectionMenu extends Menu {
                 super.clicked(event, x, y);
 
                 System.out.println("Connect: " + usernameField.getText() + " " + passwordField.getText());
+
+                try {
+
+                    URL obj = new URL("http://ezehkiel.ch:3945/users/login");
+                    HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+                    connection.setRequestMethod("POST");
+
+                    String json = "{\"username\": \""  + usernameField.getText() + "\", \"password\": \"" + passwordField.getText() + "\"}";
+
+                    // For POST only - START
+                    connection.setDoOutput(true);
+                    OutputStream os = connection.getOutputStream();
+                    os.write(json.getBytes());
+                    os.flush();
+                    os.close();
+                    // For POST only - END
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                        StringBuilder responseBuilder = new StringBuilder();
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            responseBuilder.append(line);
+                        }
+
+                        System.out.println(responseBuilder);
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
             }
         });
 

@@ -7,6 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+
 public class RegistrationMenu extends Menu {
 
     private TextField usernameField;
@@ -35,7 +42,38 @@ public class RegistrationMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                System.out.println("Connect: " + usernameField.getText() + " " + passwordField.getText());
+                System.out.println("Register: " + usernameField.getText() + " " + passwordField.getText());
+
+                if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+
+                    System.out.println("Passwords do not match!");
+                    return;
+                }
+
+                String json = "{\"username\": \""  + usernameField.getText() + "\"," +
+                        "\"password\": \"" + passwordField.getText() + "\"}";
+
+                try {
+
+                    URL obj = new URL("http://ezehkiel.ch:3945/users/register");
+                    HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+                    connection.setRequestMethod("POST");
+
+                    // For POST only - START
+                    connection.setDoOutput(true);
+                    OutputStream os = connection.getOutputStream();
+                    os.write(json.getBytes());
+                    os.flush();
+                    os.close();
+                    // For POST only - END
+
+                    int responseCode = connection.getResponseCode();
+                    System.out.println("POST Response Code :: " + responseCode);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
             }
         });
 
