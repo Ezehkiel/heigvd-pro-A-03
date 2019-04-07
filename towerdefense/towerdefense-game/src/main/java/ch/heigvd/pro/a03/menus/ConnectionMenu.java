@@ -21,8 +21,7 @@ public class ConnectionMenu extends Menu {
     private TextField usernameField;
     private TextField passwordField;
 
-    public ConnectionMenu(Skin skin) {
-        super();
+    public ConnectionMenu(AuthSelectionMenu authSelectionMenu, Skin skin) {
 
         Label usernameLabel = new Label("Username", skin);
         usernameField = new TextField("", skin);
@@ -69,7 +68,7 @@ public class ConnectionMenu extends Menu {
                         Player player = new Gson().fromJson(responseBuilder.toString(), Player.class);
                         GameLauncher.getInstance().setConnectedPlayer(player);
 
-                        System.out.println(GameLauncher.getInstance().getConnectedPlayer().getUsername() + " successfully connected!");
+                        authSelectionMenu.showConnectedPlayerMenu();
                     }
 
                 } catch (Exception e) {

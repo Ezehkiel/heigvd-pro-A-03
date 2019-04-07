@@ -35,18 +35,20 @@ public class MainMenuScene extends Scene {
         Table menuTable = new Table();
         menuTable.setDebug(DEBUG);
 
-        menuTable.defaults().expandX().bottom();
+        menuTable.setDebug(true);
+        menuTable.defaults().expand().bottom();
         menuTable.add(new MainMenu(skin).getMenu());
         menuTable.add(new AuthSelectionMenu(skin).getMenu());
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
         rootTable.setDebug(DEBUG);
+        rootTable.padBottom(50);
 
         rootTable.defaults().grow();
         rootTable.add(title);
         rootTable.row();
-        rootTable.add(menuTable);
+        rootTable.add(menuTable).spaceBottom(50);
 
         stage.addActor(rootTable);
     }

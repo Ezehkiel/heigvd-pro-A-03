@@ -23,7 +23,7 @@ public class RegistrationMenu extends Menu {
     private TextField passwordField;
     private TextField confirmPasswordField;
 
-    public RegistrationMenu(Skin skin) {
+    public RegistrationMenu(AuthSelectionMenu authSelectionMenu, Skin skin) {
         super();
 
         Label usernameLabel = new Label("Username", skin);
@@ -83,7 +83,7 @@ public class RegistrationMenu extends Menu {
                         Player player = new Gson().fromJson(responseBuilder.toString(), Player.class);
                         GameLauncher.getInstance().setConnectedPlayer(player);
 
-                        System.out.println(GameLauncher.getInstance().getConnectedPlayer().getUsername() + " successfully connected!");
+                        authSelectionMenu.showConnectedPlayerMenu();
                     }
 
                 } catch (Exception e) {
