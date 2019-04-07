@@ -14,13 +14,17 @@ public class AstarTest {
 
 
         //Expected resulting path (from S to E avoiding Bs)
-        //      0   1   2   3   4   5   6
+        //(The path includes S and E)
+        //      0   1   2   3   4   5   6 ...
         // 0    S   *   *   *   *   -   -
         // 1    -   B   -   B   *   -   -
         // 2    -   -   B   -   E   -   -
         // 3    -   -   -   _   -   -   -
         // 4    -   -   -   -   -   -   -
         // 5    -   -   -   -   -   -   -
+        // .
+        // .
+        // .
 
 
         Position s = new Position(0, 0);
