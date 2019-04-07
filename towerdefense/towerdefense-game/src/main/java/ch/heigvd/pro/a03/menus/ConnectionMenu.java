@@ -1,9 +1,12 @@
 package ch.heigvd.pro.a03.menus;
 
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.google.common.hash.Hashing;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -43,12 +46,12 @@ public class ConnectionMenu extends Menu {
                     HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
                     connection.setRequestMethod("POST");
 
-                    String json = "{\"username\": \""  + usernameField.getText() + "\", \"password\": \"" + passwordField.getText() + "\"}";
+                    String data = "{\"username\": \""  + usernameField.getText() + "\", \"password\": \"" + passwordField.getText() + "\"}";
 
                     // For POST only - START
                     connection.setDoOutput(true);
                     OutputStream os = connection.getOutputStream();
-                    os.write(json.getBytes());
+                    os.write(data.getBytes());
                     os.flush();
                     os.close();
                     // For POST only - END
@@ -63,12 +66,14 @@ public class ConnectionMenu extends Menu {
                             responseBuilder.append(line);
                         }
 
-                        System.out.println(responseBuilder);
+                        Player player = new Gson().fromJson(responseBuilder.toString(), Player.class);
+                        GameLauncher.getInstance().setConnectedPlayer(player);
+
+                        System.out.println(GameLauncher.getInstance().getConnectedPlayer().getUsername() + " successfully connected!");
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return;
                 }
             }
         });

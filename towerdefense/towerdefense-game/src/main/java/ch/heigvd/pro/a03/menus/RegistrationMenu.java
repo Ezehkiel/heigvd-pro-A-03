@@ -1,11 +1,14 @@
 package ch.heigvd.pro.a03.menus;
 
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.google.gson.Gson;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -67,8 +70,21 @@ public class RegistrationMenu extends Menu {
                     os.close();
                     // For POST only - END
 
-                    int responseCode = connection.getResponseCode();
-                    System.out.println("POST Response Code :: " + responseCode);
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                        StringBuilder responseBuilder = new StringBuilder();
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            responseBuilder.append(line);
+                        }
+
+                        Player player = new Gson().fromJson(responseBuilder.toString(), Player.class);
+                        GameLauncher.getInstance().setConnectedPlayer(player);
+
+                        System.out.println(GameLauncher.getInstance().getConnectedPlayer().getUsername() + " successfully connected!");
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
