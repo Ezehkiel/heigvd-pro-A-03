@@ -17,11 +17,11 @@ public class NearestTarget {
         this.rows = rows;
         this.cols = cols;
         isTarget = new boolean[rows][cols];
-        isMarked = new boolean[rows][cols];
         for(Vec2 v: targets) isTarget[v.getRow()][v.getCol()] = true;
     }
 
     public List<Vec2> pathToNearerTarget(Vec2 startingPosition){
+        isMarked = new boolean[rows][cols];
         Node root = new Node(startingPosition, null);
         LinkedList<Node> queue = new LinkedList<>(); queue.add(root);
         isMarked[root.position.getRow()][root.position.getCol()] = true;
