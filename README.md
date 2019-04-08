@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.com/Ezehkiel/heigvd-pro-A-03.svg?token=mrqvjTBsNzx3cjaWsSWP&branch=master)](https://travis-ci.com/Ezehkiel/heigvd-pro-A-03)
+
+
 # Tower Defense
 
 This software was developed as semester project (PRO) at HEIG-VD,
