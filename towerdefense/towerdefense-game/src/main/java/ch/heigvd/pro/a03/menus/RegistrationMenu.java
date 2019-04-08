@@ -1,11 +1,21 @@
 package ch.heigvd.pro.a03.menus;
 
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.google.gson.Gson;
+
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
 
 public class RegistrationMenu extends Menu {
 
@@ -13,7 +23,7 @@ public class RegistrationMenu extends Menu {
     private TextField passwordField;
     private TextField confirmPasswordField;
 
-    public RegistrationMenu(Skin skin) {
+    public RegistrationMenu(AuthSelectionMenu authSelectionMenu, Skin skin) {
         super();
 
         Label usernameLabel = new Label("Username", skin);
@@ -35,7 +45,51 @@ public class RegistrationMenu extends Menu {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                System.out.println("Connect: " + usernameField.getText() + " " + passwordField.getText());
+                System.out.println("Register: " + usernameField.getText() + " " + passwordField.getText());
+
+                if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+
+                    System.out.println("Passwords do not match!");
+                    return;
+                }
+
+                String json = "{\"username\": \""  + usernameField.getText() + "\"," +
+                        "\"password\": \"" + passwordField.getText() + "\"}";
+
+                try {
+
+                    URL obj = new URL("http://ezehkiel.ch:3945/users/register");
+                    HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
+                    connection.setRequestMethod("POST");
+
+                    // For POST only - START
+                    connection.setDoOutput(true);
+                    OutputStream os = connection.getOutputStream();
+                    os.write(json.getBytes());
+                    os.flush();
+                    os.close();
+                    // For POST only - END
+
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_OK) {
+
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
+                        StringBuilder responseBuilder = new StringBuilder();
+                        String line;
+
+                        while ((line = reader.readLine()) != null) {
+                            responseBuilder.append(line);
+                        }
+
+                        Player player = new Gson().fromJson(responseBuilder.toString(), Player.class);
+                        GameLauncher.getInstance().setConnectedPlayer(player);
+
+                        authSelectionMenu.showConnectedPlayerMenu();
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return;
+                }
             }
         });
 
