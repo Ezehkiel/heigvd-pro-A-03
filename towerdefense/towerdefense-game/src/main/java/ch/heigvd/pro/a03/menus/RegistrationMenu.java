@@ -58,7 +58,7 @@ public class RegistrationMenu extends Menu {
 
                 try {
 
-                    URL obj = new URL("http://ezehkiel.ch:3945/users/register");
+                    URL obj = new URL("https://ezehkiel.ch:3945/users/register");
                     HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
                     connection.setRequestMethod("POST");
 
