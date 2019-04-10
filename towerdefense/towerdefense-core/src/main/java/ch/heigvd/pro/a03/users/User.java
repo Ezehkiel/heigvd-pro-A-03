@@ -6,6 +6,8 @@ public class User {
 
     private String username;
 
+    private String password;
+    private int id;
     public String getUsername() {
         return username;
     }
@@ -14,16 +16,17 @@ public class User {
         return password;
     }
 
-    private String password;
 
-    public User(String userName,String motDePasse){
+
+    public User(int id, String userName,String motDePasse){
+        this.id = id;
         this.username = userName;
         this.password = motDePasse;
     }
 
 
     public String toString(){
-        return this.username + " " + this.password;
+        return this.id + " " + this.username + " " + this.password;
     }
 
     @Override

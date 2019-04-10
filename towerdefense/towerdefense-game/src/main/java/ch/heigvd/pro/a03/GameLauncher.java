@@ -19,6 +19,8 @@ public class GameLauncher implements ApplicationListener {
     static public final int WIDTH = 1280;
     static public final int HEIGHT = 768;
 
+    private Player connectedPlayer;
+
     private SceneManager sceneManager;
 
     /**
@@ -27,6 +29,7 @@ public class GameLauncher implements ApplicationListener {
     private GameLauncher() {
         super();
 
+        connectedPlayer = null;
         sceneManager = new SceneManager();
     }
 
@@ -43,6 +46,26 @@ public class GameLauncher implements ApplicationListener {
         return instance;
     }
 
+    /**
+     * Get the connected player.
+     * @return connect player
+     */
+    public Player getConnectedPlayer() {
+        return connectedPlayer;
+    }
+
+    /**
+     * Setts the connected player.
+     * @param connectedPlayer player to connect
+     */
+    public void setConnectedPlayer(Player connectedPlayer) {
+        this.connectedPlayer = connectedPlayer;
+    }
+
+    /**
+     * Gets the scene manager.
+     * @return scene manager
+     */
     public SceneManager getSceneManager() {
         return sceneManager;
     }

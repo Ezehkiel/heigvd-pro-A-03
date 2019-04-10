@@ -4,13 +4,22 @@ import java.sql.*;
 
 public class ConnectionDB {
 
+    private static ConnectionDB instance;
+
+    public static ConnectionDB getInstance() {
+        if(instance == null){
+            instance = new ConnectionDB();
+        }
+        return instance;
+    }
+
     private Connection con;
 
     public Connection getCon() {
         return con;
     }
 
-    public  ConnectionDB() {
+    private ConnectionDB() {
         try {
             // mise en place du driver
             Class.forName("org.postgresql.Driver");
