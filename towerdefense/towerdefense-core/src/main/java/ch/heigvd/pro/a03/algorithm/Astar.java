@@ -121,7 +121,7 @@ public class Astar {
 
 
     /**
-     * @return an empty array list of position or the whole path.
+     * @return the path to the target or an empty arraylist if there is none.
      */
     public List<Position> findPath() {
         openList.add(initialPosition);
@@ -134,6 +134,8 @@ public class Astar {
                 addAdjacent(current);
             }
         }
+
+        System.out.println("Unable to find a path, all blocked -position impossible-");
         return new ArrayList<Position>();
     }
 
