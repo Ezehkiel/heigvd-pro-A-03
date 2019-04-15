@@ -28,11 +28,17 @@ public class UserService {
     // creates a new user
     public User createUser(String name, String password) {
         LOG.log(Level.INFO, "Request: creation of an user");
-        String hash = Hashing.sha256()
-                .hashString(password, StandardCharsets.UTF_8)
-                .toString();
-        System.out.println(hash);
-        return SqlRequest.createUser(name, hash);
+        User user = getUser(name);
+        if(user !=null) {
+            String hash = Hashing.sha256()
+                    .hashString(password, StandardCharsets.UTF_8)
+                    .toString();
+            return SqlRequest.createUser(name, hash);
+        }else{
+            LOG.log(Level.INFO, "User already exist");
+
+            return null;
+        }
     }
 
     // updates an existing user
