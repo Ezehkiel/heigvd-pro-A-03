@@ -25,7 +25,7 @@ public class GameClient {
     private int playerNumber = -1;
 
     private GameClient() {
-        HOST = "localhost";
+        HOST = "ezehkiel.ch";
         PORT = 4567;
     }
 
