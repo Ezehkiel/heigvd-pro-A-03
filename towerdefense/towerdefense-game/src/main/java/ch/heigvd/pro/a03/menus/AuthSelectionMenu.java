@@ -23,7 +23,6 @@ public class AuthSelectionMenu extends Menu {
     public AuthSelectionMenu(Skin skin) {
 
         this.skin = skin;
-        getMenu().setDebug(true);
 
         connectionButton = new TextButton("Log in", skin);
         connectionButton.addListener(new ClickListener() {
