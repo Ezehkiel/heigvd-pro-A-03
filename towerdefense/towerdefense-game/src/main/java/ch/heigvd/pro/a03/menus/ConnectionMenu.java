@@ -41,7 +41,7 @@ public class ConnectionMenu extends Menu {
 
                 try {
 
-                    URL obj = new URL("http://ezehkiel.ch:3945/users/login");
+                    URL obj = new URL("https://ezehkiel.ch:3945/users/login");
                     HttpURLConnection connection = (HttpURLConnection) obj.openConnection();
                     connection.setRequestMethod("POST");
 
