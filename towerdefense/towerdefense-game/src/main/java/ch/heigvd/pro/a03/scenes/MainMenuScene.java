@@ -35,7 +35,6 @@ public class MainMenuScene extends Scene {
         Table menuTable = new Table();
         menuTable.setDebug(DEBUG);
 
-        menuTable.setDebug(true);
         menuTable.defaults().expand().bottom();
         menuTable.add(new MainMenu(skin).getMenu());
         menuTable.add(new AuthSelectionMenu(skin).getMenu());

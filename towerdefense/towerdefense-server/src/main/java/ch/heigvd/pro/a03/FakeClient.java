@@ -63,7 +63,6 @@ public class FakeClient {
 
         System.out.println("Am'I player One ? " + isPlayerOne);
 
-
         if(readProtocol(in) == Protocole.SERVERINSTATUSINITIALISATION){
             writePlayerEventToJson(out, pe);
         }else {
