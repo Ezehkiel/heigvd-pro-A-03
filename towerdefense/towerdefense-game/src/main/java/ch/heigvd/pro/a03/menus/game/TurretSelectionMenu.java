@@ -41,7 +41,6 @@ public class TurretSelectionMenu extends Menu {
             }
         });
 
-        getMenu().setDebug(true);
         getMenu().defaults().prefWidth(64).prefHeight(64).spaceLeft(16);
         getMenu().add(machineGun);
         getMenu().add(mortar);
