@@ -4,7 +4,7 @@ import java.awt.*;
 
 public class Base extends Structure {
 
-    public Base(Point position) {
-        super(position);
+    public Base(Point position, int totalHealth, int defPoint ) {
+        super(position,totalHealth,defPoint);
     }
 }
