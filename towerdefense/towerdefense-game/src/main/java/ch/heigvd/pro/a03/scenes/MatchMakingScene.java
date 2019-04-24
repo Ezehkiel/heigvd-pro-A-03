@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.Communication;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -33,7 +34,7 @@ public class MatchMakingScene extends Scene {
     public MatchMakingScene() {
         viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = UI.getSkin();
         stage = new Stage();
 
         Label title = new Label("Searching for players", skin);

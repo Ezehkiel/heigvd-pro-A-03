@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
+import ch.heigvd.pro.a03.utils.UI;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
@@ -69,7 +70,7 @@ public class GameScene extends Scene {
         // Create GameLauncher Menu
         menuViewport = new ScreenViewport();
 
-        menuSkin = new Skin(Gdx.files.internal("uiskin.json"));
+        menuSkin = UI.getSkin();
         menuStage = new Stage(menuViewport);
 
         menuStage.addActor(new GameMenu(menuSkin, this).getMenu());

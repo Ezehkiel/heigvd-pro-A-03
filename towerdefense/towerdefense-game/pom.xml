@@ -51,7 +51,7 @@
       <version>0.0</version>
     </dependency>
 
-    <!-- lib GDX -->
+    <!-- libGDX -->
     <dependency>
       <groupId>com.badlogicgames.gdx</groupId>
       <artifactId>gdx</artifactId>
@@ -65,6 +65,19 @@
     <dependency>
       <groupId>com.badlogicgames.gdx</groupId>
       <artifactId>gdx-platform</artifactId>
+      <version>1.9.9</version>
+      <classifier>natives-desktop</classifier>
+    </dependency>
+
+    <!-- LibGDX FreeType library -->
+    <dependency>
+      <groupId>com.badlogicgames.gdx</groupId>
+      <artifactId>gdx-freetype</artifactId>
+      <version>1.9.9</version>
+    </dependency>
+    <dependency>
+      <groupId>com.badlogicgames.gdx</groupId>
+      <artifactId>gdx-freetype-platform</artifactId>
       <version>1.9.9</version>
       <classifier>natives-desktop</classifier>
     </dependency>
