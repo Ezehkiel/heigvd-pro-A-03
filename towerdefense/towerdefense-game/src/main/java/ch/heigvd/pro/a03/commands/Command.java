@@ -1,6 +1,10 @@
 package ch.heigvd.pro.a03.commands;
 
-public abstract class Command<Receiver> {
+/**
+ * Generic class representing a command with a receiver
+ * @param <Receiver>
+ */
+public abstract class Command<Receiver> implements Executable {
 
     private Receiver receiver;
 
