@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,7 +23,7 @@ public class GameModeScene extends Scene {
         viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
         // Create Scene2D skin and stage
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = UI.getSkin();
         stage = new Stage(viewport);
 
         Table table = new Table();

@@ -2,14 +2,11 @@ package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.menus.*;
+import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -26,15 +23,14 @@ public class MainMenuScene extends Scene {
         viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
         // Create Scene2D skin and stage
-        skin = new Skin(Gdx.files.internal("uiskin.json"));
+        skin = UI.getSkin();
         stage = new Stage(viewport);
 
         // Title
-        Image title = new Image(new TextureRegion(new Texture("assets/GameTitle.png")));
-        title.setScaling(Scaling.none);
+        Label title = new Label("Tower Defense", skin, "title");
+        title.setAlignment(Align.center);
 
         Table menuTable = new Table();
-        menuTable.setDebug(DEBUG);
 
         menuTable.defaults().expand().bottom();
         menuTable.add(new MainMenu(skin).getMenu());
@@ -42,13 +38,12 @@ public class MainMenuScene extends Scene {
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
-        rootTable.setDebug(DEBUG);
-        rootTable.padBottom(50);
+        rootTable.padBottom(UI.SPACING);
 
         rootTable.defaults().grow();
         rootTable.add(title);
         rootTable.row();
-        rootTable.add(menuTable).spaceBottom(50);
+        rootTable.add(menuTable);
 
         stage.addActor(rootTable);
     }
@@ -82,12 +77,7 @@ public class MainMenuScene extends Scene {
 
     @Override
     public void dispose() {
-
         stage.dispose();
         skin.dispose();
-    }
-
-    private void showRegistrationMenu() {
-
     }
 }
