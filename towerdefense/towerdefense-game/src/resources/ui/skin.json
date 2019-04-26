@@ -30,7 +30,7 @@
   "LabelStyle": {
     "default": {
       "font": "font",
-      "fontColor": "black"
+      "fontColor": "white"
     },
     "title": {
       "parent": "default",

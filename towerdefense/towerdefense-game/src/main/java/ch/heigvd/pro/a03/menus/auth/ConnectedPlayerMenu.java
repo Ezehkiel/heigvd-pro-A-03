@@ -21,7 +21,6 @@ public class ConnectedPlayerMenu extends Menu {
         TextButton logoutButton = new TextButton("Log out", skin);
         logoutButton.addListener(new ButtonCommand(new LogoutCommand(authMenu)));
 
-        getMenu().setDebug(true);
         getMenu().add(usernameLabel).expand().spaceBottom(UI.SPACING);
         getMenu().row();
         getMenu().add(logoutButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);

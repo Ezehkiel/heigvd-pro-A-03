@@ -77,7 +77,7 @@ public class GameLauncher implements ApplicationListener {
 
     @Override
     public void render () {
-        Gdx.gl.glClearColor(0.9f, 0.9f, 0.9f, 1.0f);
+        Gdx.gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
         if (sceneManager.hasScene()) {

@@ -26,7 +26,6 @@ public class AuthMenu extends Menu {
 
         this.skin = skin;
 
-        getMenu().setDebug(true);
         getMenu().defaults();
 
         cancelButton = new TextButton("Cancel", skin);
