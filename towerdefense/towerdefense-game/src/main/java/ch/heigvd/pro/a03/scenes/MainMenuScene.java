@@ -4,9 +4,12 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.menus.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Scaling;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
@@ -27,10 +30,8 @@ public class MainMenuScene extends Scene {
         stage = new Stage(viewport);
 
         // Title
-        Label title = new Label("GameLauncher Titled", skin);
-        title.setFontScale(1f);
-        title.setAlignment(Align.center);
-        title.setColor(Color.GOLDENROD);
+        Image title = new Image(new TextureRegion(new Texture("assets/GameTitle.png")));
+        title.setScaling(Scaling.none);
 
         Table menuTable = new Table();
         menuTable.setDebug(DEBUG);
