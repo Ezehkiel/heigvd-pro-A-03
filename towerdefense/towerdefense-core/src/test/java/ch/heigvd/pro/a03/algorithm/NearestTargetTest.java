@@ -36,7 +36,7 @@ public class NearestTargetTest {
         Vec2 expectedTarget = new Vec2(4,1);
 
         NearestTarget nt = new NearestTarget(6, 7, targets);
-        assert(nt.getNearestTarget(startingPoint).equals(expectedTarget));
+        assert(nt.getNearestTarget(startingPoint, 7).equals(expectedTarget));
     }
 
 }

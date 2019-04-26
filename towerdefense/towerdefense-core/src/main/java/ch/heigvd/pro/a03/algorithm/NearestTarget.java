@@ -19,17 +19,30 @@ public class NearestTarget {
         for(Vec2 v: targets) isTarget[v.getRow()][v.getCol()] = true;
     }
 
-    public Vec2 getNearestTarget(Vec2 startingPosition){
+    /**
+     * @param startingPosition
+     * @param range
+     * @return the location of the nearest neighbour in given range
+     * if their is none, null is returned
+     */
+    public Vec2 getNearestTarget(Vec2 startingPosition, int range){
         isMarked = new boolean[rows][cols];
         //Vec2 root = startingPosition;
-        LinkedList<Vec2> queue = new LinkedList<>(); queue.add(startingPosition);
+        LinkedList<Vec2> queue = new LinkedList<>(); queue.add(startingPosition); queue.add(null);
         isMarked[startingPosition.getRow()][startingPosition.getCol()] = true;
-        while(true){
-            List<Vec2> neighbours = getNeighboursOf(queue.remove());
+        for(int i = 0; i < range;){
+            Vec2 next = queue.remove();
+            if(next == null){
+                queue.add(null);
+                next = queue.remove();
+                ++i;
+            }
+            List<Vec2> neighbours = getNeighboursOf(next);
             Vec2 target = getATargetIn(neighbours);
             if(target != null) return target;
             queue.addAll(neighbours);
         }
+        return null;
     }
 
     private List<Vec2> getNeighboursOf(Vec2 p){
