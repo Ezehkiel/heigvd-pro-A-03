@@ -7,6 +7,7 @@ public interface Executable {
 
     /**
      * Executes something.
+     * @return true if the execution worked
      */
-    void execute();
+    boolean execute(Object... args);
 }

@@ -19,7 +19,7 @@ public abstract class Command<Receiver> implements Executable {
     /**
      * Executes the command
      */
-    public abstract void execute();
+    public abstract boolean execute(Object... args);
 
     /**
      * Gets the command's receiver.

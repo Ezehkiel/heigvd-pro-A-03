@@ -2,6 +2,7 @@ package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.menus.*;
+import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -32,18 +33,18 @@ public class MainMenuScene extends Scene {
 
         Table menuTable = new Table();
 
-        menuTable.defaults().expand().bottom();
+        menuTable.defaults().expand().grow();
         menuTable.add(new MainMenu(skin).getMenu());
-        menuTable.add(new AuthSelectionMenu(skin).getMenu());
+        menuTable.add(new AuthMenu(skin).getMenu());
 
         Table rootTable = new Table();
         rootTable.setFillParent(true);
-        rootTable.padBottom(UI.SPACING);
+        rootTable.pad(UI.SPACING);
 
-        rootTable.defaults().grow();
-        rootTable.add(title);
+        rootTable.defaults();
+        rootTable.add(title).pad(UI.SPACING);
         rootTable.row();
-        rootTable.add(menuTable);
+        rootTable.add(menuTable).expand().grow();
 
         stage.addActor(rootTable);
     }
