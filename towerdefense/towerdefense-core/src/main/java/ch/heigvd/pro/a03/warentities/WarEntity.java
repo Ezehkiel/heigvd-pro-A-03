@@ -13,6 +13,7 @@ abstract public class WarEntity {
     private int attackPoints;
     private int speed;
     private double range;
+    private int price;
 
     public WarEntity(Point position, int totalHealth, int defensePoint) {
         this.position = position;
@@ -22,7 +23,13 @@ abstract public class WarEntity {
         this.attackPoints=0;
         this.speed=0;
         this.range=0;
+        this.price=0;
 
+    }
+
+    public boolean isEntityDestroyed(){
+
+        return (healthPoints==0);
     }
 
     /**
@@ -45,6 +52,7 @@ abstract public class WarEntity {
 
     /**
      * @brief
+     * deals 200 damage.
      * 10 Defense: 181 damage
      * 100 Defense: 100 damage
      * 200 Defense: 66 damage
@@ -109,6 +117,18 @@ abstract public class WarEntity {
 
     public void setSpeed(int speed){
         this.speed=speed;
+    }
+
+    public int getSpeed(){
+        return speed;
+    }
+
+    public void setPrice(int speed){
+        this.price=price;
+    }
+
+    public int getPrice(){
+        return price;
     }
 
     @Override
