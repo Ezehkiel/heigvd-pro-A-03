@@ -18,6 +18,14 @@ public class ButtonCommand extends ClickListener {
     public void clicked(InputEvent event, float x, float y) {
         super.clicked(event, x, y);
 
+        executeCommand();
+    }
+
+    public void executeCommand() {
         command.execute();
+    }
+
+    public Executable getCommand() {
+        return command;
     }
 }

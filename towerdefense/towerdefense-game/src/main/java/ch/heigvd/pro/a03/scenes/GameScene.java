@@ -70,7 +70,7 @@ public class GameScene extends Scene {
         // Create GameLauncher Menu
         menuViewport = new ScreenViewport();
 
-        menuSkin = UI.getSkin();
+        menuSkin = UI.createSkin();
         menuStage = new Stage(menuViewport);
 
         menuStage.addActor(new GameMenu(menuSkin, this).getMenu());

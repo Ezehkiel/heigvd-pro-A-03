@@ -2,8 +2,6 @@ package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.server.GameClient;
-import ch.heigvd.pro.a03.utils.Communication;
-import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -17,13 +15,6 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
-import java.io.*;
-import java.net.Socket;
-import java.nio.charset.StandardCharsets;
-
-import static ch.heigvd.pro.a03.utils.Communication.readProtocol;
-import static ch.heigvd.pro.a03.utils.Protocole.YOURAREPLAYERONE;
-
 public class MatchMakingScene extends Scene {
 
     private Viewport viewport;
@@ -34,7 +25,7 @@ public class MatchMakingScene extends Scene {
     public MatchMakingScene() {
         viewport = new FitViewport(GameLauncher.WIDTH, GameLauncher.HEIGHT);
 
-        skin = UI.getSkin();
+        skin = UI.createSkin();
         stage = new Stage();
 
         Label title = new Label("Searching for players", skin);

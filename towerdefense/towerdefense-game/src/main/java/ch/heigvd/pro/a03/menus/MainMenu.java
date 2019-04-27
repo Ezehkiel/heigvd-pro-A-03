@@ -7,10 +7,7 @@ import ch.heigvd.pro.a03.scenes.GameModeScene;
 import ch.heigvd.pro.a03.scenes.MatchMakingScene;
 import ch.heigvd.pro.a03.scenes.SettingsScene;
 import ch.heigvd.pro.a03.utils.UI;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class MainMenu extends Menu {
 
