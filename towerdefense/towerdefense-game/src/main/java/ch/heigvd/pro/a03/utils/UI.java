@@ -8,30 +8,23 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class UI {
 
-    private static BitmapFont font = null;
-    private static BitmapFont bigFont = null;
-
-    private static void generateFonts() {
-
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("ui/pixelart.ttf"));
-        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-
-        parameter.size = 16;
-        font = generator.generateFont(parameter);
-
-        parameter.size = 64;
-        bigFont = generator.generateFont(parameter);
-
-        generator.dispose();
-    }
+    private static FreeTypeFontGenerator fontGenerator = null;
 
     /* LibGDX Scene2D Skin */
-    public static Skin getSkin() {
+    public static Skin createSkin() {
 
-        if (font == null) {
-            generateFonts();
+        if (fontGenerator == null) {
+            fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/pixelart.ttf"));
         }
 
+        // generate fonts
+        FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+        parameter.size = 16;
+        BitmapFont font = fontGenerator.generateFont(parameter);
+        parameter.size = 64;
+        BitmapFont bigFont = fontGenerator.generateFont(parameter);
+
+        // create skin
         Skin skin = new Skin();
 
         skin.add("font", font, BitmapFont.class);
@@ -47,4 +40,5 @@ public class UI {
     public static final int SPACING = 50;
     public static final int BUTTON_WIDTH = 250;
     public static final int BUTTON_HEIGHT = 50;
+    public static final int TEXT_FIELD_HEIGHT = 25;
 }
