@@ -54,6 +54,7 @@ public abstract class Scene {
      * Draws its elements on the screen. Draws the stage.
      */
     public void draw(){
+        viewport.apply();
         stage.draw();
     }
 
@@ -75,6 +76,14 @@ public abstract class Scene {
     }
 
     /**
+     * Changes the viewport.
+     * @param viewport new viewport
+     */
+    public void setViewport(Viewport viewport) {
+        this.viewport = viewport;
+    }
+
+    /**
      * Gets the view port.
      * @return the viewport
      */
@@ -88,6 +97,10 @@ public abstract class Scene {
      */
     public Skin getSkin() {
         return skin;
+    }
+
+    public void setStage(Stage stage) {
+        this.stage = stage;
     }
 
     /**

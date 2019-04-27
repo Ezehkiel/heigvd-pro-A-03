@@ -4,7 +4,6 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
-import ch.heigvd.pro.a03.utils.UI;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
@@ -22,7 +21,6 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.utils.viewport.*;
 
 import java.awt.*;
@@ -35,15 +33,10 @@ public class GameScene extends Scene {
     private static final int TILE_MAP_HEIGHT = 12;
     private static final int TILE_SIZE = 64;
 
-    private static final int BACKGROUND_LAYER = 0;
     private static final int TURRET_LAYER = 1;
 
     private OrthographicCamera gameCamera;
     private Viewport gameViewport;
-
-    private Skin menuSkin;
-    private Stage menuStage;
-    private Viewport menuViewport;
 
     private Texture notFoundTexture;
     private Texture machineGunTexture;
@@ -58,7 +51,7 @@ public class GameScene extends Scene {
     private TurretType selectedTurretType;
 
     public enum TurretType {
-        MACHINE_GUN, MORTAR, SLOWER;
+        MACHINE_GUN, MORTAR, SLOWER
     }
 
     public GameScene() {
@@ -68,12 +61,10 @@ public class GameScene extends Scene {
         gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
 
         // Create GameLauncher Menu
-        menuViewport = new ScreenViewport();
+        setViewport(new ScreenViewport());
+        setStage(new Stage(getViewport()));
 
-        menuSkin = UI.createSkin();
-        menuStage = new Stage(menuViewport);
-
-        menuStage.addActor(new GameMenu(menuSkin, this).getMenu());
+        getStage().addActor(new GameMenu(getSkin(), this).getMenu());
 
         notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
         machineGunTexture = new Texture(Gdx.files.internal("assets/MachineGun.png"));
@@ -104,25 +95,13 @@ public class GameScene extends Scene {
     }
 
     @Override
-    public void enter() {
-        Gdx.input.setInputProcessor(menuStage);
-        System.out.println("Entering Game Scene");
-    }
-
-    @Override
-    public void leave() {
-        Gdx.input.setInputProcessor(null);
-        System.out.println("Leaving Game Scene");
-    }
-
-    @Override
     public void update(float deltaTime) {
+        super.update(deltaTime);
 
         game.getStateMachine().update(deltaTime);
         updateCamera();
 
         tiledMapRenderer.setView(gameCamera);
-        menuStage.act(deltaTime);
     }
 
     @Override
@@ -130,18 +109,20 @@ public class GameScene extends Scene {
         gameViewport.apply();
         tiledMapRenderer.render();
 
-        menuViewport.apply();
-        menuStage.draw();
+        // Sow menu
+        super.draw();
     }
 
     @Override
     public void resize(int width, int height) {
+        super.resize(width, height);
+
         gameViewport.update(width, height, false);
-        menuViewport.update(width, height, true);
     }
 
     @Override
     public void dispose() {
+        super.dispose();
 
         tiledMap.dispose();
         machineGunTexture.dispose();
@@ -178,7 +159,7 @@ public class GameScene extends Scene {
     public void clickMap(float mouseX, float mouseY) {
 
         Vector3 mousePosition = new Vector3(mouseX, mouseY, 0);
-        mousePosition = gameCamera.unproject(menuViewport.getCamera().unproject(mousePosition));
+        mousePosition = gameCamera.unproject(getViewport().getCamera().unproject(mousePosition));
 
         int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
         int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
