@@ -5,57 +5,94 @@ import java.awt.*;
 
 abstract public class WarEntity {
 
-    private Point position;
+    private Point position;//position that the entity will take at the grid 
 
-    private int maxHealth = 20;
-    private int healthPoint = 20;
-    private int defensePoint = 2;
-    private int attackPoints = 6;
-    private int range = 1;
+    private int totalHealth;
+    private int healthPoints;
+    private int defensePoint;
+    private int attackPoints;
+    private int speed;
+    private double range;
+    private int price;
 
-    public WarEntity(Point position) {
+    public WarEntity(Point position, int totalHealth, int defensePoint) {
         this.position = position;
+        this.totalHealth=totalHealth;
+        this.healthPoints=totalHealth;
+        this.defensePoint=defensePoint;
+        this.attackPoints=0;
+        this.speed=0;
+        this.range=0;
+        this.price=0;
+
     }
 
-    public int dealDamage(int damage) {
+    public boolean isEntityDestroyed(){
 
-        damage = Math.min(damage - defensePoint, healthPoint);
-        healthPoint -= damage;
-
-        return damage;
+        return (healthPoints==0);
     }
 
-    public int heal(int amount) {
+    /**
+     * @breif Uses the distance formula between two points in order to determine if its in range.
+     * @param target the Entity we desire check if its in range
+     * @return true if its in range
+     */
+    private boolean isInRange(WarEntity target) {
 
-        amount = Math.min(amount, maxHealth - healthPoint);
-        healthPoint += amount;
+        //distance between two points, circle formula.
+        double distance = Math.sqrt(Math.pow((double) (target.getPosition().x - position.x), 2) +
+                                    Math.pow((double) (target.getPosition().y - position.y), 2));
 
-        return amount;
-    }
-
-    public int attack(WarEntity target) {
-
-        if (isInRange(target)) {
-            return target.dealDamage(attackPoints);
+        if (distance >= range) {
+            return true;
         }
 
-        return -1;
+        return false;
     }
 
-    public boolean isInRange(WarEntity target) {
+    /**
+     * @brief
+     * deals 200 damage.
+     * 10 Defense: 181 damage
+     * 100 Defense: 100 damage
+     * 200 Defense: 66 damage
+     * 500 Defense: 33 damage
+     *
+     * @param damageTaken damage inflicted by other Entity
+     */
+    public void dealDamage(int damageTaken) {
 
-        int distance = Math.abs(target.getPosition().x - position.x) +
-                Math.abs(target.position.y - position.y);
+        healthPoints -= damageTaken*(100/(100+defensePoint));
 
-        return distance <= range;
     }
+
+    /**
+     *
+     * @param amount the amount of hp that will be restored
+     *
+     */
+    public void heal(int amount) {
+
+        amount = Math.min(amount, totalHealth - healthPoints);
+        healthPoints += amount;
+
+    }
+
+    public void attack(WarEntity target) {
+
+        if (isInRange(target)) {
+            target.dealDamage(attackPoints);
+        }
+
+    }
+
 
     public Point getPosition() {
         return position;
     }
 
     public int getHealthPoint() {
-        return healthPoint;
+        return healthPoints;
     }
 
     public int getDefensePoint() {
@@ -66,16 +103,40 @@ abstract public class WarEntity {
         return attackPoints;
     }
 
-    public int getRange() {
+    public double getRange() {
         return range;
+    }
+
+    public void setAttackPoints(int attackPoints) {
+        this.attackPoints = attackPoints;
+    }
+
+    public void setRange(double range) {
+        this.range = range;
+    }
+
+    public void setSpeed(int speed){
+        this.speed=speed;
+    }
+
+    public int getSpeed(){
+        return speed;
+    }
+
+    public void setPrice(int speed){
+        this.price=price;
+    }
+
+    public int getPrice(){
+        return price;
     }
 
     @Override
     public String toString() {
         return "WarEntity{" +
                 "position=" + position +
-                ", maxHealth=" + maxHealth +
-                ", healthPoint=" + healthPoint +
+                ", totalHealth=" + totalHealth +
+                ", healthPoint=" + healthPoints +
                 ", defensePoint=" + defensePoint +
                 ", attackPoints=" + attackPoints +
                 ", range=" + range +

@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03.algorithm;
 
+import java.awt.*;
+
 public class Vec2 {
 
     private int row;
@@ -16,6 +18,10 @@ public class Vec2 {
 
     public int getCol() {
         return col;
+    }
+
+    public Point getCoord(){
+        return new Point(row, col);
     }
 
     @Override
