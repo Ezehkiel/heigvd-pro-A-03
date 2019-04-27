@@ -9,5 +9,5 @@ public interface Executable {
      * Executes something.
      * @return true if the execution worked
      */
-    boolean execute(Object... args);
+    void execute(Object... args);
 }

@@ -22,7 +22,7 @@ public class GameModeScene extends Scene {
         Table table = new Table();
         table.setFillParent(true);
 
-        TextButton playButton = new TextButton("StartStart GameLauncher", getSkin());
+        TextButton playButton = new TextButton("Play!", getSkin());
         playButton.addListener(new ButtonCommand(new SetSceneCommand(GameLauncher.getInstance())) {
             @Override
             public void executeCommand() {

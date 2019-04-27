@@ -10,11 +10,9 @@ public class LogoutCommand extends AuthCommand {
     }
 
     @Override
-    public boolean execute(Object... args) {
+    public void execute(Object... args) {
 
         GameLauncher.getInstance().setConnectedPlayer(null);
         getReceiver().showAuthSelectionMenu();
-
-        return true;
     }
 }

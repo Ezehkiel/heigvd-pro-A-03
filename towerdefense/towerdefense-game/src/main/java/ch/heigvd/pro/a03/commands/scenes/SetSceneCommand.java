@@ -11,8 +11,7 @@ public class SetSceneCommand extends Command<GameLauncher> {
     }
 
     @Override
-    public boolean execute(Object... args) {
+    public void execute(Object... args) {
         getReceiver().getSceneManager().set((Scene) args[0]);
-        return true;
     }
 }

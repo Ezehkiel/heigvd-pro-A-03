@@ -13,17 +13,15 @@ public class RegisterCommand extends Command<RegistrationMenu> {
     }
 
     @Override
-    public boolean execute(Object... args) {
+    public void execute(Object... args) {
 
         Player player = HttpServerUtils.register(getReceiver().getUsername(), getReceiver().getPassword());
 
         if (player == null) {
-            return false;
+            return;
         }
 
         GameLauncher.getInstance().setConnectedPlayer(player);
         getReceiver().getParent().showConnectedPlayerMenu();
-
-        return true;
     }
 }

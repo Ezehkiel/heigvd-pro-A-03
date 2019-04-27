@@ -10,8 +10,7 @@ public class PopSceneCommand extends Command<GameLauncher> {
     }
 
     @Override
-    public boolean execute(Object... args) {
+    public void execute(Object... args) {
         getReceiver().getSceneManager().pop();
-        return true;
     }
 }

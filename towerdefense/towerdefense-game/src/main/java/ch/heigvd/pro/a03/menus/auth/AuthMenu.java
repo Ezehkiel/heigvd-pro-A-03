@@ -4,13 +4,10 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.auth.AuthCommand;
-import ch.heigvd.pro.a03.commands.auth.LogoutCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.utils.UI;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class AuthMenu extends Menu {
 
@@ -31,9 +28,8 @@ public class AuthMenu extends Menu {
         cancelButton = new TextButton("Cancel", skin);
         cancelButton.addListener(new ButtonCommand(new AuthCommand(this) {
             @Override
-            public boolean execute(Object... args) {
+            public void execute(Object... args) {
                 showAuthSelectionMenu();
-                return true;
             }
         }));
 

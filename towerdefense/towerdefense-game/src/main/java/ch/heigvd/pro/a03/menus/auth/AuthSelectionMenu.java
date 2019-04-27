@@ -14,18 +14,16 @@ public class AuthSelectionMenu extends Menu {
         TextButton connectionButton = new TextButton("Log in", skin);
         connectionButton.addListener(new ButtonCommand(new AuthCommand(authMenu) {
             @Override
-            public boolean execute(Object... args) {
+            public void execute(Object... args) {
                 getReceiver().showConnectionMenu();
-                return true;
             }
         }));
 
         TextButton registrationButton = new TextButton("Register", skin);
         registrationButton.addListener(new ButtonCommand(new AuthCommand(authMenu) {
             @Override
-            public boolean execute(Object... args) {
+            public void execute(Object... args) {
                 getReceiver().showRegistrationMenu();
-                return true;
             }
         }));
 
