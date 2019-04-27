@@ -35,7 +35,6 @@
               </transformers>
               <shadedArtifactAttached>true</shadedArtifactAttached>
               <shadedClassifierName>launcher</shadedClassifierName>
-              <outputDirectory>src/resources</outputDirectory>
             </configuration>
           </execution>
         </executions>
