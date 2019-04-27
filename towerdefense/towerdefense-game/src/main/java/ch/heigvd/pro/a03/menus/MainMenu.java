@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.menus;
 
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.commands.ButtonCommand;
+import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.scenes.GameModeScene;
 import ch.heigvd.pro.a03.scenes.MatchMakingScene;
 import ch.heigvd.pro.a03.scenes.SettingsScene;
@@ -17,44 +19,47 @@ public class MainMenu extends Menu {
 
         // Buttons
         TextButton onlineButton = new TextButton("Play Online", skin, "default");
-        onlineButton.addListener(new ClickListener() {
+        onlineButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+            public boolean execute(Object... args) {
 
-                if (GameLauncher.getInstance().getConnectedPlayer() != null) {
-                    GameLauncher.getInstance().getSceneManager().add(new MatchMakingScene());
+                if (getReceiver().getConnectedPlayer() != null) {
+                    getReceiver().getSceneManager().add(new MatchMakingScene());
+                    return true;
                 }
+
+                return false;
             }
-        });
+        }));
 
         TextButton offlineButton = new TextButton("Play Offline", skin, "default");
-        offlineButton.addListener(new ClickListener() {
+        offlineButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+            public boolean execute(Object... args) {
 
                 GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
+                return true;
             }
-        });
+        }));
 
         TextButton settingsButton = new TextButton("Settings", skin, "default");
-        settingsButton.addListener(new ClickListener() {
+        settingsButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                GameLauncher.getInstance().getSceneManager().add(new SettingsScene());
+            public boolean execute(Object... args) {
+
+                getReceiver().getSceneManager().add(new SettingsScene());
+                return true;
             }
-        });
+        }));
 
         TextButton exitButton = new TextButton("Exit", skin, "default");
-        exitButton.addListener(new ClickListener() {
+        exitButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                Gdx.app.exit();
+            public boolean execute(Object... args) {
+                getReceiver().exit();
+                return true;
             }
-        });
+        }));
 
         // Add actors in menu
         getMenu().defaults().prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT).spaceBottom(UI.SPACING);

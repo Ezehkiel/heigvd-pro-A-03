@@ -113,6 +113,15 @@ public class GameLauncher implements ApplicationListener {
 
     }
 
+    public void exit() {
+
+        while (sceneManager.hasScene()) {
+            sceneManager.pop();
+        }
+
+        Gdx.app.exit();
+    }
+
     /**
      * Application entry point
      * @param args arguments
