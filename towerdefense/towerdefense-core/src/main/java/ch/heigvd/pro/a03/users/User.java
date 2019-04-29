@@ -7,6 +7,11 @@ public class User {
     private String username;
 
     private String password;
+
+    public int getId() {
+        return id;
+    }
+
     private int id;
     public String getUsername() {
         return username;

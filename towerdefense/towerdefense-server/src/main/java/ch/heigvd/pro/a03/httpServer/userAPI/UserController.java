@@ -1,12 +1,11 @@
 package ch.heigvd.pro.a03.httpServer.userAPI;
 
-import ch.heigvd.pro.a03.users.User;
-import com.google.gson.Gson;
-
 import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.httpServer.userAPI.JsonUtil.json;
-import static spark.Spark.*;
+import static spark.Spark.after;
+import static spark.Spark.get;
+import static spark.Spark.post;
 
 public class UserController {
 
@@ -15,24 +14,27 @@ public class UserController {
 
     public UserController(final UserService userService){
 
-        Gson gson = new Gson();
 
 
-        get("/users", (req, res) -> userService.getAllUsers(), json());
+        try {
+            get("/users", (req, res) -> userService.getAllUsers(req, res), json());
 
-        get("/users/:username", (req, res) -> userService.getUser(req.params(":username")), json());
+            get("/users/:username", (req, res) -> userService.getUser(req, res), json());
 
-        post("/users/register", (req, res) -> userService.createUser(gson.fromJson(req.body(), User.class).getUsername(), gson.fromJson(req.body(), User.class).getPassword()), json());
+            post("/users/register", (req, res) -> userService.createUser(req, res), json());
 
-        post("/users/login", (req, res) -> userService.canLogin(gson.fromJson(req.body(), User.class).getUsername(), gson.fromJson(req.body(), User.class).getPassword()), json());
+            post("/users/login", (req, res) -> userService.canLogin(req, res), json());
 
-        // put("/users", (req, res) -> userService.updateUser(gson.fromJson(req.body(), User.class).getUsername(),gson.fromJson(req.body(), User.class).getPassword()), json());
+            // put("/users", (req, res) -> userService.updateUser(gson.fromJson(req.body(), User.class).getUsername(),gson.fromJson(req.body(), User.class).getPassword()), json());
 
 
+            after((req, res) -> {
 
-        after((req, res) -> {
-            res.type("application/json");
-        });
+                res.type("application/json");
+            });
+        }catch (Exception ex){
+
+        }
 
     }
 

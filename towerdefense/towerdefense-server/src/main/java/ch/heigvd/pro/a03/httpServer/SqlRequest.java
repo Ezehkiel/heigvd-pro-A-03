@@ -52,7 +52,7 @@ public class SqlRequest {
 
     static public User checkLogin(String username){
         try {
-            PreparedStatement stmt = null;
+            PreparedStatement stmt;
             stmt = con.prepareStatement("SELECT * FROM public.towerdefense_user WHERE username = ?;");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
