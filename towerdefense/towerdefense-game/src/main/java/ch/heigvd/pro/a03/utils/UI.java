@@ -39,6 +39,7 @@ public class UI {
     /* UI SIZES */
     public static final int SPACING = 50;
     public static final int BUTTON_WIDTH = 250;
+    public static final int BUTTON_SMALL_WIDTH = 100;
     public static final int BUTTON_HEIGHT = 50;
     public static final int TEXT_FIELD_HEIGHT = 25;
 }

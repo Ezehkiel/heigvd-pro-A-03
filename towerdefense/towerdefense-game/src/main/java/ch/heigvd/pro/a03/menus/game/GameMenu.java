@@ -1,48 +1,40 @@
 package ch.heigvd.pro.a03.menus.game;
 
-import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class GameMenu extends Menu {
 
+    private GamePlayingMenu playingMenu;
+    private GamePauseMenu pauseMenu;
+
     public GameMenu(Skin skin, GameScene scene) {
 
         getMenu().setFillParent(true);
-        getMenu().pad(25);
 
-        TextButton unitButton = new TextButton("U", skin);
+        playingMenu = new GamePlayingMenu(this, scene, skin);
+        pauseMenu = new GamePauseMenu(this, scene, skin);
 
-        Table turretSelectionMenu = new TurretSelectionMenu(skin, scene).getMenu();
+        showPlayingMenu();
+    }
 
-        // Top menu
-        getMenu().add();
+    public void showPlayingMenu() {
 
-        // Separate top and bottom
-        getMenu().row();
-        getMenu().add().expandY();
-        getMenu().row();
+        getMenu().clear();
 
-        // Bottom menu
-        getMenu().add().expandX();
-        getMenu().add(turretSelectionMenu);
+        getMenu().add(playingMenu.getMenu()).expand().grow();
+    }
 
-        getMenu().setTouchable(Touchable.enabled);
-        getMenu().addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
+    public void showPauseMenu() {
 
-                if (event.getTarget() == getMenu()) {
-                    scene.clickMap(x, y);
-                }
-            }
-        });
+        getMenu().clear();
+
+        getMenu().add(pauseMenu.getMenu()).expand().grow();
     }
 }
