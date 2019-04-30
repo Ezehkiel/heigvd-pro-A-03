@@ -5,6 +5,9 @@ import ch.heigvd.pro.a03.users.User;
 class UserException extends Exception {
 
     private String message;
+
+
+
     private User user;
 
     public UserException(String message, User user){
@@ -12,6 +15,13 @@ class UserException extends Exception {
         this.user = user;
     }
 
+    public String getMessage(){
+        return this.message;
+    }
+
+    public User getUser() {
+        return user;
+    }
 
 
 

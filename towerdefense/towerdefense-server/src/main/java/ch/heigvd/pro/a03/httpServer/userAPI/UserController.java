@@ -1,40 +1,31 @@
 package ch.heigvd.pro.a03.httpServer.userAPI;
 
+import com.google.gson.Gson;
+
 import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.httpServer.userAPI.JsonUtil.json;
-import static spark.Spark.after;
-import static spark.Spark.get;
-import static spark.Spark.post;
+import static spark.Spark.*;
 
 public class UserController {
 
     final static Logger LOG = Logger.getLogger(UserController.class.getName());
 
+    Gson gson = new Gson();
+
 
     public UserController(final UserService userService){
 
+            get("/users", (req, res) -> userService.getAllUsers(),json());
 
+            post("/users/register", (req, res) -> userService.createUser(req), json());
 
-        try {
-            get("/users", (req, res) -> userService.getAllUsers(req, res), json());
-
-            get("/users/:username", (req, res) -> userService.getUser(req, res), json());
-
-            post("/users/register", (req, res) -> userService.createUser(req, res), json());
-
-            post("/users/login", (req, res) -> userService.canLogin(req, res), json());
-
-            // put("/users", (req, res) -> userService.updateUser(gson.fromJson(req.body(), User.class).getUsername(),gson.fromJson(req.body(), User.class).getPassword()), json());
-
+            post("/users/login", (req, res) -> userService.loginUser(req), json());
 
             after((req, res) -> {
 
                 res.type("application/json");
             });
-        }catch (Exception ex){
-
-        }
 
     }
 

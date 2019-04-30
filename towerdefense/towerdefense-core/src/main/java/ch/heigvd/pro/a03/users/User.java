@@ -31,7 +31,7 @@ public class User {
 
 
     public String toString(){
-        return this.id + " " + this.username + " " + this.password;
+        return this.id + " " + this.username ;
     }
 
     @Override
