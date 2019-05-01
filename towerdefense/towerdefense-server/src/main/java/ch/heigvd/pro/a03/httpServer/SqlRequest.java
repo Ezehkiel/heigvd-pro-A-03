@@ -11,7 +11,7 @@ public class SqlRequest {
 
     private static Connection con = ConnectionDB.getInstance().getCon();
 
-     static public User createUser(String username, String password){
+     static public User createUserDB(String username, String password){
         try {
 
             PreparedStatement stmt = con.prepareStatement("INSERT INTO public.towerdefense_user(username, password) VALUES ( ?, ?) RETURNING id;");
@@ -21,7 +21,7 @@ public class SqlRequest {
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                return getUser(rs.getInt("id"));
+                return getUserDBWithId(rs.getInt("id"));
             }
 
         } catch (SQLException e) {
@@ -31,7 +31,7 @@ public class SqlRequest {
         return null;
     }
 
-    static public User getUser(long id){
+    static public User getUserDBWithId(long id){
 
         try {
             PreparedStatement stmt = null;
@@ -50,9 +50,10 @@ public class SqlRequest {
         return null;
     }
 
-    static public User checkLogin(String username){
+    static public User getUserDBWithUsername(String username){
+
         try {
-            PreparedStatement stmt = null;
+            PreparedStatement stmt;
             stmt = con.prepareStatement("SELECT * FROM public.towerdefense_user WHERE username = ?;");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
@@ -62,7 +63,6 @@ public class SqlRequest {
 
 
         } catch (SQLException e) {
-            System.out.println("error");
             e.printStackTrace();
         }
         return null;
@@ -86,7 +86,7 @@ public class SqlRequest {
          return users;
      }
 
-    static public User updateUser(String username, String password){
+    static public User updateUserDB(String username, String password){
 
         try {
             PreparedStatement stmt = null;
@@ -96,7 +96,7 @@ public class SqlRequest {
             ResultSet rs = stmt.executeQuery();
 
             if(rs.next()){
-                return getUser(rs.getInt("id"));
+                return getUserDBWithId(rs.getInt("id"));
             }
 
         } catch (SQLException e) {

@@ -1,7 +1,7 @@
 package ch.heigvd.pro.a03.utils;
 
 import ch.heigvd.pro.a03.Player;
-import com.google.gson.Gson;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpServerUtils {
 
-    private static final String url = "https://ezehkiel.ch:3945";
+    private static final String url = "http://127.0.0.1:3945";
 
     public static Player login(String username, String password) {
 
@@ -50,11 +50,24 @@ public class HttpServerUtils {
     }
 
     private static Player playerFromResponse(HttpURLConnection connection) throws IOException {
+        Player player = null;
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            return null;
+            return player;
         }
 
-        return new Gson().fromJson(readData(connection), Player.class);
+        JSONObject response = new JSONObject(readData(connection));
+        boolean haveError = response.getBoolean("error");
+        if(haveError){
+            /* Il y a une erreur, a voir si on fait un attribut privé avec un message d'erreur pour
+            pouvoir le recuperer et l'afficher
+             */
+            System.out.println(response.getString("message"));
+        }else{
+            JSONObject data = (JSONObject) response.get("data");
+            player = new Player(data.getInt("id"), data.getString("username"));
+        }
+
+        return player;
     }
 
     private static HttpURLConnection postConnection(String path) {

@@ -7,6 +7,11 @@ public class User {
     private String username;
 
     private String password;
+
+    public int getId() {
+        return id;
+    }
+
     private int id;
     public String getUsername() {
         return username;
@@ -26,7 +31,7 @@ public class User {
 
 
     public String toString(){
-        return this.id + " " + this.username + " " + this.password;
+        return this.id + " " + this.username ;
     }
 
     @Override
