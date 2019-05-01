@@ -16,6 +16,7 @@ public class UserController {
 
     public UserController(final UserService userService){
 
+
             get("/users", (req, res) -> userService.getAllUsers(),json());
 
             post("/users/register", (req, res) -> userService.createUser(req), json());

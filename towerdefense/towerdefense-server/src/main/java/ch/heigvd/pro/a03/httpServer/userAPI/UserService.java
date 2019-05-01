@@ -163,6 +163,7 @@ public class UserService {
                     String token = JWT.create().withClaim("username", userInDataBase.getUsername())
                             .withClaim("id", userInDataBase.getId()).sign(algorithm);
 
+                    jo.put("error", false);
                     jo.put("data", userInDataBase);
                     jo.put("token", token);
 
@@ -179,7 +180,6 @@ public class UserService {
             jo.put("error", true);
             jo.put("message",ex.getMessage());
             jo.put("data", ex.getUser());
-            LOG.log(Level.SEVERE, "ERROR user already exist");
             return jo;
         }
     }

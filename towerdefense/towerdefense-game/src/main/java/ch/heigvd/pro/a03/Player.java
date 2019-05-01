@@ -30,4 +30,12 @@ public class Player {
     public String getUsername() {
         return username;
     }
+
+    /**
+     * Write the id and the username
+     * @return id username
+     */
+    public String toString(){
+        return this.id + " " + this.username;
+    }
 }
