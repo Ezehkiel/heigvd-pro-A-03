@@ -24,7 +24,7 @@ public class UserController {
             post("/users/login", (req, res) -> userService.loginUser(req), json());
 
             after((req, res) -> {
-
+                
                 res.type("application/json");
             });
 
