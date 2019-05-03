@@ -1,10 +1,12 @@
 package ch.heigvd.pro.a03.socketServer;
 
 
+import javax.naming.ldap.SortKey;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -13,13 +15,14 @@ import java.util.logging.Logger;
 public class SocketServer implements Runnable{
 
     final static Logger LOG = Logger.getLogger(SocketServer.class.getName());
-    static ArrayList<Player> connectedPlayer;
-
+    ArrayList<GameServer> gameServers;
     int port;
 
+
+
     public SocketServer(int port) {
-        connectedPlayer = new ArrayList<>();
         this.port = port;
+        gameServers = new ArrayList<>();
     }
 
     public void run() {
@@ -38,7 +41,11 @@ public class SocketServer implements Runnable{
             try {
 
                 Socket clientSocket = serverSocket.accept();
-                new Thread(new MatchMaker(clientSocket)).start();
+
+                new Thread(new Worker(clientSocket)).start();
+
+                clientSocket.close();
+
             } catch (IOException ex) {
                 Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
             }

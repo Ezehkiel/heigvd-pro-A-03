@@ -12,6 +12,8 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.stream.JsonReader;
 import com.google.gson.stream.JsonWriter;
 
+import java.io.PrintWriter;
+import java.io.BufferedReader;
 
 public class Communication {
     public  static PlayerEvent readPlayerEventFromJson(InputStreamReader in) throws IOException {
@@ -47,4 +49,11 @@ public class Communication {
         }
         return receivedProtocole;
     }
+
+    public static void sendProtovol(PrintWriter out,int protocolId,String data){
+
+        out.println(String.format("%03s",protocolId)+"-"+data);
+        out.flush();
+    }
+
 }

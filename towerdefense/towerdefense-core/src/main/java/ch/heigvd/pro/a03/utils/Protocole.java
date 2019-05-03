@@ -1,26 +1,31 @@
 package ch.heigvd.pro.a03.utils;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+
 public class Protocole {
 
-    public static final int HTTPSERVERPORT = 3945;
-    public static final int SOCKETSERVERPORT = 4567;
+    private int id;
+    private String data;
 
-    public static final int CLIENTWANTPLAYSOLO=20;
-    public static final int CLIENTWANTPLAYMULTI=21;
-    //Maybe more gamemodes ...
+    public Protocole(int id, String data) {
+        this.id = id;
+        this.data = data;
+    }
 
-    public static final int YOURAREPLAYERONE=30;
-    public static final int YOURAREPLAYERTWO=31;
+    public static Protocole receive(BufferedReader in) throws IOException {
+        String response = in.readLine();
 
+        String[]responseArray = response.split("-");
 
-    public static final int ISCLIENTREADY=50;
-    public static final int CLIENTREADY=51;
-    public static final int CLIENTNOTREADY=52;
+        return new Protocole(Integer.parseInt(responseArray[0]),responseArray[1]);
+    }
 
+    public int getId() {
+        return id;
+    }
 
-    public static final int SERVERINSTATUSINITIALISATION =71;
-    public static final int SERVERINSTATUSROUND=72;
-    public static final int SERVERINSTATUSSIMULATION=73;
-
-    //Here enter more protocols
+    public String getData() {
+        return data;
+    }
 }

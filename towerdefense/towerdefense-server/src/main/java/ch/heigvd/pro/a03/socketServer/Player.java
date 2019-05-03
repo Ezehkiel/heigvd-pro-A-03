@@ -1,8 +1,6 @@
 package ch.heigvd.pro.a03.socketServer;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,27 +10,27 @@ public class Player {
     static int nextId=1;
     int id;
 
-    InputStreamReader in;
-    OutputStreamWriter out;
+    BufferedReader in;
+    PrintWriter out;
 
 
     public Player(Socket socket) {
         this.socket = socket;
         this.id = nextId++;
         try {
-            in = new InputStreamReader(socket.getInputStream());
-            out = new OutputStreamWriter(socket.getOutputStream());
+            in = new BufferedReader( new InputStreamReader(socket.getInputStream()));
+            out = new PrintWriter(socket.getOutputStream());
         } catch (IOException e) {
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
         }
 
     }
 
-    public InputStreamReader getIn() {
+    public BufferedReader getIn() {
         return in;
     }
 
-    public OutputStreamWriter getOut() {
+    public PrintWriter getOut() {
         return out;
     }
 
