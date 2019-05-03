@@ -4,7 +4,13 @@ import java.awt.*;
 
 public class Structure extends WarEntity {
 
-    public Structure(Point position, int totalHealth, int defPoint) {
-        super(position,totalHealth,defPoint);
+    public Structure(String name,Point position, int totalHealth, int defPoint) {
+        super(name,position,totalHealth,defPoint);
     }
+
+    @Override
+    public void update() {
+
+    }
+
 }

@@ -6,8 +6,8 @@ public class Base extends Structure {
 
     private boolean endGame;
 
-    public Base(Point position, int totalHealth, int defPoint) {
-        super(position, totalHealth, defPoint);
+    public Base(String name,Point position, int totalHealth, int defPoint) {
+        super(name,position, totalHealth, defPoint);
         endGame = false;
     }
 

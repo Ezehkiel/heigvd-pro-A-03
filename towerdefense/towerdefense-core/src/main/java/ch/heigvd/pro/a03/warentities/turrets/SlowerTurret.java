@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class SlowerTurret extends Turret {
 
-    public SlowerTurret(Point position,int totalHealth, int defPoint, int attackPoints, int range,int price) {
-        super(position,totalHealth,defPoint,attackPoints,range,price);
+    public SlowerTurret(String name,Point position,int totalHealth, int defPoint, int attackPoints, int range,int price) {
+        super(name,position,totalHealth,defPoint,attackPoints,range,price);
     }
 
     /**

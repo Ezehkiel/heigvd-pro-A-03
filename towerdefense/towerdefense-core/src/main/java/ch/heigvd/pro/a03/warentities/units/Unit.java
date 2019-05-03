@@ -8,12 +8,24 @@ import java.awt.*;
 public class Unit extends WarEntity {
 
 
-    public Unit(Point position,int totalHealth, int defPoint, int speed, int attackPoints, int range,int price) {
-        super(position,totalHealth,defPoint);
+    public Unit(String name,Point position,int totalHealth, int defPoint, int speed, int attackPoints, int range,int price) {
+        super(name,position,totalHealth,defPoint);
         super.setAttackPoints(attackPoints);
         super.setRange(range);
         super.setSpeed(speed);
         super.setPrice(price);
+
+    }
+
+
+    @Override
+    public void update() {
+        displacement();
+
+    }
+
+    public void displacement(){
+
 
     }
 

@@ -6,8 +6,8 @@ import java.awt.*;
 
 public class Turret extends Structure {
 
-    public Turret(Point position,int totalHealth, int defPoint, int attackPoints, int range, int price) {
-        super(position,totalHealth,defPoint);
+    public Turret(String name,Point position,int totalHealth, int defPoint, int attackPoints, int range, int price) {
+        super(name,position,totalHealth,defPoint);
         super.setRange(range);
         super.setAttackPoints(attackPoints);
         super.setPrice(price);

@@ -26,15 +26,15 @@ import java.util.*;
  *         // 5    -   -   -   -   -   -   -
  *
  *         //Expected output
- *         //Node [row=2, col=1]
- *         //Node [row=2, col=2]
- *         //Node [row=1, col=2]
- *         //Node [row=0, col=2]
- *         //Node [row=0, col=3]
- *         //Node [row=0, col=4]
- *         //Node [row=1, col=4]
- *         //Node [row=2, col=4]
- *         //Node [row=2, col=5]
+ *         //position [row=2, col=1]
+ *         //position [row=2, col=2]
+ *         //position [row=1, col=2]
+ *         //position [row=0, col=2]
+ *         //position [row=0, col=3]
+ *         //position [row=0, col=4]
+ *         //position [row=1, col=4]
+ *         //position [row=2, col=4]
+ *         //position [row=2, col=5]
  *
  *         //Search Path
  *  *         //      0   1   2   3   4   5   6

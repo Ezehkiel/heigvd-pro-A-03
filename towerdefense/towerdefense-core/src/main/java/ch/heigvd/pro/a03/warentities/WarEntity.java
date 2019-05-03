@@ -14,8 +14,10 @@ abstract public class WarEntity {
     private int speed;
     private double range;
     private int price;
+    private String name;
 
-    public WarEntity(Point position, int totalHealth, int defensePoint) {
+    public WarEntity(String name ,Point position, int totalHealth, int defensePoint) {
+        this.name=name;
         this.position = position;
         this.totalHealth=totalHealth;
         this.healthPoints=totalHealth;
@@ -39,15 +41,10 @@ abstract public class WarEntity {
      */
     private boolean isInRange(WarEntity target) {
 
-        //distance between two points, circle formula.
-        double distance = Math.sqrt(Math.pow((double) (target.getPosition().x - position.x), 2) +
-                                    Math.pow((double) (target.getPosition().y - position.y), 2));
+        int distance = Math.abs(target.getPosition().x - position.x) +Math.abs(target.getPosition().y - position.y);
 
-        if (distance >= range) {
-            return true;
-        }
+        return distance <= range;
 
-        return false;
     }
 
     /**
@@ -142,4 +139,6 @@ abstract public class WarEntity {
                 ", range=" + range +
                 '}';
     }
+
+    public abstract void update();
 }
