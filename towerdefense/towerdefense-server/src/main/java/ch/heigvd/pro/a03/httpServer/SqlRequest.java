@@ -2,6 +2,7 @@ package ch.heigvd.pro.a03.httpServer;
 
 
 import ch.heigvd.pro.a03.ConnectionDB;
+import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
 import java.sql.*;
 import java.util.ArrayList;
@@ -76,7 +77,8 @@ public class SqlRequest {
              ResultSet rs = stmt.executeQuery();
 
              while(rs.next()){
-                 users.add(new User(rs.getInt("id"), rs.getString("username"), rs.getString("password")));
+                 users.add(new User(rs.getInt("id"), rs.getString("username"), rs.getString("password")
+                 , rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"), rs.getDate("lastLogin")));
              }
 
          } catch (SQLException e) {
@@ -112,11 +114,31 @@ public class SqlRequest {
             PreparedStatement stmt = null;
             stmt = con.prepareStatement("UPDATE public.towerdefense_user SET lastLogin=now() WHERE id = ?;");
             stmt.setLong(1, id);
-
+            stmt.executeQuery();
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
+
+    static public List<Score> getAllScoreDB(){
+        List<Score> scores = new ArrayList<>();
+        try {
+            PreparedStatement stmt = null;
+            stmt = con.prepareStatement("SELECT id, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user;");
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                scores.add(new Score(rs.getInt("id"),rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return scores;
+    }
+
+
 
 }

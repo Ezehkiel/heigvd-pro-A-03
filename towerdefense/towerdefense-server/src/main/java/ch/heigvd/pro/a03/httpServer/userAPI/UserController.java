@@ -16,6 +16,7 @@ public class UserController {
 
     public UserController(final UserService userService){
 
+            get("/users/scores", (req, res) -> userService.getAllScores(),json());
 
             get("/users", (req, res) -> userService.getAllUsers(),json());
 

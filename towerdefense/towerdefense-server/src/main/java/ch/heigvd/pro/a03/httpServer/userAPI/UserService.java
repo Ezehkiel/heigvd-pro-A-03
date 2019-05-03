@@ -2,6 +2,7 @@ package ch.heigvd.pro.a03.httpServer.userAPI;
 
 
 import ch.heigvd.pro.a03.httpServer.SqlRequest;
+import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -26,10 +27,17 @@ public class UserService {
      * List all user that are registered in the DB
      * @return List<User> list with all user in it
      */
-    public List<User> getAllUsers() throws UserException {
+    public List<User> getAllUsers() {
         LOG.log(Level.INFO, "Request: list all users");
         return SqlRequest.getAllUserDB();
     }
+
+    public List<Score> getAllScores()  {
+        LOG.log(Level.INFO, "Request: list all scores");
+        return SqlRequest.getAllScoreDB();
+    }
+
+
 
     /**
      * This function return a User that we found with his username
@@ -81,17 +89,8 @@ public class UserService {
 
                 if (createdUser != null) {
                     try {
-                        JSONObject jo = new JSONObject();
 
-                        Algorithm algorithm = Algorithm.HMAC256("secret");
-                        String token = JWT.create().withClaim("username", createdUser.getUsername())
-                                .withClaim("id", createdUser.getId()).sign(algorithm);
-
-                        jo.put("error", false);
-                        jo.put("data", createdUser);
-                        jo.put("token", token);
-
-                        return jo;
+                        return createResponse(createdUser);
                     } catch (JWTCreationException exception) {
                         LOG.log(Level.SEVERE, "ERROR with token's creations");
                         throw new UserException("ERROR with token's creations", null);
@@ -138,7 +137,7 @@ public class UserService {
      * @param req Request This is the request that we received from the client
      * @return a JSONObect with the token and the user
      */
-    public static JSONObject loginUser(Request req) throws UserException {
+    public JSONObject loginUser(Request req) throws UserException {
         Gson gson = new Gson();
 
         try {
@@ -157,18 +156,10 @@ public class UserService {
             if (userInDataBase != null && userInDataBase.equals(userLoginHttp)) {
 
                 try {
-                    JSONObject jo = new JSONObject();
 
-                    Algorithm algorithm = Algorithm.HMAC256("secret");
-                    String token = JWT.create().withClaim("username", userInDataBase.getUsername())
-                            .withClaim("id", userInDataBase.getId()).sign(algorithm);
-
-                    jo.put("error", false);
-                    jo.put("data", userInDataBase);
-                    jo.put("token", token);
 
                     SqlRequest.setLastLoginDB(userInDataBase.getId());
-                    return jo;
+                    return createResponse(userInDataBase);
                 } catch (JWTCreationException exception) {
                     throw new UserException("ERROR can't create token", userInDataBase);
                 }
@@ -183,5 +174,18 @@ public class UserService {
             jo.put("data", ex.getUser());
             return jo;
         }
+    }
+
+    private JSONObject createResponse(User user){
+        JSONObject jo = new JSONObject();
+
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        String token = JWT.create().withClaim("username", user.getUsername())
+                .withClaim("id", user.getId()).sign(algorithm);
+
+        jo.put("error", false);
+        jo.put("data", user);
+        jo.put("token", token);
+        return jo;
     }
 }
