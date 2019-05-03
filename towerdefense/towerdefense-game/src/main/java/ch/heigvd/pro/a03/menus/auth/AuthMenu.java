@@ -1,10 +1,10 @@
 package ch.heigvd.pro.a03.menus.auth;
 
 import ch.heigvd.pro.a03.GameLauncher;
-import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.auth.AuthCommand;
 import ch.heigvd.pro.a03.menus.Menu;
+import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -65,7 +65,7 @@ public class AuthMenu extends Menu {
 
     public void showConnectedPlayerMenu() {
 
-        Player player = GameLauncher.getInstance().getConnectedPlayer();
+        User player = GameLauncher.getInstance().getConnectedPlayer();
         if (player == null) {
             return;
         }

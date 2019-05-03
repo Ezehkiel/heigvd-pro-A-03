@@ -5,14 +5,15 @@ import java.util.Objects;
 public class User {
 
     private String username;
-
     private String password;
+    private int id;
+    private String token;
 
     public int getId() {
         return id;
     }
 
-    private int id;
+
     public String getUsername() {
         return username;
     }
@@ -41,5 +42,13 @@ public class User {
         User user = (User) o;
         return Objects.equals(this.username, user.getUsername()) &&
                 Objects.equals(this.password, user.password);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }
