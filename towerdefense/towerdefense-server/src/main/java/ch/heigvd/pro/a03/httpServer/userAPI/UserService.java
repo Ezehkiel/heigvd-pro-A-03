@@ -167,6 +167,7 @@ public class UserService {
                     jo.put("data", userInDataBase);
                     jo.put("token", token);
 
+                    SqlRequest.setLastLoginDB(userInDataBase.getId());
                     return jo;
                 } catch (JWTCreationException exception) {
                     throw new UserException("ERROR can't create token", userInDataBase);

@@ -14,7 +14,7 @@ public class SqlRequest {
      static public User createUserDB(String username, String password){
         try {
 
-            PreparedStatement stmt = con.prepareStatement("INSERT INTO public.towerdefense_user(username, password) VALUES ( ?, ?) RETURNING id;");
+            PreparedStatement stmt = con.prepareStatement("INSERT INTO public.towerdefense_user(username, password, lastLogin) VALUES ( ?, ?, now()) RETURNING id;");
             stmt.setString(1, username);
             stmt.setString(2, password);
 
@@ -104,6 +104,19 @@ public class SqlRequest {
         }
 
         return null;
+    }
+
+    static public void setLastLoginDB(long id){
+
+        try {
+            PreparedStatement stmt = null;
+            stmt = con.prepareStatement("UPDATE public.towerdefense_user SET lastLogin=now() WHERE id = ?;");
+            stmt.setLong(1, id);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
 }
