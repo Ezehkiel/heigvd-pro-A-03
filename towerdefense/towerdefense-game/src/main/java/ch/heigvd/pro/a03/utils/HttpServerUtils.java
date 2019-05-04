@@ -1,6 +1,6 @@
 package ch.heigvd.pro.a03.utils;
 
-import ch.heigvd.pro.a03.Player;
+import ch.heigvd.pro.a03.users.User;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -13,9 +13,18 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpServerUtils {
 
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+    public void resetError(){
+        this.errorMessage = null;
+    }
+
+    private static String errorMessage;
+
     private static final String url = "http://127.0.0.1:3945";
 
-    public static Player login(String username, String password) {
+    public static User login(String username, String password) {
 
         try {
             String data = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
@@ -32,7 +41,7 @@ public class HttpServerUtils {
         return null;
     }
 
-    public static Player register(String username, String password) {
+    public static User register(String username, String password) {
 
         try {
             String data = "{\"username\": \"" + username + "\", \"password\": \"" + password + "\"}";
@@ -49,8 +58,8 @@ public class HttpServerUtils {
         return null;
     }
 
-    private static Player playerFromResponse(HttpURLConnection connection) throws IOException {
-        Player player = null;
+    private static User playerFromResponse(HttpURLConnection connection) throws IOException {
+        User player = null;
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             return player;
         }
@@ -58,13 +67,11 @@ public class HttpServerUtils {
         JSONObject response = new JSONObject(readData(connection));
         boolean haveError = response.getBoolean("error");
         if(haveError){
-            /* Il y a une erreur, a voir si on fait un attribut privé avec un message d'erreur pour
-            pouvoir le recuperer et l'afficher
-             */
-            System.out.println(response.getString("message"));
+            errorMessage = response.getString("message");
         }else{
             JSONObject data = (JSONObject) response.get("data");
-            player = new Player(data.getInt("id"), data.getString("username"));
+            player = new User(data.getInt("id"), data.getString("username"), null);
+            player.setToken(response.getString("token"));
         }
 
         return player;

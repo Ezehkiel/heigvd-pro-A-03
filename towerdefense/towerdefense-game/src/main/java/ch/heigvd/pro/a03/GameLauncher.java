@@ -1,7 +1,8 @@
 package ch.heigvd.pro.a03;
 
-import ch.heigvd.pro.a03.scenes.*;
-
+import ch.heigvd.pro.a03.scenes.MainMenuScene;
+import ch.heigvd.pro.a03.scenes.SceneManager;
+import ch.heigvd.pro.a03.users.User;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
@@ -19,7 +20,7 @@ public class GameLauncher implements ApplicationListener {
     static public final int WIDTH = 1280;
     static public final int HEIGHT = 768;
 
-    private Player connectedPlayer;
+    private User connectedPlayer;
 
     private SceneManager sceneManager;
 
@@ -50,7 +51,7 @@ public class GameLauncher implements ApplicationListener {
      * Get the connected player.
      * @return connect player
      */
-    public Player getConnectedPlayer() {
+    public User getConnectedPlayer() {
         return connectedPlayer;
     }
 
@@ -58,7 +59,7 @@ public class GameLauncher implements ApplicationListener {
      * Setts the connected player.
      * @param connectedPlayer player to connect
      */
-    public void setConnectedPlayer(Player connectedPlayer) {
+    public void setConnectedPlayer(User connectedPlayer) {
         this.connectedPlayer = connectedPlayer;
     }
 
