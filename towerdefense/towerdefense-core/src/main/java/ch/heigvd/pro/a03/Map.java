@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.algorithm.Astar;
+import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
@@ -11,10 +13,30 @@ public class Map {
     private Dimension size;
     private Structure[][] structures;
     private LinkedList<Unit> units;
+    private int row;
+    private int col;
+    private Base basePosition;
 
-    public Map(int row, int col) {
+
+    public Map(int row, int col, Base base) {
+        this.row=row;
+        this.col=col;
         this.size = new Dimension(row, col);
         structures = new Structure[row][col];
+        basePosition=base;
+
+    }
+
+    public Base getBasePosition() {
+        return basePosition;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
     }
 
     public Structure getStructureAt(int x, int y) {
@@ -35,6 +57,11 @@ public class Map {
         structures[x][y] = structure;
     }
 
+
+    public Structure[][] getStructures() {
+        return structures;
+    }
+
     public void setUnits(LinkedList<Unit> units) {
         this.units = units;
     }
@@ -52,7 +79,7 @@ public class Map {
         for(int i =0; i<structures.length;++i){
             for(int j=0;j<structures[i].length;++j){
                 if(structures[i][j] != null){
-                    structures[i][j].update();
+                    structures[i][j].update(this);
                 }
 
             }
@@ -61,7 +88,7 @@ public class Map {
 
         for(Unit u: units){
 
-            u.update();
+            u.update(this);
         }
 
     }

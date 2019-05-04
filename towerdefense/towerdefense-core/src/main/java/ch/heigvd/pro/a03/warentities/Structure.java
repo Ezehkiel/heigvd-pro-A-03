@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03.warentities;
 
+import ch.heigvd.pro.a03.Map;
+
 import java.awt.*;
 
 public class Structure extends WarEntity {
@@ -9,7 +11,7 @@ public class Structure extends WarEntity {
     }
 
     @Override
-    public void update() {
+    public void update(Map map) {
 
     }
 

@@ -13,8 +13,8 @@ import java.util.List;
  *         Astar aStar = new Astar(rows, cols, initialPosition, finalPosition);
  *         int[][] blocksArray = new int[][]{{1, 3}, {2, 3}, {3, 3}};
  *         aStar.setBlocks(blocksArray);
- *         List<Position> path = aStar.findPath();
- *         for (Position p : path) {
+ *         List<Point> path = aStar.findPath();
+ *         for (Point p : path) {
  *             System.out.println(p);
  *         }
  *

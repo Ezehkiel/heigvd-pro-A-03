@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.warentities;
 
 
+import ch.heigvd.pro.a03.Map;
+
 import java.awt.*;
 
 abstract public class WarEntity {
@@ -88,6 +90,10 @@ abstract public class WarEntity {
         return position;
     }
 
+    public void setPosition(Point position) {
+        this.position = position;
+    }
+
     public int getHealthPoint() {
         return healthPoints;
     }
@@ -140,5 +146,5 @@ abstract public class WarEntity {
                 '}';
     }
 
-    public abstract void update();
+    public abstract void update(Map map);
 }
