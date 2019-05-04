@@ -121,6 +121,10 @@ public class Astar {
         }
     }
 
+    public void setBlockPos(int row, int col) {//will add the blockage in the map
+            setBlock(row, col);
+    }
+
 
     /**
      * @return the path to the target or an empty arraylist if there is none.

@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.warentities.Base;
+import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
 
 import java.awt.*;
@@ -38,6 +39,18 @@ public class Unit extends WarEntity {
                 new Position(this.getPosition().y,this.getPosition().x),
                 new Position(map.getBasePosition().getPosition().y,
                         map.getBasePosition().getPosition().x));
+
+        Structure[][] blockage= map.getStructures();
+
+        /*sets the blockage*/
+        for(int i =0; i<blockage.length;++i){
+            for(int j=0; j<blockage[i].length;++j){
+                if(blockage[i][j]!=null){
+                    pathFinding.setBlockPos(blockage[i][j].getPosition().y,
+                            blockage[i][j].getPosition().x);
+                }
+            }
+        }
 
 
         path=pathFinding.findPath();

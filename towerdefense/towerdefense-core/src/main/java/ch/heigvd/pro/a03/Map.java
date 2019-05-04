@@ -55,6 +55,7 @@ public class Map {
         }
 
         structures[x][y] = structure;
+
     }
 
 
