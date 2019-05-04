@@ -15,14 +15,22 @@
   },
   "ButtonStyle": {
     "default": {
-      "down": "button-down",
-      "up": "button-up"
+      "up": "button",
+      "down": "button-pressed"
+    },
+    "arrow-up": {
+      "up": "arrow-up",
+      "down": "arrow-up-pressed"
+    },
+    "arrow-down": {
+      "up": "arrow-down",
+      "down": "arrow-down-pressed"
     }
   },
   "TextButtonStyle": {
     "default": {
-      "down": "button-down",
-      "up": "button-up",
+      "up": "button",
+      "down": "button-pressed",
       "font": "font",
       "fontColor": "white"
     }
@@ -39,11 +47,18 @@
   },
   "TextFieldStyle": {
     "default": {
-      "background": "button-down",
+      "background": "button-pressed",
       "font": "font",
       "fontColor": "white",
       "selection": "selection",
       "cursor": "cursor"
+    }
+  },
+  "WindowStyle": {
+    "default": {
+      "background": "button",
+      "titleFont": "font",
+      "titleFontColor": "white"
     }
   }
 }

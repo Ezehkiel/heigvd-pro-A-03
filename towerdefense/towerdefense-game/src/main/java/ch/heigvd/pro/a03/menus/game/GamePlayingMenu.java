@@ -15,6 +15,14 @@ public class GamePlayingMenu extends Menu {
 
     public GamePlayingMenu(GameMenu menu, GameScene scene, Skin skin) {
 
+        TextButton selectUnitButton = new TextButton("Units", skin);
+        selectUnitButton.addListener(new ButtonCommand(new Command<GameMenu>(menu) {
+            @Override
+            public void execute(Object... args) {
+                getReceiver().showUnitSelectionMenu();
+            }
+        }));
+
         TextButton pauseButton = new TextButton("Pause", skin);
         pauseButton.addListener(new ButtonCommand(new Command<GameMenu>(menu) {
             @Override
@@ -34,6 +42,7 @@ public class GamePlayingMenu extends Menu {
         getMenu().row();
 
         // Bottom menu
+        getMenu().add(selectUnitButton).prefWidth(UI.BUTTON_SMALL_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
         getMenu().add().expandX();
         getMenu().add(new TurretSelectionMenu(skin, scene).getMenu());
 
