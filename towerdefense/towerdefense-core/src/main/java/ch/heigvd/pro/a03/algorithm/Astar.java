@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.algorithm;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /***
  *
@@ -123,20 +125,26 @@ public class Astar {
     /**
      * @return the path to the target or an empty arraylist if there is none.
      */
-    public List<Position> findPath() {
+    public List<Point> findPath() {
         openList.add(initialPosition);
         while (!isEmpty(openList)) {
             Position current = openList.poll(); //retrieve remove the first element of the Queue
             closedSet.add(current);
             if (isFinalPosition(current)) {
-                return getPath(current);
+                List<Position> positionPath=getPath(current);
+                List<Point> path=new ArrayList<Point>();
+                for(Position p :positionPath){
+                    path.add(new Point(p.getRow(),p.getCol()));
+                }
+                return path;
+
             } else {
                 addAdjacent(current);
             }
         }
 
         System.out.println("Unable to find a path, all blocked -position impossible-");
-        return new ArrayList<Position>();
+        return new ArrayList<Point>();
     }
 
     /**

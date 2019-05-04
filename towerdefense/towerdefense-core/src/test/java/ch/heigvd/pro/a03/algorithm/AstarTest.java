@@ -2,6 +2,7 @@ package ch.heigvd.pro.a03.algorithm;
 
 import org.junit.jupiter.api.Test;
 
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,16 +35,16 @@ public class AstarTest {
         int[][] blocksArray = {{1,1}, {1,3}, {2,2}};
         Astar astar = new Astar(20, 12, s, e);
         astar.setBlocks(blocksArray);
-        List<Position> positions =  astar.findPath();
+        List<Point> positions =  astar.findPath();
 
-        List<Position> expectedPositions = new LinkedList<>();
-        expectedPositions.add(new Position(0,0));
-        expectedPositions.add(new Position(0,1));
-        expectedPositions.add(new Position(0,2));
-        expectedPositions.add(new Position(0,3));
-        expectedPositions.add(new Position(0,4));
-        expectedPositions.add(new Position(1,4));
-        expectedPositions.add(new Position(2,4));
+        List<Point> expectedPositions = new LinkedList<>();
+        expectedPositions.add(new Point(0,0));
+        expectedPositions.add(new Point(0,1));
+        expectedPositions.add(new Point(0,2));
+        expectedPositions.add(new Point(0,3));
+        expectedPositions.add(new Point(0,4));
+        expectedPositions.add(new Point(1,4));
+        expectedPositions.add(new Point(2,4));
 
         assert(expectedPositions.size() == positions.size());
         assertEquals(expectedPositions, positions);
@@ -71,22 +72,22 @@ public class AstarTest {
         int[][] blocksArray = {{1,1}, {1,3}, {2,2}};
         Astar astar = new Astar(20, 12, s, e);
         astar.setBlocks(blocksArray);
-        List<Position> positions =  astar.findPath();
+        List<Point> positions =  astar.findPath();
 
         int rows = 6;
         int cols = 7;
-        Vec2 startingPoint = new Vec2(0,0);
-        Vec2 expectedTarget = new Vec2(2,4);
+        Point startingPoint = new Point(0,0);
+        Point expectedTarget = new Point(2,4);
 
-        List<Vec2> path = new LinkedList<>();
-        for(Position p: positions) path.add(new Vec2(p.getRow(), p.getCol()));
+        List<Point> path = new LinkedList<>();
+        for(Point p: positions) path.add(p);
         assertPathCorrectness(path, startingPoint, expectedTarget, 7);
 
 
     }
 
-    private void assertPathCorrectness(List<Vec2> path, Vec2 startingPoint,
-                                       Vec2 endingPoint, int expectedPathLength){
+    private void assertPathCorrectness(List<Point> path, Point startingPoint,
+                                       Point endingPoint, int expectedPathLength){
         if(startingPoint.equals(endingPoint) || areNeighbours(startingPoint, endingPoint)){
             if(expectedPathLength != 0) throw new IllegalArgumentException("expectedPathLength should be zero");
             assert(path.isEmpty());
@@ -99,9 +100,9 @@ public class AstarTest {
         assert(path.get(0).equals(startingPoint));
         //assert(areNeighbours(path.get(path.size() - 1), endingPoint));
         assert(path.get(path.size() - 1).equals(endingPoint));
-        Iterator<Vec2> it = path.iterator();
-        Vec2 tmp = it.next();
-        Vec2 tmp2;
+        Iterator<Point> it = path.iterator();
+        Point tmp = it.next();
+        Point tmp2;
         while(it.hasNext()){
             tmp2 = it.next();
             assert(areNeighbours(tmp, tmp2));
@@ -109,8 +110,8 @@ public class AstarTest {
         }
     }
 
-    private boolean areNeighbours(Vec2 p1, Vec2 p2){
-        return abs(p1.getCol() - p2.getCol()) + abs(p1.getRow() - p2.getRow()) == 1;
+    private boolean areNeighbours(Point p1, Point p2){
+        return abs(p1.x - p2.x) + abs(p1.y - p2.y) == 1;
     }
 
 }
