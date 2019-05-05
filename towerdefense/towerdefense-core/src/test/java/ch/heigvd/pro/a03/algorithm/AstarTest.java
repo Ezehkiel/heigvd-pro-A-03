@@ -32,9 +32,12 @@ public class AstarTest {
 
         Position s = new Position(0, 0);
         Position e = new Position(2, 4);
-        int[][] blocksArray = {{1,1}, {1,3}, {2,2}};
+        //int[][] blocksArray = {{1,1}, {1,3}, {2,2}};
         Astar astar = new Astar(20, 12, s, e);
-        astar.setBlocks(blocksArray);
+
+        astar.setBlockPos(1,1);
+        astar.setBlockPos(1,3);
+        astar.setBlockPos(2,2);
         List<Point> positions =  astar.findPath();
 
         List<Point> expectedPositions = new LinkedList<>();
@@ -48,6 +51,10 @@ public class AstarTest {
 
         assert(expectedPositions.size() == positions.size());
         assertEquals(expectedPositions, positions);
+
+        for(Point p:positions){
+            System.out.println(p.x+" "+p.y);
+        }
     }
 
     @Test
