@@ -9,7 +9,15 @@ public class SimulationState extends ServerState{
 
     @Override
     public void run() {
+        //do the simulation
 
+        //check if there is a winner
+        /*if(...){
+            //Stream the result
+            gameServer.setCurrentState(gameServer.RoundState);
+        }else{
+            gameServer.setCurrentState(gameServer.EndState);
+        }*/
     }
 
 }

@@ -19,9 +19,9 @@ public class GameServer implements Runnable{
     public ServerState SimulationState;
     public ServerState EndState;
 
-    private ServerState currentState;
+    public ServerState currentState;
 
-    ArrayList<Player> players;
+    public ArrayList<Player> players;
 
 
     public GameServer(ArrayList<Player> players) {
@@ -58,7 +58,6 @@ public class GameServer implements Runnable{
     public void broadCastMessage(String message){
         for(Player p : players)
             sendProtovol(p.getOut(),currentState.getId(),message);
-
     }
     public void waitForPlayers(String message) throws InterruptedException {
         Thread t[] = new Thread[players.size()];
@@ -70,10 +69,6 @@ public class GameServer implements Runnable{
         for(Player p : players){
             t[p.id].join();
         }
-
-
-
-
     }
 
     private class waiter implements Runnable{
