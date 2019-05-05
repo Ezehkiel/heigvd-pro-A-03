@@ -24,7 +24,6 @@ abstract public class WarEntity {
         this.speed=0;
         this.range=0;
         this.price=0;
-
     }
 
     public boolean isEntityDestroyed(){
@@ -123,8 +122,8 @@ abstract public class WarEntity {
         return speed;
     }
 
-    public void setPrice(int speed){
-        this.price=price;
+    public void setPrice(int price){
+        this.price = price;
     }
 
     public int getPrice(){
