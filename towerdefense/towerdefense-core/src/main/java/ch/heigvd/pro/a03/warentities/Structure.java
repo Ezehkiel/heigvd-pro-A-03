@@ -13,6 +13,8 @@ public class Structure extends WarEntity {
     @Override
     public void update(Map map) {
 
+
+
     }
 
 }

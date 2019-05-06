@@ -1,5 +1,6 @@
 package ch.heigvd.pro.a03.algorithm;
 
+import ch.heigvd.pro.a03.warentities.WarEntity;
 import org.junit.jupiter.api.Test;
 
 import java.util.LinkedList;
@@ -25,6 +26,7 @@ public class NearestTargetTest {
         //(the path does not include S and T)
 
         List<Vec2> targets = new LinkedList<>();
+        //targets.add(new Vec2(0,0));
         targets.add(new Vec2(0,5));
         targets.add(new Vec2(2,4));
         targets.add(new Vec2(4,1));
