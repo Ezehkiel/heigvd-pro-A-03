@@ -50,9 +50,9 @@ public class GameClient {
             out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
             in = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
 
-            Communication.writeProtocol(out, Protocole.CLIENTWANTPLAYMULTI);
+            //Communication.writeProtocol(out, Protocole.CLIENTWANTPLAYMULTI);
 
-            return Communication.readProtocol(in) == Protocole.ISCLIENTREADY;
+            return false;//Communication.readProtocol(in) == Protocole.ISCLIENTREADY;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -63,14 +63,7 @@ public class GameClient {
 
     public void ready() {
 
-        try {
-            Communication.writeProtocol(out, Protocole.CLIENTREADY);
 
-            playerNumber = readProtocol(in) == Protocole.YOURAREPLAYERONE ? 1 : 2;
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public int getPlayerNumber() {

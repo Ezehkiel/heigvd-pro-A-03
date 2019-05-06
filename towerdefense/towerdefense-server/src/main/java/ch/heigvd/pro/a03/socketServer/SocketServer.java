@@ -1,14 +1,22 @@
 package ch.heigvd.pro.a03.socketServer;
 
 
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.player.TurretEvent;
+import ch.heigvd.pro.a03.event.player.*;
+
 import javax.naming.ldap.SortKey;
+import java.awt.*;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import static ch.heigvd.pro.a03.event.player.TurretEventType.ADD;
 
 
 // RES Exemple
@@ -42,9 +50,13 @@ public class SocketServer implements Runnable{
 
                 Socket clientSocket = serverSocket.accept();
 
-                new Thread(new Worker(clientSocket)).start();
+                ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
+                TurretEvent pe = new TurretEvent(1, ADD,new Point(1,3));
 
-                clientSocket.close();
+                oos.writeObject(pe);
+
+                new Thread(new Worker(clientSocket)).start();
+                System.out.println("Writed");
 
             } catch (IOException ex) {
                 Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);

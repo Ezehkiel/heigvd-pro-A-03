@@ -3,7 +3,7 @@ package ch.heigvd.pro.a03.socketServer.state;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Player;
 
-import static ch.heigvd.pro.a03.utils.Communication.sendProtovol;
+import static ch.heigvd.pro.a03.utils.Communication.sendProtocol;
 
 public class RoundState extends ServerState{
     public RoundState(int id, GameServer gameServer) {
@@ -24,7 +24,7 @@ public class RoundState extends ServerState{
             gameServer.broadCastMessage(String.valueOf(p.getId()));
 
             // WAIT UNITS and TURRETS
-            sendProtovol(p.getOut(),gameServer.currentState.getId(),"OK");
+            sendProtocol(p.getOut(),gameServer.currentState.getId(),"OK");
         }
 
         gameServer.setCurrentState(gameServer.SimulationState);

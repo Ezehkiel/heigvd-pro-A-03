@@ -8,4 +8,11 @@ public abstract class PlayerEvent implements Serializable {
     public PlayerEvent(int entityId) {
         this.entityId = entityId;
     }
+
+    @Override
+    public String toString() {
+        return "PlayerEvent{" +
+                "entityId=" + entityId +
+                '}';
+    }
 }

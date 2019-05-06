@@ -5,10 +5,9 @@ import ch.heigvd.pro.a03.utils.Protocole;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 
-import static ch.heigvd.pro.a03.utils.Communication.sendProtovol;
+import static ch.heigvd.pro.a03.utils.Communication.sendProtocol;
 
 
 public class GameServer implements Runnable{
@@ -57,7 +56,7 @@ public class GameServer implements Runnable{
     }
     public void broadCastMessage(String message){
         for(Player p : players)
-            sendProtovol(p.getOut(),currentState.getId(),message);
+            sendProtocol(p.getOut(),currentState.getId(),message);
     }
     public void waitForPlayers(String message) throws InterruptedException {
         Thread t[] = new Thread[players.size()];
