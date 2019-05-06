@@ -9,7 +9,7 @@ public class GameLogic {
 
     LinkedList<User> players;
     LinkedList<Map> maps;
-    private boolean endMatch;//final de una simulacion si todas las unidades estan muertas o si la base destruida
+    private boolean endMatch;
     private boolean endRound;
 
     public GameLogic(User player1, User player2, Map map1, Map map2) {
@@ -36,7 +36,7 @@ public class GameLogic {
             for (Map m : maps) {
                 m.update();
                 endRound = m.isEndSimulation();
-                endMatch = m.isEndMatch();
+                endMatch |= m.isEndMatch();
             }
         }
 

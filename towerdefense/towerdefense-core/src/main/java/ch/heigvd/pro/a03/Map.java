@@ -15,7 +15,7 @@ public class Map {
     private LinkedList<Unit> units;
     private int row;
     private int col;
-    private Base basePosition;
+    private Base base;
     private boolean endSimulation;
     private boolean endGame;
 
@@ -25,12 +25,13 @@ public class Map {
         this.col=col;
         this.size = new Dimension(row, col);
         structures = new Structure[row][col];
-        basePosition=base;
+        this.base=base;
+        setStructureAt(base,base.getPosition().x,base.getPosition().y);
 
     }
 
     public Base getBasePosition() {
-        return basePosition;
+        return base;
     }
 
     public int getRow() {
@@ -103,8 +104,13 @@ public class Map {
 
     public boolean isEndSimulation(){
 
+
+        endSimulation = true;
         for(Unit u: units){
-          endSimulation= u.isEntityDestroyed();
+            if (!u.isEntityDestroyed()) {
+                endSimulation = false;
+                break;
+            }
         }
 
         if(endSimulation){
@@ -117,18 +123,8 @@ public class Map {
 
     public boolean isEndMatch(){
 
-        for(int i =0; i<structures.length;++i){
-            for(int j=0;j<structures[i].length;++j){
-                if(structures[i][j] != null){
-                    if(structures[i][j] instanceof Base){
-                        endGame= structures[i][j].isEntityDestroyed();
-                    }
-                }
 
-            }
-
-        }
-        return endGame;
+        return base.isEntityDestroyed();
     }
 
 
