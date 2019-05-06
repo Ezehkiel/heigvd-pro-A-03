@@ -139,6 +139,49 @@ public class SqlRequest {
         return scores;
     }
 
+    static public boolean incrementPlayedGameUserDB(long id) {
+        try {
+            PreparedStatement stmt = null;
+            stmt = con.prepareStatement("UPDATE public.towerdefense_user SET nbpartiejoue= nbpartiejoue +1 WHERE id=?;");
+            stmt.setLong(1, id);
+            stmt.executeQuery();
 
+            return true;
 
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    static public boolean incrementWinGameUserDB(long id) {
+        try {
+            PreparedStatement stmt = null;
+            stmt = con.prepareStatement("UPDATE public.towerdefense_user SET nbpartiegagne= nbpartiegagne + 1 WHERE id=?;");
+            stmt.setLong(1, id);
+            stmt.executeQuery();
+
+            return true;
+
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    static public Score getUserScoreDB(long id){
+        try {
+            PreparedStatement stmt = null;
+            stmt = con.prepareStatement("SELECT id, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
+            stmt.setLong(1, id);
+            ResultSet rs = stmt.executeQuery();
+
+            while(rs.next()){
+                return new Score(rs.getInt("id"),rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"));
+            }
+
+        } catch (SQLException e) {
+            return null;
+        }
+
+        return null;
+    }
 }

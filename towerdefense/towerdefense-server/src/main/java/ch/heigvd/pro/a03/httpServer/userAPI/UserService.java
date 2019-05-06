@@ -5,12 +5,15 @@ import ch.heigvd.pro.a03.httpServer.SqlRequest;
 import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import spark.Request;
+import spark.Response;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -187,5 +190,69 @@ public class UserService {
         jo.put("data", user);
         jo.put("token", token);
         return jo;
+    }
+
+    public JSONObject setScore(Request req, Response res) {
+
+        org.json.JSONObject jo = new org.json.JSONObject(req.body());
+        String serverToken = jo.getString("token");
+        JSONObject tokenResponse = new JSONObject();
+        try {
+            Algorithm algorithm = Algorithm.HMAC256("P2z6cA9CGt5Oq");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build(); //Reusable verifier instance
+            verifier.verify(serverToken);
+
+            long idWinner = jo.getLong("idWinner");
+            long idLoser = jo.getLong("idLoser");
+
+            SqlRequest.incrementPlayedGameUserDB(idWinner);
+            SqlRequest.incrementPlayedGameUserDB(idLoser);
+
+            SqlRequest.incrementWinGameUserDB(idWinner);
+
+            tokenResponse.put("error", false);
+            tokenResponse.put("message", "Score updated");
+            return tokenResponse;
+
+        } catch (JWTVerificationException exception){
+
+            tokenResponse.put("error", true);
+            tokenResponse.put("message", "Invalide token");
+            return tokenResponse;
+        }
+
+    }
+
+    public JSONObject getUserScore(Request req, Response res) {
+
+        org.json.JSONObject jo = new org.json.JSONObject(req.body());
+        org.json.JSONObject data = (org.json.JSONObject) jo.get("data");
+        String userToken = jo.getString("token");
+        JSONObject tokenResponse = new JSONObject();
+        try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm).withClaim("username", (String) data.get("username"))
+                    .withClaim("id", (int) data.get("id"))
+                    .build(); //Reusable verifier instance
+            verifier.verify(userToken);
+
+            long id = Long.valueOf(req.params(":id"));
+            Score score = SqlRequest.getUserScoreDB(id);
+
+
+
+            tokenResponse.put("error", false);
+            tokenResponse.put("data", score);
+            tokenResponse.put("token", userToken);
+            return tokenResponse;
+
+        } catch (JWTVerificationException exception){
+
+            tokenResponse.put("error", true);
+            tokenResponse.put("message", "Invalide token");
+            return tokenResponse;
+        }
+
     }
 }

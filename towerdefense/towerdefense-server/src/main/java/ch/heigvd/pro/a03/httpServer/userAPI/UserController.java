@@ -18,6 +18,10 @@ public class UserController {
 
             get("/users/scores", (req, res) -> userService.getAllScores(),json());
 
+            post("/users/scores", (req, res) -> userService.setScore(req, res), json());
+
+            get("/users/scores/:id", (req, res) -> userService.getUserScore(req, res), json());
+
             get("/users", (req, res) -> userService.getAllUsers(),json());
 
             post("/users/register", (req, res) -> userService.createUser(req), json());
