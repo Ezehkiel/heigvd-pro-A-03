@@ -8,9 +8,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-
-import static ch.heigvd.pro.a03.utils.Communication.readProtocol;
-
 public class GameClient {
 
     private static GameClient instance;

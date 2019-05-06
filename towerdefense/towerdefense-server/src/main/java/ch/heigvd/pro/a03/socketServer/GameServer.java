@@ -7,7 +7,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import static ch.heigvd.pro.a03.utils.Communication.sendProtocol;
+import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
 public class GameServer implements Runnable{

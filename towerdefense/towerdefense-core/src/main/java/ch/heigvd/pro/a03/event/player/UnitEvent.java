@@ -7,4 +7,11 @@ public class UnitEvent extends PlayerEvent {
         super(entityId);
         this.unitEventType = unitEventType;
     }
+
+    @Override
+    public String toString() {
+        return "UnitEvent{" +
+                "unitEventType=" + unitEventType +
+                '}';
+    }
 }

@@ -12,6 +12,9 @@ public class Player {
 
     BufferedReader in;
     PrintWriter out;
+    ObjectInputStream ois;
+    ObjectOutputStream ous;
+
 
 
     public Player(Socket socket) {
@@ -20,6 +23,8 @@ public class Player {
         try {
             in = new BufferedReader( new InputStreamReader(socket.getInputStream()));
             out = new PrintWriter(socket.getOutputStream());
+            ois = new ObjectInputStream(socket.getInputStream());
+            ous = new ObjectOutputStream(socket.getOutputStream());
         } catch (IOException e) {
             Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, e);
         }
@@ -36,6 +41,14 @@ public class Player {
 
     public int getId() {
         return id;
+    }
+
+    public ObjectInputStream getOis() {
+        return ois;
+    }
+
+    public ObjectOutputStream getOus() {
+        return ous;
     }
 
     public Socket getSocket() {

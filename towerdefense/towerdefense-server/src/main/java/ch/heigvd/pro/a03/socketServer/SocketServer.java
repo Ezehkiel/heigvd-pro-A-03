@@ -12,11 +12,11 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import static ch.heigvd.pro.a03.event.player.TurretEventType.ADD;
 
 
 // RES Exemple
@@ -51,11 +51,14 @@ public class SocketServer implements Runnable{
                 Socket clientSocket = serverSocket.accept();
 
                 ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-                TurretEvent pe = new TurretEvent(1, ADD,new Point(1,3));
+                LinkedList<PlayerEvent> tmp = new LinkedList<>();
+                tmp.add(new TurretEvent(1, TurretEventType.ADD,new Point(1,3)));
+                tmp.add(new UnitEvent(2,UnitEventType.UPGRADE));
+                tmp.add(new SendUnitEvent(2,2));
 
-                oos.writeObject(pe);
+                oos.writeObject(tmp);
 
-                new Thread(new Worker(clientSocket)).start();
+                //new Thread(new Worker(clientSocket)).start();
                 System.out.println("Writed");
 
             } catch (IOException ex) {

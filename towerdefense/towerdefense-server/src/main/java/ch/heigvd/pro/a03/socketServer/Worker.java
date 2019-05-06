@@ -9,7 +9,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import static ch.heigvd.pro.a03.utils.Communication.sendProtocol;
+import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 public class Worker implements Runnable{
     static ArrayList<ArrayList<Player>> waitingList;
