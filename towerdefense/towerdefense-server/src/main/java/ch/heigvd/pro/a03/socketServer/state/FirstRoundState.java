@@ -3,7 +3,6 @@ package ch.heigvd.pro.a03.socketServer.state;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Player;
-import ch.heigvd.pro.a03.utils.Communication;
 
 import java.util.LinkedList;
 
