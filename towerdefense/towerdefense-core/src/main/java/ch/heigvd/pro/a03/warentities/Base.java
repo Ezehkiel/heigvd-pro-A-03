@@ -8,8 +8,14 @@ public class Base extends Structure {
 
     public Base(String name,Point position, int totalHealth, int defPoint,int attackCoolDown) {
         super(name,position, totalHealth, defPoint,attackCoolDown);
+        this.setAttackPoints(100);
         endGame = false;
     }
+
+    public Base(Point position){
+        super("Base",position,15000,900, 100);
+    }
+
 
 
     public boolean isEntityDestroyed() {

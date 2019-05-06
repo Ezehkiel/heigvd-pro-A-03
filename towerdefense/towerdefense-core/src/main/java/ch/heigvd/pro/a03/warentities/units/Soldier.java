@@ -8,4 +8,8 @@ public class Soldier extends Unit {
         super(name,position,totalHealth,defPoint,attackCoolDown,speed,attackPoints,range, price);
 
     }
+
+    public Soldier(Point position){
+        super("Soldier", position,200,200,10,5,100,3,200);
+    }
 }

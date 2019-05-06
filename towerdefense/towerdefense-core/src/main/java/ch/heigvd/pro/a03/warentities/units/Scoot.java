@@ -9,5 +9,9 @@ public class Scoot extends Unit {
 
     }
 
+    public Scoot(Point position){
+        super("Soldier", position,180,150,7,3,80,2,75);
+    }
+
 
 }
