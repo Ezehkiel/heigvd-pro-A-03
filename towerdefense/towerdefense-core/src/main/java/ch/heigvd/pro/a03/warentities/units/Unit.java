@@ -17,17 +17,21 @@ public class Unit extends WarEntity {
     private Astar pathFinding;
     private List<Point> path;
     private Iterator<Point> it;
-    private boolean endSimulation;
+    private boolean hasPath;
+    private int displacementTicks;
+    private int attackTicks;
 
 
-    public Unit(String name,Point position,int totalHealth, int defPoint, int speed, int attackPoints, int range,int price) {
-        super(name,position,totalHealth,defPoint);
+
+    public Unit(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int speed, int attackPoints, int range,int price) {
+        super(name,position,totalHealth,defPoint,attackCoolDown);
         super.setAttackPoints(attackPoints);
         super.setRange(range);
         super.setSpeed(speed);
         super.setPrice(price);
-        endSimulation=false;
-
+        hasPath=false;
+        displacementTicks=0;
+        attackTicks=0;
 
     }
 
@@ -35,40 +39,68 @@ public class Unit extends WarEntity {
     @Override
     public void update(Map map) {
 
-        pathFinding= new Astar(map.getRow(),map.getCol(),
-                new Position(this.getPosition().y,this.getPosition().x),
-                new Position(map.getBasePosition().getPosition().y,
-                        map.getBasePosition().getPosition().x));
+        pathUnit(map);
 
-        Structure[][] blockage= map.getStructures();
 
-        /*sets the blockage*/
-        for(int i =0; i<blockage.length;++i){
-            for(int j=0; j<blockage[i].length;++j){
-                if(blockage[i][j]!=null){
-                    pathFinding.setBlockPos(blockage[i][j].getPosition().y,
-                            blockage[i][j].getPosition().x);
-                }
+        if (!super.isEntityDestroyed()) {
+
+            if (displacementTicks == this.getSpeed()) {
+
+                displacement(map.getBase().getPosition());
+                displacementTicks = 0;
+            }
+
+            if (attackTicks == this.getAttackCoolDown()) {
+
+                attack(map.getBase());
+                attackTicks = 0;
             }
         }
 
-
-        path=pathFinding.findPath();
-        it=path.iterator();
-
-        while (!endSimulation){
-
-            displacement(map.getBasePosition().getPosition());
-            if(!super.isEntityDestroyed()) {
-                attack(map.getBasePosition());
-            }else{
-                this.endSimulation=true;
-            }
-        }
-
+        displacementTicks++;
+        attackTicks++;
 
     }
 
+    /**
+     * @brief this method will find a path to the target if there is non already defined.
+     * @param map the map of the current game
+     */
+    public void pathUnit(Map map){
+
+        if(!hasPath) {
+
+            hasPath=true;
+
+            pathFinding = new Astar(map.getRow(), map.getCol(),
+                    new Position(this.getPosition().y, this.getPosition().x),
+                    new Position(map.getBase().getPosition().y,
+                            map.getBase().getPosition().x));
+
+            Structure[][] blockage= map.getStructures();
+
+            /*sets the blockage*/
+            for(int i =0; i<blockage.length;++i){
+                for(int j=0; j<blockage[i].length;++j){
+                    if(blockage[i][j]!=null){
+                        if(blockage[i][j]!=map.getBase()) {
+                            pathFinding.setBlockPos(blockage[i][j].getPosition().y,
+                                    blockage[i][j].getPosition().x);
+                        }
+                    }
+                }
+            }
+
+            path=pathFinding.findPath();
+            it=path.iterator();
+        }
+
+    }
+
+    /**
+     * @breif moves the unit to the next position and checks that is not the base
+     * @param basePosition the base position
+     */
     public void displacement(Point basePosition){
 
         if(it.hasNext()){
@@ -81,12 +113,16 @@ public class Unit extends WarEntity {
 
     }
 
+    /**
+     * @brief deals damage to the target
+     * @param baseEnemy the target
+     */
     public void attack(Base baseEnemy){
         super.attack(baseEnemy);
 
     }
 
-    public void setEndSimulation(boolean endSimulation) {
-        this.endSimulation = endSimulation;
+    public void setEndSimulation() {
+       hasPath=false;
     }
 }

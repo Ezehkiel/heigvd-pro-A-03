@@ -34,13 +34,13 @@ public class MapSimulationTest {
         //We create a Map with some WarEntities into it: (as described in previous comments)
 
         //Create a map
-        Base base = new Base("Superbase", new Point(6, 5), 1000, 5);
+        Base base = new Base("Superbase", new Point(6, 5), 1000, 5, 1);
         Map map = new Map(6, 7, base);
         //add a Soldier and some turrets to the map
-        Soldier soldier = new Soldier("Soldier", new Point(1, 2), 50, 0, 1, 1000, 5, 12);
-        MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 5, 2, 40);
-        MachineGunTurret mgt2 = new MachineGunTurret("mgt2", new Point(4, 3), 700, 100, 5, 2, 40);
-        MachineGunTurret mgt3 = new MachineGunTurret("mgt3", new Point(4, 2), 700, 100, 5, 2, 40);
+        Soldier soldier = new Soldier("Soldier", new Point(1, 2), 50, 0, 1, 1, 1000, 5, 12);
+        MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 1, 5, 2, 40);
+        MachineGunTurret mgt2 = new MachineGunTurret("mgt2", new Point(4, 3), 700, 100, 1, 5, 2, 40);
+        MachineGunTurret mgt3 = new MachineGunTurret("mgt3", new Point(4, 2), 700, 100, 1, 5, 2, 40);
         map.setStructureAt(mgt1, mgt1.getPosition().x, mgt1.getPosition().y);
         map.setStructureAt(mgt2, mgt2.getPosition().x, mgt2.getPosition().y);
         map.setStructureAt(mgt3, mgt3.getPosition().x, mgt3.getPosition().y);

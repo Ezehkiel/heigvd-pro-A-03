@@ -1,20 +1,16 @@
 package ch.heigvd.pro.a03.warentities.turrets;
 
 import ch.heigvd.pro.a03.Map;
-import ch.heigvd.pro.a03.algorithm.NearestTarget;
-import ch.heigvd.pro.a03.algorithm.Vec2;
 import ch.heigvd.pro.a03.warentities.Structure;
-import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.Point;
-import java.util.List;
-import java.util.LinkedList;
 
 public class Turret extends Structure {
 
-    public Turret(String name, Point position, int totalHealth, int defPoint, int attackPoints, int range, int price) {
-        super(name, position, totalHealth, defPoint);
+
+    public Turret(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int attackPoints, int range, int price) {
+        super(name,position,totalHealth,defPoint,attackCoolDown);
         super.setRange(range);
         super.setAttackPoints(attackPoints);
         super.setPrice(price);
