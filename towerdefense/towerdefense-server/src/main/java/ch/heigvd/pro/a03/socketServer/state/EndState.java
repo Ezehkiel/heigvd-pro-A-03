@@ -2,7 +2,6 @@ package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.socketServer.GameServer;
 
-import static ch.heigvd.pro.a03.utils.Communication.sendProtovol;
 
 public class EndState extends ServerState{
     public EndState(int id, GameServer gameServer) {

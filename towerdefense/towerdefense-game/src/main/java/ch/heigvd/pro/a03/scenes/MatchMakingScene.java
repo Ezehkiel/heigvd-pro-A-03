@@ -60,7 +60,7 @@ public class MatchMakingScene extends Scene {
 
                 if (GameClient.getInstance().connect()) {
                     System.out.println("Server is ready");
-                    title.setText("Player Found! Are you ready?");
+                    title.setText("PlayerEvent Found! Are you ready?");
                     menuTable.add(readyButton);
                 }
             }
