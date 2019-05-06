@@ -37,16 +37,23 @@ abstract public class WarEntity {
     }
 
     /**
-     * @breif Uses the distance formula between two points in order to determine if its in range.
+     * @breif Uses the distance between this and target to determine if target is in range.
      * @param target the Entity we desire check if its in range
      * @return true if its in range
      */
-    private boolean isInRange(WarEntity target) {
+    protected boolean isInRange(WarEntity target) {
+        return distance(this, target) <= range;
+    }
 
-        int distance = Math.abs(target.getPosition().x - position.x) +Math.abs(target.getPosition().y - position.y);
-
-        return distance <= range;
-
+    /**
+     * Calculate the straight distance between two WarEntities:
+     * which is the x distance + the y distance between the WarEntities
+     * @param we1 a WarEntity
+     * @param we2 another WarEntity
+     * @return the straight distance between both specified WarEntities
+     */
+    public static int distance(WarEntity we1, WarEntity we2){
+        return Math.abs(we1.position.x - we2.position.x) +Math.abs(we1.position.y - we2.position.y);
     }
 
     /**
