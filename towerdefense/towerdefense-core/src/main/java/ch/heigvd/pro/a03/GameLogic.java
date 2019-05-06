@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03;
 
 import ch.heigvd.pro.a03.users.User;
+import ch.heigvd.pro.a03.warentities.units.Unit;
+
 import java.util.LinkedList;
 
 public class GameLogic {
@@ -34,11 +36,21 @@ public class GameLogic {
             for (Map m : maps) {
                 m.update();
                 endRound = m.isEndSimulation();
-                endMatch=m.isEndMatch();
+                endMatch = m.isEndMatch();
             }
         }
 
-        endRound=false;
+        endRound = false;
+        LinkedList<Unit> units;
+
+        units = maps.get(0).getUnits();
+        units.addAll(maps.get(1).getUnits());
+
+        for (Unit u : units) {
+            u.setEndSimulation();
+        }
+
+
     }
 
 

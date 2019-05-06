@@ -60,6 +60,10 @@ public class Map {
 
     }
 
+    public void addUnit(Unit u){
+        units.add(u);
+    }
+
 
     public Structure[][] getStructures() {
         return structures;
@@ -101,6 +105,10 @@ public class Map {
 
         for(Unit u: units){
           endSimulation= u.isEntityDestroyed();
+        }
+
+        if(endSimulation){
+            units.clear();
         }
 
         return endSimulation;

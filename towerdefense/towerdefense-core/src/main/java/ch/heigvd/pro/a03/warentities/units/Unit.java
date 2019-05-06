@@ -18,7 +18,8 @@ public class Unit extends WarEntity {
     private List<Point> path;
     private Iterator<Point> it;
     private boolean hasPath;
-    private int ticks;
+    private int displacementTicks;
+    private int attackTicks;
 
 
 
@@ -29,7 +30,8 @@ public class Unit extends WarEntity {
         super.setSpeed(speed);
         super.setPrice(price);
         hasPath=false;
-        ticks=0;
+        displacementTicks=0;
+        attackTicks=0;
 
     }
 
@@ -39,22 +41,37 @@ public class Unit extends WarEntity {
 
         pathUnit(map);
 
-        if(ticks==this.getSpeed()) {
-            displacement(map.getBasePosition().getPosition());
-        }
+
         if (!super.isEntityDestroyed()) {
-            attack(map.getBasePosition());
-        } else {
-            //this.endSimulation=true;
+
+            if (displacementTicks == this.getSpeed()) {
+
+                displacement(map.getBasePosition().getPosition());
+                displacementTicks = 0;
+            }
+
+            if (attackTicks == this.getAttackCoolDown()) {
+
+                attack(map.getBasePosition());
+                attackTicks = 0;
+            }
         }
 
+        displacementTicks++;
+        attackTicks++;
 
-        }
+    }
 
-
+    /**
+     * @brief this method will find a path to the target if there is non already defined.
+     * @param map the map of the current game
+     */
     public void pathUnit(Map map){
 
         if(!hasPath) {
+
+            hasPath=true;
+
             pathFinding = new Astar(map.getRow(), map.getCol(),
                     new Position(this.getPosition().y, this.getPosition().x),
                     new Position(map.getBasePosition().getPosition().y,
@@ -78,6 +95,10 @@ public class Unit extends WarEntity {
 
     }
 
+    /**
+     * @breif moves the unit to the next position and checks that is not the base
+     * @param basePosition the base position
+     */
     public void displacement(Point basePosition){
 
         if(it.hasNext()){
@@ -90,6 +111,10 @@ public class Unit extends WarEntity {
 
     }
 
+    /**
+     * @brief deals damage to the target
+     * @param baseEnemy the target
+     */
     public void attack(Base baseEnemy){
         super.attack(baseEnemy);
 
