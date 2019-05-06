@@ -17,7 +17,6 @@ public class Map {
     private int col;
     private Base base;
     private boolean endSimulation;
-    private boolean endGame;
 
 
     public Map(int row, int col, Base base) {
@@ -30,7 +29,7 @@ public class Map {
 
     }
 
-    public Base getBasePosition() {
+    public Base getBase() {
         return base;
     }
 

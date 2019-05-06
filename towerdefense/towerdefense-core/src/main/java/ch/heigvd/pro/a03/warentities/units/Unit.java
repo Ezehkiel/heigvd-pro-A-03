@@ -46,13 +46,13 @@ public class Unit extends WarEntity {
 
             if (displacementTicks == this.getSpeed()) {
 
-                displacement(map.getBasePosition().getPosition());
+                displacement(map.getBase().getPosition());
                 displacementTicks = 0;
             }
 
             if (attackTicks == this.getAttackCoolDown()) {
 
-                attack(map.getBasePosition());
+                attack(map.getBase());
                 attackTicks = 0;
             }
         }
@@ -74,8 +74,8 @@ public class Unit extends WarEntity {
 
             pathFinding = new Astar(map.getRow(), map.getCol(),
                     new Position(this.getPosition().y, this.getPosition().x),
-                    new Position(map.getBasePosition().getPosition().y,
-                            map.getBasePosition().getPosition().x));
+                    new Position(map.getBase().getPosition().y,
+                            map.getBase().getPosition().x));
 
             Structure[][] blockage= map.getStructures();
 
@@ -83,8 +83,10 @@ public class Unit extends WarEntity {
             for(int i =0; i<blockage.length;++i){
                 for(int j=0; j<blockage[i].length;++j){
                     if(blockage[i][j]!=null){
-                        pathFinding.setBlockPos(blockage[i][j].getPosition().y,
-                                blockage[i][j].getPosition().x);
+                        if(blockage[i][j]!=map.getBase()) {
+                            pathFinding.setBlockPos(blockage[i][j].getPosition().y,
+                                    blockage[i][j].getPosition().x);
+                        }
                     }
                 }
             }
