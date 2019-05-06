@@ -1,51 +1,52 @@
 package ch.heigvd.pro.a03.server;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import ch.heigvd.pro.a03.commands.Executable;
+import ch.heigvd.pro.a03.utils.Protocole;
+
+import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 public class GameClient {
-
-    private static GameClient instance;
 
     private final String HOST;
     private final int PORT;
 
     private Socket socket;
-    private OutputStreamWriter out;
-    private InputStreamReader in;
+    private BufferedWriter out;
+    private BufferedReader in;
 
     private int playerNumber = -1;
 
-    private GameClient() {
+    public GameClient() {
         HOST = "ezehkiel.ch";
         PORT = 4567;
-    }
-
-    public static GameClient getInstance() {
-
-        if (instance == null) {
-            instance = new GameClient();
-        }
-
-        return instance;
     }
 
     /**
      * Connect to the server with a socket
      * @return true if connected to the server
      */
-    public boolean connect() {
+    public boolean connect(Executable command) {
 
         try {
-            Socket socket = new Socket(HOST, PORT);
+            socket = new Socket(HOST, PORT);
 
-            out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
-            in = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
+            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-            //Communication.writeProtocol(out, Protocole.CLIENTWANTPLAYMULTI);
+            new Thread(() -> {
+                try {
 
-            return false;//Communication.readProtocol(in) == Protocole.ISCLIENTREADY;
+                    Protocole.sendProtocol(out, 100, "START");
+                    Protocole protocol = Protocole.receive(in);
+                    if (protocol.getId() == 100) {
+                        command.execute();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+            return true;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -54,9 +55,23 @@ public class GameClient {
         return false;
     }
 
+    /**
+     * Tells the server that the player is ready
+     */
     public void ready() {
 
+    }
 
+    /**
+     * Tells the server that the player has left the game.
+     */
+    public void quit() {
+
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();;
+        }
     }
 
     public int getPlayerNumber() {
