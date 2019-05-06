@@ -1,18 +1,20 @@
 package ch.heigvd.pro.a03;
 
-import com.google.gson.Gson;
+import ch.heigvd.pro.a03.httpServer.HttpServer;
+import ch.heigvd.pro.a03.socketServer.SocketServer;
+import ch.heigvd.pro.a03.utils.Protocole;
 
-import static spark.Spark.*;
+public class Server{
 
-public class Server {
 
-    public Server() {
-        Gson gson = new Gson();
-
-        get("/hello/:name", (request, response) -> HelloWorld.greet(request.params(":name")), gson::toJson);
-    }
 
     public static void main(String[] args) {
-        new Server();
+
+        //String keyStoreLocation = "deploy/keystore.jks";
+        //String keyStorePassword = "pro2019heig";
+        //secure(keyStoreLocation, keyStorePassword, null, null);
+        // Run HTTP on other thread;
+        new Thread(new HttpServer(Protocole.HTTPSERVERPORT)).start();
+        new Thread(new SocketServer(Protocole.SOCKETSERVERPORT)).start();
     }
 }
