@@ -1,8 +1,4 @@
 package ch.heigvd.pro.a03.server;
-
-import ch.heigvd.pro.a03.utils.Communication;
-import ch.heigvd.pro.a03.utils.Protocole;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
