@@ -16,6 +16,8 @@ public class Map {
     private int row;
     private int col;
     private Base basePosition;
+    private boolean endSimulation;
+    private boolean endGame;
 
 
     public Map(int row, int col, Base base) {
@@ -93,4 +95,33 @@ public class Map {
         }
 
     }
+
+
+    public boolean isEndSimulation(){
+
+        for(Unit u: units){
+          endSimulation= u.isEntityDestroyed();
+        }
+
+        return endSimulation;
+
+    }
+
+    public boolean isEndMatch(){
+
+        for(int i =0; i<structures.length;++i){
+            for(int j=0;j<structures[i].length;++j){
+                if(structures[i][j] != null){
+                    if(structures[i][j] instanceof Base){
+                        endGame= structures[i][j].isEntityDestroyed();
+                    }
+                }
+
+            }
+
+        }
+        return endGame;
+    }
+
+
 }

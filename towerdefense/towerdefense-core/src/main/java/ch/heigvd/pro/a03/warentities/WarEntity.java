@@ -14,11 +14,12 @@ abstract public class WarEntity {
     private int defensePoint;
     private int attackPoints;
     private int speed;
+    private int attackCoolDown;
     private double range;
     private int price;
     private String name;
 
-    public WarEntity(String name ,Point position, int totalHealth, int defensePoint) {
+    public WarEntity(String name ,Point position, int totalHealth, int defensePoint, int attackCoolDown) {
         this.name=name;
         this.position = position;
         this.totalHealth=totalHealth;
@@ -28,6 +29,8 @@ abstract public class WarEntity {
         this.speed=0;
         this.range=0;
         this.price=0;
+        this.attackCoolDown =attackCoolDown;
+
 
     }
 
@@ -147,4 +150,8 @@ abstract public class WarEntity {
     }
 
     public abstract void update(Map map);
+
+    public int getAttackCoolDown() {
+        return attackCoolDown;
+    }
 }

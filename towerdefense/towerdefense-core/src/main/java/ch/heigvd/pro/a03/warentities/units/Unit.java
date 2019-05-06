@@ -17,17 +17,19 @@ public class Unit extends WarEntity {
     private Astar pathFinding;
     private List<Point> path;
     private Iterator<Point> it;
-    private boolean endSimulation;
+    private boolean hasPath;
+    private int ticks;
 
 
-    public Unit(String name,Point position,int totalHealth, int defPoint, int speed, int attackPoints, int range,int price) {
-        super(name,position,totalHealth,defPoint);
+
+    public Unit(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int speed, int attackPoints, int range,int price) {
+        super(name,position,totalHealth,defPoint,attackCoolDown);
         super.setAttackPoints(attackPoints);
         super.setRange(range);
         super.setSpeed(speed);
         super.setPrice(price);
-        endSimulation=false;
-
+        hasPath=false;
+        ticks=0;
 
     }
 
@@ -35,37 +37,44 @@ public class Unit extends WarEntity {
     @Override
     public void update(Map map) {
 
-        pathFinding= new Astar(map.getRow(),map.getCol(),
-                new Position(this.getPosition().y,this.getPosition().x),
-                new Position(map.getBasePosition().getPosition().y,
-                        map.getBasePosition().getPosition().x));
+        pathUnit(map);
 
-        Structure[][] blockage= map.getStructures();
+        if(ticks==this.getSpeed()) {
+            displacement(map.getBasePosition().getPosition());
+        }
+        if (!super.isEntityDestroyed()) {
+            attack(map.getBasePosition());
+        } else {
+            //this.endSimulation=true;
+        }
 
-        /*sets the blockage*/
-        for(int i =0; i<blockage.length;++i){
-            for(int j=0; j<blockage[i].length;++j){
-                if(blockage[i][j]!=null){
-                    pathFinding.setBlockPos(blockage[i][j].getPosition().y,
-                            blockage[i][j].getPosition().x);
+
+        }
+
+
+    public void pathUnit(Map map){
+
+        if(!hasPath) {
+            pathFinding = new Astar(map.getRow(), map.getCol(),
+                    new Position(this.getPosition().y, this.getPosition().x),
+                    new Position(map.getBasePosition().getPosition().y,
+                            map.getBasePosition().getPosition().x));
+
+            Structure[][] blockage= map.getStructures();
+
+            /*sets the blockage*/
+            for(int i =0; i<blockage.length;++i){
+                for(int j=0; j<blockage[i].length;++j){
+                    if(blockage[i][j]!=null){
+                        pathFinding.setBlockPos(blockage[i][j].getPosition().y,
+                                blockage[i][j].getPosition().x);
+                    }
                 }
             }
+
+            path=pathFinding.findPath();
+            it=path.iterator();
         }
-
-
-        path=pathFinding.findPath();
-        it=path.iterator();
-
-        while (!endSimulation){
-
-            displacement(map.getBasePosition().getPosition());
-            if(!super.isEntityDestroyed()) {
-                attack(map.getBasePosition());
-            }else{
-                this.endSimulation=true;
-            }
-        }
-
 
     }
 
@@ -86,7 +95,7 @@ public class Unit extends WarEntity {
 
     }
 
-    public void setEndSimulation(boolean endSimulation) {
-        this.endSimulation = endSimulation;
+    public void setEndSimulation() {
+       hasPath=false;
     }
 }
