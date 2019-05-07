@@ -19,8 +19,9 @@ abstract public class WarEntity {
     private int price;
     private String name;
 
-    private static int count=0;
-    public final int ID;
+    private int entityCount;
+
+    private int id;
 
     public WarEntity(String name ,Point position, int totalHealth, int defensePoint, int attackCoolDown) {
         this.name=name;
@@ -33,10 +34,12 @@ abstract public class WarEntity {
         this.range=0;
         this.price=0;
         this.attackCoolDown =attackCoolDown;
-        this.ID=count;
-        count++;
+        this.id = -1;
 
+    }
 
+    public void setID(int id){
+        this.id=id;
     }
 
     public boolean isEntityDestroyed(){

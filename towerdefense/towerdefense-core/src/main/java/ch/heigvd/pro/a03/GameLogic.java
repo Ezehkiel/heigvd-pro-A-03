@@ -8,6 +8,8 @@ import java.util.LinkedList;
 
 public class GameLogic {
 
+    private int entityCount;
+
     LinkedList<Player> players;
     LinkedList<Map> maps;
     private boolean endMatch;
@@ -20,6 +22,7 @@ public class GameLogic {
         maps.add(map2);
         endMatch = false;
         endRound = false;
+        entityCount = 0;
 
     }
 
@@ -79,4 +82,7 @@ public class GameLogic {
         return players.get(index);
     }
 
+    public int getNextEntityId() {
+        return entityCount++;
+    }
 }
