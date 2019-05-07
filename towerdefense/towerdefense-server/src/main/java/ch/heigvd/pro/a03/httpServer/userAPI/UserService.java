@@ -2,14 +2,18 @@ package ch.heigvd.pro.a03.httpServer.userAPI;
 
 
 import ch.heigvd.pro.a03.httpServer.SqlRequest;
+import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
 import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import spark.Request;
+import spark.Response;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -26,10 +30,17 @@ public class UserService {
      * List all user that are registered in the DB
      * @return List<User> list with all user in it
      */
-    public List<User> getAllUsers() throws UserException {
+    public List<User> getAllUsers() {
         LOG.log(Level.INFO, "Request: list all users");
         return SqlRequest.getAllUserDB();
     }
+
+    public List<Score> getAllScores()  {
+        LOG.log(Level.INFO, "Request: list all scores");
+        return SqlRequest.getAllScoreDB();
+    }
+
+
 
     /**
      * This function return a User that we found with his username
@@ -81,17 +92,8 @@ public class UserService {
 
                 if (createdUser != null) {
                     try {
-                        JSONObject jo = new JSONObject();
 
-                        Algorithm algorithm = Algorithm.HMAC256("secret");
-                        String token = JWT.create().withClaim("username", createdUser.getUsername())
-                                .withClaim("id", createdUser.getId()).sign(algorithm);
-
-                        jo.put("error", false);
-                        jo.put("data", createdUser);
-                        jo.put("token", token);
-
-                        return jo;
+                        return createResponse(createdUser);
                     } catch (JWTCreationException exception) {
                         LOG.log(Level.SEVERE, "ERROR with token's creations");
                         throw new UserException("Error with token's creations", null);
@@ -137,7 +139,7 @@ public class UserService {
      * @param req Request This is the request that we received from the client
      * @return a JSONObect with the token and the user
      */
-    public static JSONObject loginUser(Request req) throws UserException {
+    public JSONObject loginUser(Request req) throws UserException {
         Gson gson = new Gson();
 
         try {
@@ -156,18 +158,10 @@ public class UserService {
             if (userInDataBase != null && userInDataBase.equals(userLoginHttp)) {
 
                 try {
-                    JSONObject jo = new JSONObject();
 
-                    Algorithm algorithm = Algorithm.HMAC256("secret");
-                    String token = JWT.create().withClaim("username", userInDataBase.getUsername())
-                            .withClaim("id", userInDataBase.getId()).sign(algorithm);
-
-                    jo.put("error", false);
-                    jo.put("data", userInDataBase);
-                    jo.put("token", token);
 
                     SqlRequest.setLastLoginDB(userInDataBase.getId());
-                    return jo;
+                    return createResponse(userInDataBase);
                 } catch (JWTCreationException exception) {
                     throw new UserException("Error with the creations of the token", userInDataBase);
                 }
@@ -182,5 +176,82 @@ public class UserService {
             jo.put("data", ex.getUser());
             return jo;
         }
+    }
+
+    private JSONObject createResponse(User user){
+        JSONObject jo = new JSONObject();
+
+        Algorithm algorithm = Algorithm.HMAC256("secret");
+        String token = JWT.create().withClaim("username", user.getUsername())
+                .withClaim("id", user.getId()).sign(algorithm);
+
+        jo.put("error", false);
+        jo.put("data", user);
+        jo.put("token", token);
+        return jo;
+    }
+
+    public JSONObject setScore(Request req, Response res) {
+
+        org.json.JSONObject jo = new org.json.JSONObject(req.body());
+        String serverToken = jo.getString("token");
+        JSONObject tokenResponse = new JSONObject();
+        try {
+            Algorithm algorithm = Algorithm.HMAC256("P2z6cA9CGt5Oq");
+            JWTVerifier verifier = JWT.require(algorithm)
+                    .build(); //Reusable verifier instance
+            verifier.verify(serverToken);
+
+            long idWinner = jo.getLong("idWinner");
+            long idLoser = jo.getLong("idLoser");
+
+            SqlRequest.incrementPlayedGameUserDB(idWinner);
+            SqlRequest.incrementPlayedGameUserDB(idLoser);
+
+            SqlRequest.incrementWinGameUserDB(idWinner);
+
+            tokenResponse.put("error", false);
+            tokenResponse.put("message", "Score updated");
+            return tokenResponse;
+
+        } catch (JWTVerificationException exception){
+
+            tokenResponse.put("error", true);
+            tokenResponse.put("message", "Invalide token");
+            return tokenResponse;
+        }
+
+    }
+
+    public JSONObject getUserScore(Request req, Response res) {
+
+        org.json.JSONObject jo = new org.json.JSONObject(req.body());
+        org.json.JSONObject data = (org.json.JSONObject) jo.get("data");
+        String userToken = jo.getString("token");
+        JSONObject tokenResponse = new JSONObject();
+        try {
+            Algorithm algorithm = Algorithm.HMAC256("secret");
+            JWTVerifier verifier = JWT.require(algorithm).withClaim("username", (String) data.get("username"))
+                    .withClaim("id", (int) data.get("id"))
+                    .build(); //Reusable verifier instance
+            verifier.verify(userToken);
+
+            long id = Long.valueOf(req.params(":id"));
+            Score score = SqlRequest.getUserScoreDB(id);
+
+
+
+            tokenResponse.put("error", false);
+            tokenResponse.put("data", score);
+            tokenResponse.put("token", userToken);
+            return tokenResponse;
+
+        } catch (JWTVerificationException exception){
+
+            tokenResponse.put("error", true);
+            tokenResponse.put("message", "Invalide token");
+            return tokenResponse;
+        }
+
     }
 }
