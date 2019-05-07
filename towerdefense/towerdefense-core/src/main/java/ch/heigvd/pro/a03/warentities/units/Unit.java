@@ -62,10 +62,11 @@ public class Unit extends WarEntity {
                     Structure closeTarget=null;
                     int chosenOneDistance = Integer.MAX_VALUE;
 
-                    for(int i =0; i<map.getStructures().length;++i){
-                        for(int j=0; j<map.getStructures()[i].length;++i){
+                    for(int i =0; i<map.getRow();++i){
+                        for(int j=0; j<map.getCol();++j){
 
-                            if((!map.getStructures()[i][j].isEntityDestroyed()) && isInRange(map.getStructures()[i][j])
+                            if(((map.getStructures()[i][j]!=null) && !map.getStructures()[i][j].isEntityDestroyed())
+                                    && isInRange(map.getStructures()[i][j])
                                     && distance(this, map.getStructures()[i][j]) < chosenOneDistance){
 
                                 closeTarget = map.getStructures()[i][j];

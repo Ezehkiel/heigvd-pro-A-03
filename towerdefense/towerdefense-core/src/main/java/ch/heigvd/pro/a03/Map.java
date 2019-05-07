@@ -26,7 +26,7 @@ public class Map {
         structures = new Structure[row][col];
         units=new LinkedList<>();
         this.base=base;
-        setStructureAt(base,base.getPosition().x,base.getPosition().y);
+        setStructureAt(base,base.getPosition().y,base.getPosition().x);
 
     }
 
@@ -42,22 +42,22 @@ public class Map {
         return col;
     }
 
-    public Structure getStructureAt(int x, int y) {
+    public Structure getStructureAt(int row, int col) {
 
-        if (!inMap(x, y)) {
+        if (!inMap(row,col)) {
             return null;
         }
 
-        return structures[x][y];
+        return structures[row][col];
     }
 
-    public void setStructureAt(Structure structure, int x, int y) {
+    public void setStructureAt(Structure structure, int row, int col) {
 
-        if (!inMap(x, y)) {
+        if (!inMap(row, col)) {
             throw new IndexOutOfBoundsException("Position not in map");
         }
 
-        structures[x][y] = structure;
+        structures[row][col] = structure;
 
     }
 
@@ -78,14 +78,14 @@ public class Map {
         return units;
     }
 
-    public boolean inMap(int x, int y) {
-        return x >= 0 && x < size.width && y >= 0 && y < size.height;
+    public boolean inMap(int row, int col) {
+        return (row >= 0 && row < this.row && col >= 0 && col < this.col);
     }
 
     public void update() {
 
-        for(int i =0; i<structures.length;++i){
-            for(int j=0;j<structures[i].length;++j){
+        for(int i =0; i<row;++i){
+            for(int j=0;j<col;++j){
                 if(structures[i][j] != null){
                     structures[i][j].update(this);
                 }
