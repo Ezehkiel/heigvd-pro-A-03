@@ -13,16 +13,16 @@ import java.nio.charset.StandardCharsets;
 
 public class HttpServerUtils {
 
-    public String getErrorMessage() {
+    public static String getErrorMessage() {
         return errorMessage;
     }
-    public void resetError(){
-        this.errorMessage = null;
+    public static void resetError(){
+        errorMessage = null;
     }
 
     private static String errorMessage;
 
-    private static final String url = "http://127.0.0.1:3945";
+    private static final String url = "https://ezehkiel.ch:3945";
 
     public static User login(String username, String password) {
 
@@ -35,7 +35,7 @@ public class HttpServerUtils {
                 return playerFromResponse(connection);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
         return null;

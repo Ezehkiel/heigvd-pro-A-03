@@ -145,7 +145,7 @@ abstract public class WarEntity {
         return speed;
     }
 
-    public void setPrice(int speed) {
+    public void setPrice(int price){
         this.price = price;
     }
 

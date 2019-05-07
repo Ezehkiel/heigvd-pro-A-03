@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
 import ch.heigvd.pro.a03.warentities.Base;
+
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
@@ -40,6 +41,22 @@ public class TowerDefense {
         stateMachine.changeState(getState(GameStateType.WAIT));
     }
 
+    /* ----- Turret Management -----*/
+
+    public boolean isCellOccupied(int x, int y) {
+        return map.getStructureAt(x, y) != null;
+    }
+
+    public Turret getTurretAt(int x, int y) {
+
+        Structure structure = map.getStructureAt(x, y);
+        if (structure instanceof Turret) {
+            return (Turret) structure;
+        }
+
+        return null;
+    }
+
     public boolean placeTurret(Turret turret) {
 
         if (!isInState(GameStateType.PLAY) || map.getStructureAt(turret.getPosition().x, turret.getPosition().y) != null) {
@@ -48,6 +65,23 @@ public class TowerDefense {
 
         try {
             map.setStructureAt(turret, turret.getPosition().x, turret.getPosition().y);
+        } catch (IndexOutOfBoundsException e) {
+            return false;
+        }
+
+        scene.updateMap(map);
+
+        return true;
+    }
+
+    public boolean destroyTurret(Turret turret) {
+
+        if (!isInState(GameStateType.PLAY) || map.getStructureAt(turret.getPosition().x, turret.getPosition().y) == null) {
+            return false;
+        }
+
+        try {
+            map.setStructureAt(null, turret.getPosition().x, turret.getPosition().y);
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
@@ -67,5 +101,9 @@ public class TowerDefense {
 
     public GameState getState(GameStateType stateType) {
         return states[stateType.ordinal()];
+    }
+
+    public GameScene getScene() {
+        return scene;
     }
 }

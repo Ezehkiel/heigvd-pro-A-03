@@ -14,7 +14,7 @@ public class Server{
         //String keyStorePassword = "pro2019heig";
         //secure(keyStoreLocation, keyStorePassword, null, null);
         // Run HTTP on other thread;
-        new Thread(new HttpServer(Protocole.HTTPSERVERPORT)).start();
-        new Thread(new SocketServer(Protocole.SOCKETSERVERPORT)).start();
+        new Thread(new HttpServer(3945)).start();
+        new Thread(new SocketServer(4567)).start();
     }
 }

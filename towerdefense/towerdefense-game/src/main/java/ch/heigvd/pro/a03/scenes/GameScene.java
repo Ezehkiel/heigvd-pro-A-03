@@ -50,6 +50,8 @@ public class GameScene extends Scene {
     private TowerDefense game;
     private TurretType selectedTurretType;
 
+    private GameMenu gameMenu;
+
     public enum TurretType {
         MACHINE_GUN, MORTAR, SLOWER
     }
@@ -59,12 +61,13 @@ public class GameScene extends Scene {
         gameCamera = new OrthographicCamera();
         gameViewport = new ScreenViewport(gameCamera);
         gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
+        gameMenu = new GameMenu(getSkin(), this);
 
         // Create GameLauncher Menu
         setViewport(new ScreenViewport());
         setStage(new Stage(getViewport()));
 
-        getStage().addActor(new GameMenu(getSkin(), this).getMenu());
+        getStage().addActor(gameMenu.getMenu());
 
         notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
         machineGunTexture = new Texture(Gdx.files.internal("assets/MachineGun.png"));
@@ -164,13 +167,22 @@ public class GameScene extends Scene {
         int x = (int) Math.floor(mousePosition.x / TILE_SIZE);
         int y = (int) Math.floor(mousePosition.y / TILE_SIZE);
 
-        if (selectedTurretType != null) {
+        Turret turret = null;
 
-            Turret turret = null;
+        if (game.isCellOccupied(x, y)) {
+
+            turret = game.getTurretAt(x, y);
+            if (turret != null) {
+                gameMenu.showTurretMenu(game, turret);
+            }
+
+        } else if (selectedTurretType != null) {
+
             switch (selectedTurretType) {
 
                 case MACHINE_GUN:
                     turret = new MachineGunTurret(new Point(x,y));
+
                     break;
 
                 case MORTAR:
@@ -211,6 +223,9 @@ public class GameScene extends Scene {
                     }
 
                     cell.setTile(new StaticTiledMapTile(new TextureRegion(texture)));
+                } else {
+
+                    cell.setTile(null);
                 }
             }
         }
