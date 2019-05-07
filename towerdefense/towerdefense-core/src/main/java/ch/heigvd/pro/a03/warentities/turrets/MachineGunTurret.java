@@ -10,4 +10,8 @@ public class MachineGunTurret extends Turret {
         super(name,position,totalHealth,defPoint,attackCoolDown,attackPoints,range,price);
     }
 
+    public MachineGunTurret(Point position){
+        this("MachineGun",position,500,1500,10,500,10,200);
+    }
+
 }

@@ -7,7 +7,7 @@ import ch.heigvd.pro.a03.menus.game.GameMenu;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
-import ch.heigvd.pro.a03.warentities.turrets.SlowerTurret;
+import ch.heigvd.pro.a03.warentities.turrets.LaserGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -178,7 +178,7 @@ public class GameScene extends Scene {
                     break;
 
                 case SLOWER:
-                    turret = new SlowerTurret("Slower",new Point(x, y), 10, 2, 5, 3, 10);
+                    turret = new LaserGunTurret("Slower",new Point(x, y), 10, 2, 5, 3, 10);
                     break;
             }
 
@@ -205,7 +205,7 @@ public class GameScene extends Scene {
                     } else if (structure instanceof MortarTurret) {
                         texture = mortarTexture;
 
-                    } else if (structure instanceof SlowerTurret) {
+                    } else if (structure instanceof LaserGunTurret) {
                         texture = slowerTexture;
 
                     }
