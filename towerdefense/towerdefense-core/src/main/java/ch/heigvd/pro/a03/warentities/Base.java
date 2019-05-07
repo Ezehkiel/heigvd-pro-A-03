@@ -6,10 +6,16 @@ public class Base extends Structure {
 
     private boolean endGame;
 
-    public Base(Point position, int totalHealth, int defPoint) {
-        super(position, totalHealth, defPoint);
+    public Base(String name,Point position, int totalHealth, int defPoint, int attackCoolDown) {
+        super(name,position, totalHealth, defPoint,attackCoolDown);
+        this.setAttackPoints(100);
         endGame = false;
     }
+
+    public Base(Point position){
+        this("Base",position,15000,900, 100);
+    }
+
 
 
     public boolean isEntityDestroyed() {

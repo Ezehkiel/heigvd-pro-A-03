@@ -3,8 +3,11 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
-import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.Base;
+
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
+
+import java.awt.*;
 
 public class TowerDefense {
 
@@ -24,7 +27,7 @@ public class TowerDefense {
 
         this.scene = scene;
 
-        map = new Map(20, 12);
+        map = new Map(20, 12, new Base(new Point(19,12)));
 
         stateMachine = new StateMachine();
 

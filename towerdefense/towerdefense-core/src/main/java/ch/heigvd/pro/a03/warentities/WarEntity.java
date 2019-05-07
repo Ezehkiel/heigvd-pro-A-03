@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.warentities;
 
 
+import ch.heigvd.pro.a03.Map;
+
 import java.awt.*;
 
 abstract public class WarEntity {
@@ -12,63 +14,80 @@ abstract public class WarEntity {
     private int defensePoint;
     private int attackPoints;
     private int speed;
+    private int attackCoolDown;
     private double range;
     private int price;
+    private String name;
 
-    public WarEntity(Point position, int totalHealth, int defensePoint) {
+
+    private int id;
+
+    public WarEntity(String name, Point position, int totalHealth, int defensePoint, int attackCoolDown) {
+        this.name = name;
         this.position = position;
-        this.totalHealth=totalHealth;
-        this.healthPoints=totalHealth;
-        this.defensePoint=defensePoint;
-        this.attackPoints=0;
-        this.speed=0;
-        this.range=0;
-        this.price=0;
+        this.totalHealth = totalHealth;
+        this.healthPoints = totalHealth;
+        this.defensePoint = defensePoint;
+        this.attackPoints = 0;
+        this.speed = 0;
+        this.range = 0;
+        this.price = 0;
+        this.attackCoolDown = attackCoolDown;
+        this.id = -1;
+
     }
 
-    public boolean isEntityDestroyed(){
+    public void setID(int id) {
+        this.id = id;
+    }
 
-        return (healthPoints==0);
+    public boolean isEntityDestroyed() {
+
+        return (healthPoints == 0);
     }
 
     /**
-     * @breif Uses the distance formula between two points in order to determine if its in range.
      * @param target the Entity we desire check if its in range
      * @return true if its in range
+     * @breif Uses the distance between this and target to determine if target is in range.
      */
-    private boolean isInRange(WarEntity target) {
-
-        //distance between two points, circle formula.
-        double distance = Math.sqrt(Math.pow((double) (target.getPosition().x - position.x), 2) +
-                                    Math.pow((double) (target.getPosition().y - position.y), 2));
-
-        if (distance >= range) {
-            return true;
-        }
-
-        return false;
+    protected boolean isInRange(WarEntity target) {
+        return distance(this, target) <= range;
     }
 
     /**
-     * @brief
-     * deals 200 damage.
+     * Calculate the straight distance between two WarEntities:
+     * which is the x distance + the y distance between the WarEntities
+     *
+     * @param we1 a WarEntity
+     * @param we2 another WarEntity
+     * @return the straight distance between both specified WarEntities
+     */
+    public static int distance(WarEntity we1, WarEntity we2) {
+        return Math.abs(we1.position.x - we2.position.x) + Math.abs(we1.position.y - we2.position.y);
+    }
+
+    /**
+     * @param damageTaken damage inflicted by other Entity
+     * @brief deals 200 damage.
      * 10 Defense: 181 damage
      * 100 Defense: 100 damage
      * 200 Defense: 66 damage
      * 500 Defense: 33 damage
-     *
-     * @param damageTaken damage inflicted by other Entity
      */
     public void dealDamage(int damageTaken) {
 
-        healthPoints -= damageTaken*(100/(100+defensePoint));
+        int tmp = damageTaken * (100 / (100 + defensePoint));
 
+        if (healthPoints - tmp >= 0) {
+            healthPoints -= tmp;
+        } else {
+            healthPoints = 0;
+        }
     }
 
     /**
-     *
      * @param amount the amount of hp that will be restored
-     *
      */
     public void heal(int amount) {
 
@@ -88,6 +107,10 @@ abstract public class WarEntity {
 
     public Point getPosition() {
         return position;
+    }
+
+    public void setPosition(Point position) {
+        this.position = position;
     }
 
     public int getHealthPoint() {
@@ -114,11 +137,11 @@ abstract public class WarEntity {
         this.range = range;
     }
 
-    public void setSpeed(int speed){
-        this.speed=speed;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
-    public int getSpeed(){
+    public int getSpeed() {
         return speed;
     }
 
@@ -126,7 +149,7 @@ abstract public class WarEntity {
         this.price = price;
     }
 
-    public int getPrice(){
+    public int getPrice() {
         return price;
     }
 
@@ -140,5 +163,11 @@ abstract public class WarEntity {
                 ", attackPoints=" + attackPoints +
                 ", range=" + range +
                 '}';
+    }
+
+    public abstract void update(Map map);
+
+    public int getAttackCoolDown() {
+        return attackCoolDown;
     }
 }

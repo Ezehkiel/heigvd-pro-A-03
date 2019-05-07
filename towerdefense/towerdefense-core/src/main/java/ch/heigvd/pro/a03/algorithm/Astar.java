@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.algorithm;
 
+import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 /***
  *
@@ -11,8 +13,8 @@ import java.util.*;
  *         Astar aStar = new Astar(rows, cols, initialPosition, finalPosition);
  *         int[][] blocksArray = new int[][]{{1, 3}, {2, 3}, {3, 3}};
  *         aStar.setBlocks(blocksArray);
- *         List<Position> path = aStar.findPath();
- *         for (Position p : path) {
+ *         List<Point> path = aStar.findPath();
+ *         for (Point p : path) {
  *             System.out.println(p);
  *         }
  *
@@ -26,15 +28,15 @@ import java.util.*;
  *         // 5    -   -   -   -   -   -   -
  *
  *         //Expected output
- *         //Node [row=2, col=1]
- *         //Node [row=2, col=2]
- *         //Node [row=1, col=2]
- *         //Node [row=0, col=2]
- *         //Node [row=0, col=3]
- *         //Node [row=0, col=4]
- *         //Node [row=1, col=4]
- *         //Node [row=2, col=4]
- *         //Node [row=2, col=5]
+ *         //position [row=2, col=1]
+ *         //position [row=2, col=2]
+ *         //position [row=1, col=2]
+ *         //position [row=0, col=2]
+ *         //position [row=0, col=3]
+ *         //position [row=0, col=4]
+ *         //position [row=1, col=4]
+ *         //position [row=2, col=4]
+ *         //position [row=2, col=5]
  *
  *         //Search Path
  *  *         //      0   1   2   3   4   5   6
@@ -119,24 +121,34 @@ public class Astar {
         }
     }
 
+    public void setBlockPos(int row, int col) {//will add the blockage in the map
+            setBlock(row, col);
+    }
+
 
     /**
      * @return the path to the target or an empty arraylist if there is none.
      */
-    public List<Position> findPath() {
+    public List<Point> findPath() {
         openList.add(initialPosition);
         while (!isEmpty(openList)) {
             Position current = openList.poll(); //retrieve remove the first element of the Queue
             closedSet.add(current);
             if (isFinalPosition(current)) {
-                return getPath(current);
+                List<Position> positionPath=getPath(current);
+                List<Point> path=new ArrayList<Point>();
+                for(Position p :positionPath){
+                    path.add(new Point(p.getRow(),p.getCol()));
+                }
+                return path;
+
             } else {
                 addAdjacent(current);
             }
         }
 
         System.out.println("Unable to find a path, all blocked -position impossible-");
-        return new ArrayList<Position>();
+        return new ArrayList<Point>();
     }
 
     /**
