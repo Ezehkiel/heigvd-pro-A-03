@@ -16,6 +16,8 @@ public class GameLogic {
     private boolean endRound;
 
     public GameLogic(Player player1, Player player2, Map map1, Map map2) {
+        players=new LinkedList<>();
+        maps=new LinkedList<>();
         players.add(player1);
         players.add(player2);
         maps.add(map1);

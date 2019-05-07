@@ -24,6 +24,7 @@ public class Map {
         this.col=col;
         this.size = new Dimension(row, col);
         structures = new Structure[row][col];
+        units=new LinkedList<>();
         this.base=base;
         setStructureAt(base,base.getPosition().x,base.getPosition().y);
 
