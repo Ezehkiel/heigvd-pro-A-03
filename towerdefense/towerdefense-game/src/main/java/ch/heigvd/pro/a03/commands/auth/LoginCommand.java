@@ -1,27 +1,24 @@
 package ch.heigvd.pro.a03.commands.auth;
 
-import ch.heigvd.pro.a03.GameLauncher;
-import ch.heigvd.pro.a03.commands.Command;
+import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.menus.auth.ConnectionMenu;
 import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.HttpServerUtils;
 
-public class LoginCommand extends Command<ConnectionMenu> {
+public class LoginCommand extends AuthCommand {
 
-    public LoginCommand(ConnectionMenu receiver) {
+    private ConnectionMenu menu;
+
+    public LoginCommand(ConnectionMenu menu, AuthMenu receiver) {
         super(receiver);
+        this.menu = menu;
     }
 
     @Override
     public void execute(Object... args) {
 
-        User player = HttpServerUtils.login(getReceiver().getUsername(), getReceiver().getPassword());
+        getReceiver().clearError();
 
-        if (player == null) {
-            return;
-        }
-
-        GameLauncher.getInstance().setConnectedPlayer(player);
-        getReceiver().getParent().showConnectedPlayerMenu();
+        checkPlayer(HttpServerUtils.login(menu.getUsername(), menu.getPassword()));
     }
 }
