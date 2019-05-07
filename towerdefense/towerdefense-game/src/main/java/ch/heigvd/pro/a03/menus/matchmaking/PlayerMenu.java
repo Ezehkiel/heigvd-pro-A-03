@@ -1,8 +1,11 @@
 package ch.heigvd.pro.a03.menus.matchmaking;
 
+import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
+import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.commands.gameclient.GameClientCommand;
 import ch.heigvd.pro.a03.menus.Menu;
+import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.UI;
@@ -29,7 +32,13 @@ public class PlayerMenu extends Menu {
         readyButton.addListener(new ButtonCommand(new GameClientCommand(gameClient) {
             @Override
             public void execute(Object... args) {
-                getReceiver().ready();
+
+                getReceiver().ready(new Command<GameLauncher>(GameLauncher.getInstance()) {
+                    @Override
+                    public void execute(Object... args) {
+                        getReceiver().getSceneManager().add(new GameScene());
+                    }
+                });
             }
         }));
 

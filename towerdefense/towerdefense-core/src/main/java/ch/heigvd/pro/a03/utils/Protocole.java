@@ -31,7 +31,7 @@ public class Protocole {
     public static void sendProtocol(BufferedWriter out, int protocolId, String data) {
 
         try {
-            out.write(String.format("%03d-%s\r\n", protocolId, data));
+            out.write(String.format("%03d-%s\r\n", protocolId * 100, data));
             out.flush();
 
         } catch (IOException e) {

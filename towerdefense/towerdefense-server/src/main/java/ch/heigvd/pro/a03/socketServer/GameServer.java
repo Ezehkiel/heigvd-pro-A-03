@@ -24,7 +24,7 @@ public class GameServer implements Runnable{
 
 
     public GameServer(ArrayList<Player> players) {
-        this.players =players;
+        this.players = players;
         this.ValidationState = new ValidationState(3,this) ;
         this.FirstRoundState = new FirstRoundState(4,this) ;
         this.RoundState = new RoundState(5,this) ;

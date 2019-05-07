@@ -2,7 +2,7 @@ package ch.heigvd.pro.a03.commands.auth;
 
 import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.menus.auth.RegistrationMenu;
-import ch.heigvd.pro.a03.utils.HttpServerUtils;
+import ch.heigvd.pro.a03.server.HttpServerUtils;
 
 public class RegisterCommand extends AuthCommand {
 

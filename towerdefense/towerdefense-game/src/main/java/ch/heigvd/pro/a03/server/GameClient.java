@@ -1,11 +1,16 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.utils.Protocole;
+import com.oracle.tools.packager.Log;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.logging.Logger;
+
 public class GameClient {
+
+    public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
 
     private final String HOST;
     private final int PORT;
@@ -13,11 +18,13 @@ public class GameClient {
     private Socket socket;
     private BufferedWriter out;
     private BufferedReader in;
+    private ObjectOutputStream objectOut;
+    private ObjectInputStream objectIn;
 
     private int playerNumber = -1;
 
     public GameClient() {
-        HOST = "ezehkiel.ch";
+        HOST = "localhost";
         PORT = 4567;
     }
 
@@ -34,13 +41,19 @@ public class GameClient {
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
             new Thread(() -> {
-                try {
 
-                    Protocole.sendProtocol(out, 100, "START");
-                    Protocole protocol = Protocole.receive(in);
-                    if (protocol.getId() == 100) {
-                        command.execute();
-                    }
+                try {
+                    Protocole.sendProtocol(out, 1, "START");
+                    Protocole.receive(in);
+
+                    Protocole.sendProtocol(out, 1, "2");
+                    Protocole.receive(in);
+                    Protocole.receive(in);
+
+                    LOG.info("Connected to game server!");
+
+                    command.execute();
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,10 +69,50 @@ public class GameClient {
     }
 
     /**
-     * Tells the server that the player is ready
+     * Gets the players of the game.
      */
-    public void ready() {
+    public void getPlayers(Executable showPlayer, Executable showReadyButton) {
+        new Thread(() -> {
+            try {
 
+                Protocole.sendProtocol(out, 2, "START");
+
+                objectIn = new ObjectInputStream(socket.getInputStream());
+                objectOut = new ObjectOutputStream(socket.getOutputStream());
+
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+                    showPlayer.execute();
+                    protocole = Protocole.receive(in);
+                }
+
+                Log.info("Game party if full.");
+                showReadyButton.execute();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    /**
+     * Tells the server that the player is ready.
+     */
+    public void ready(Executable startGame) {
+        new Thread(() -> {
+            try {
+                Protocole.sendProtocol(out, 3, "START");
+                Protocole.receive(in);
+                Protocole.sendProtocol(out, 3, "YES");
+                Protocole.receive(in);
+
+                LOG.info("Game is starting");
+                startGame.execute();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
     }
 
     /**
@@ -69,6 +122,8 @@ public class GameClient {
 
         try {
             socket.close();
+            out.close();
+            in.close();
         } catch (IOException e) {
             e.printStackTrace();;
         }

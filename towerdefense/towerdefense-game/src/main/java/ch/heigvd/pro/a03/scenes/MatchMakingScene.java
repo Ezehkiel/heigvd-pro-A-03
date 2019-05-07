@@ -7,24 +7,41 @@ import ch.heigvd.pro.a03.server.GameClient;
 
 public class MatchMakingScene extends Scene {
 
-    private PlayerMenu playerOneMenu;
-    private PlayerMenu playerTwoMenu;
+    private PlayerMenu playerMenu;
 
     private GameClient gameClient;
 
     public MatchMakingScene() {
 
         gameClient = new GameClient();
-
-        playerOneMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), null, getSkin());
-
-        getStage().addActor(playerOneMenu.getMenu());
-
-        gameClient.connect(new Command<PlayerMenu>(playerOneMenu) {
+        gameClient.connect(new Command<MatchMakingScene>(this) {
             @Override
             public void execute(Object... args) {
-                getReceiver().updateMenu(true);
+                getReceiver().showPlayerMenu();
             }
         });
+    }
+
+    public void showPlayerMenu() {
+
+        playerMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), gameClient, getSkin());
+        playerMenu.getMenu().setFillParent(true);
+
+        getStage().addActor(playerMenu.getMenu());
+
+        gameClient.getPlayers(
+                new Command<MatchMakingScene>(this) {
+                    @Override
+                    public void execute(Object... args) {
+                        System.out.println("New player found");
+                    }
+                },
+                new Command<MatchMakingScene>(this) {
+                    @Override
+                    public void execute(Object... args) {
+                        getReceiver().playerMenu.updateMenu(true);
+                    }
+                }
+        );
     }
 }

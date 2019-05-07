@@ -1,4 +1,4 @@
-package ch.heigvd.pro.a03.utils;
+package ch.heigvd.pro.a03.server;
 
 import ch.heigvd.pro.a03.users.User;
 import org.json.JSONObject;

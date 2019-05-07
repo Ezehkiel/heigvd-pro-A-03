@@ -3,7 +3,7 @@ package ch.heigvd.pro.a03.commands.auth;
 import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.menus.auth.ConnectionMenu;
 import ch.heigvd.pro.a03.users.User;
-import ch.heigvd.pro.a03.utils.HttpServerUtils;
+import ch.heigvd.pro.a03.server.HttpServerUtils;
 
 public class LoginCommand extends AuthCommand {
 
