@@ -13,7 +13,7 @@ import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 public class GameServer implements Runnable{
 
-    private static Logger LOG = Logger.getLogger(GameServer.class.getSimpleName());
+    public static Logger LOG = Logger.getLogger(GameServer.class.getSimpleName());
 
     public ServerState ValidationState;
     public ServerState FirstRoundState;
@@ -92,7 +92,7 @@ public class GameServer implements Runnable{
     public void waitForPlayers(String message) throws InterruptedException {
         Thread t[] = new Thread[players.size()];
         for(Player p : players){
-            t[p.id] = new Thread(new waiter(p.in,message));
+            t[p.id] = new Thread(new waiter(p,message));
             t[p.id].start();
         }
 
@@ -103,10 +103,10 @@ public class GameServer implements Runnable{
 
     private class waiter implements Runnable{
         String response;
-        BufferedReader in;
-        public waiter(BufferedReader in, String response) {
+        Player player;
+        public waiter(Player player, String response) {
             this.response = response;
-            this.in=in;
+            this.player = player;
         }
 
         @Override
@@ -114,12 +114,15 @@ public class GameServer implements Runnable{
 
             while (true) {
                 try {
-                    if (!Protocole.receive(in).getData().equals(response)) break;
+                    if (!Protocole.receive(player.getIn()).getData().equals(response)) {
+                        break;
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            };
+            }
 
+            GameServer.LOG.info(String.format("Player %d is ready.", player.getId()));
         }
     }
 }

@@ -87,6 +87,10 @@ public class GameClient {
                 }
 
                 Log.info("Game party if full.");
+
+                Protocole.sendProtocol(out, 3, "START");
+                Protocole.receive(in);
+
                 showReadyButton.execute();
 
             } catch (IOException e) {
@@ -101,8 +105,6 @@ public class GameClient {
     public void ready(Executable startGame) {
         new Thread(() -> {
             try {
-                Protocole.sendProtocol(out, 3, "START");
-                Protocole.receive(in);
                 Protocole.sendProtocol(out, 3, "YES");
                 Protocole.receive(in);
 
