@@ -6,6 +6,7 @@ import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -52,7 +53,31 @@ public class Unit extends WarEntity {
 
             if (attackTicks == this.getAttackCoolDown()) {
 
-                attack(map.getBase());
+                //If the enemy base is in range, the Unit will focus only on the base
+
+                if(isInRange(map.getBase())) {
+                    super.attack(map.getBase());
+
+
+                }else{ //attacks the closest turret
+
+                    Structure closeTarget=null;
+                    int chosenOneDistance = Integer.MAX_VALUE;
+
+                    for(int i =0; i<map.getStructures().length;++i){
+                        for(int j=0; j<map.getStructures()[i].length;++i){
+
+                            if(isInRange(map.getStructures()[i][j]) && distance(this, map.getStructures()[i][j]) < chosenOneDistance){
+                                closeTarget = map.getStructures()[i][j];
+                                chosenOneDistance = distance(this, closeTarget);
+                            }
+                        }
+
+                    }
+
+                    //attack the chosen one if their is any
+                    if(closeTarget != null) attack(closeTarget);
+                }
                 attackTicks = 0;
             }
         }
@@ -113,14 +138,6 @@ public class Unit extends WarEntity {
 
     }
 
-    /**
-     * @brief deals damage to the target
-     * @param baseEnemy the target
-     */
-    public void attack(Base baseEnemy){
-        super.attack(baseEnemy);
-
-    }
 
     public void setEndSimulation() {
        hasPath=false;
