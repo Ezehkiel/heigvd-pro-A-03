@@ -23,34 +23,34 @@ abstract public class WarEntity {
 
     private int id;
 
-    public WarEntity(String name ,Point position, int totalHealth, int defensePoint, int attackCoolDown) {
-        this.name=name;
+    public WarEntity(String name, Point position, int totalHealth, int defensePoint, int attackCoolDown) {
+        this.name = name;
         this.position = position;
-        this.totalHealth=totalHealth;
-        this.healthPoints=totalHealth;
-        this.defensePoint=defensePoint;
-        this.attackPoints=0;
-        this.speed=0;
-        this.range=0;
-        this.price=0;
-        this.attackCoolDown =attackCoolDown;
+        this.totalHealth = totalHealth;
+        this.healthPoints = totalHealth;
+        this.defensePoint = defensePoint;
+        this.attackPoints = 0;
+        this.speed = 0;
+        this.range = 0;
+        this.price = 0;
+        this.attackCoolDown = attackCoolDown;
         this.id = -1;
 
     }
 
-    public void setID(int id){
-        this.id=id;
+    public void setID(int id) {
+        this.id = id;
     }
 
-    public boolean isEntityDestroyed(){
+    public boolean isEntityDestroyed() {
 
-        return (healthPoints==0);
+        return (healthPoints == 0);
     }
 
     /**
-     * @breif Uses the distance between this and target to determine if target is in range.
      * @param target the Entity we desire check if its in range
      * @return true if its in range
+     * @breif Uses the distance between this and target to determine if target is in range.
      */
     protected boolean isInRange(WarEntity target) {
         return distance(this, target) <= range;
@@ -59,34 +59,36 @@ abstract public class WarEntity {
     /**
      * Calculate the straight distance between two WarEntities:
      * which is the x distance + the y distance between the WarEntities
+     *
      * @param we1 a WarEntity
      * @param we2 another WarEntity
      * @return the straight distance between both specified WarEntities
      */
-    public static int distance(WarEntity we1, WarEntity we2){
-        return Math.abs(we1.position.x - we2.position.x) +Math.abs(we1.position.y - we2.position.y);
+    public static int distance(WarEntity we1, WarEntity we2) {
+        return Math.abs(we1.position.x - we2.position.x) + Math.abs(we1.position.y - we2.position.y);
     }
 
     /**
-     * @brief
-     * deals 200 damage.
+     * @param damageTaken damage inflicted by other Entity
+     * @brief deals 200 damage.
      * 10 Defense: 181 damage
      * 100 Defense: 100 damage
      * 200 Defense: 66 damage
      * 500 Defense: 33 damage
-     *
-     * @param damageTaken damage inflicted by other Entity
      */
     public void dealDamage(int damageTaken) {
 
-        healthPoints -= damageTaken*(100/(100+defensePoint));
+        int tmp = damageTaken * (100 / (100 + defensePoint));
 
+        if (healthPoints - tmp >= 0) {
+            healthPoints -= tmp;
+        } else {
+            healthPoints = 0;
+        }
     }
 
     /**
-     *
      * @param amount the amount of hp that will be restored
-     *
      */
     public void heal(int amount) {
 
@@ -136,19 +138,19 @@ abstract public class WarEntity {
         this.range = range;
     }
 
-    public void setSpeed(int speed){
-        this.speed=speed;
+    public void setSpeed(int speed) {
+        this.speed = speed;
     }
 
-    public int getSpeed(){
+    public int getSpeed() {
         return speed;
     }
 
-    public void setPrice(int speed){
-        this.price=price;
+    public void setPrice(int speed) {
+        this.price = price;
     }
 
-    public int getPrice(){
+    public int getPrice() {
         return price;
     }
 

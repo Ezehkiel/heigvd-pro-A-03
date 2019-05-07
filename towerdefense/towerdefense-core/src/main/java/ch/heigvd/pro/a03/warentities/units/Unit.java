@@ -3,10 +3,8 @@ package ch.heigvd.pro.a03.warentities.units;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.algorithm.Position;
-import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
-import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -67,7 +65,9 @@ public class Unit extends WarEntity {
                     for(int i =0; i<map.getStructures().length;++i){
                         for(int j=0; j<map.getStructures()[i].length;++i){
 
-                            if(isInRange(map.getStructures()[i][j]) && distance(this, map.getStructures()[i][j]) < chosenOneDistance){
+                            if((!map.getStructures()[i][j].isEntityDestroyed()) && isInRange(map.getStructures()[i][j])
+                                    && distance(this, map.getStructures()[i][j]) < chosenOneDistance){
+
                                 closeTarget = map.getStructures()[i][j];
                                 chosenOneDistance = distance(this, closeTarget);
                             }
@@ -76,7 +76,9 @@ public class Unit extends WarEntity {
                     }
 
                     //attack the chosen one if their is any
-                    if(closeTarget != null) attack(closeTarget);
+                    if(closeTarget != null) {
+                        attack(closeTarget);
+                    }
                 }
                 attackTicks = 0;
             }
