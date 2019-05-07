@@ -10,6 +10,9 @@ public class Server{
 
     public static void main(String[] args) {
 
+        // Change Logger format
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
+
         //String keyStoreLocation = "deploy/keystore.jks";
         //String keyStorePassword = "pro2019heig";
         //secure(keyStoreLocation, keyStorePassword, null, null);

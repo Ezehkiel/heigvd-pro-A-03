@@ -6,11 +6,14 @@ import ch.heigvd.pro.a03.utils.Protocole;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
 public class GameServer implements Runnable{
+
+    private static Logger LOG = Logger.getLogger(GameServer.class.getSimpleName());
 
     public ServerState ValidationState;
     public ServerState FirstRoundState;
@@ -20,18 +23,41 @@ public class GameServer implements Runnable{
 
     public ServerState currentState;
 
+    private int gameMode;
     public ArrayList<Player> players;
 
-
-    public GameServer(ArrayList<Player> players) {
-        this.players = players;
+    public GameServer(int gameMode) {
+        this.gameMode = gameMode;
+        this.players = new ArrayList<>();
         this.ValidationState = new ValidationState(3,this) ;
         this.FirstRoundState = new FirstRoundState(4,this) ;
         this.RoundState = new RoundState(5,this) ;
         this.SimulationState = new SimulationState(6,this) ;
         this.EndState = new EndState(7,this) ;
         // Add state
-        currentState = null;
+        currentState = new ServerState(2, this) {
+            @Override
+            public void run() {}
+        };
+    }
+
+    public void playerJoin(Player player) {
+
+        LOG.info("A player joined a game server!");
+
+        // TODO send current player's infos to new player
+        broadCastMessage("PLAYERFOUND"); // TODO send player infos
+
+        player.id = players.size();
+        players.add(player);
+
+        if (players.size() == gameMode) {
+
+            LOG.info("A game server has started!");
+
+            broadCastMessage("END");
+            new Thread(this).start();
+        }
     }
 
     @Override
@@ -46,12 +72,17 @@ public class GameServer implements Runnable{
     public void setCurrentState(ServerState newState) {
         broadCastMessage("END");
 
+        // HACKS
         try {
-            waitForPlayers(newState.getId()+"-START");
+            LOG.info("Wait for players to change state from " + currentState.getId() + " to " + newState.getId());
+            waitForPlayers(newState.getId()+"00-START");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         this.currentState = newState;
+
+        LOG.info("State changed to " + currentState.getId());
+
         currentState.run();
     }
     public void broadCastMessage(String message){
