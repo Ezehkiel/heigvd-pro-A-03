@@ -1,27 +1,34 @@
 package ch.heigvd.pro.a03.commands.auth;
 
-import ch.heigvd.pro.a03.GameLauncher;
-import ch.heigvd.pro.a03.commands.Command;
+import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.menus.auth.RegistrationMenu;
-import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.HttpServerUtils;
 
-public class RegisterCommand extends Command<RegistrationMenu> {
+public class RegisterCommand extends AuthCommand {
 
-    public RegisterCommand(RegistrationMenu registrationMenu) {
-        super(registrationMenu);
+    private RegistrationMenu menu;
+
+    public RegisterCommand(RegistrationMenu menu, AuthMenu receiver) {
+        super(receiver);
+        this.menu = menu;
     }
 
     @Override
     public void execute(Object... args) {
 
-        User player = HttpServerUtils.register(getReceiver().getUsername(), getReceiver().getPassword());
+        getReceiver().clearError();
 
-        if (player == null) {
-            return;
+        if (!menu.passwordsMatch()) {
+            getReceiver().showError("Passwords do not match.");
+
+        } else if (menu.getPassword().length() <= 0) {
+            getReceiver().showError("Please, enter a valid password.");
+
+        } else if (menu.getUsername().length() <= 0) {
+            getReceiver().showError("Please, enter a valid username.");
+
+        } else {
+            checkPlayer(HttpServerUtils.register(menu.getUsername(), menu.getPassword()));
         }
-
-        GameLauncher.getInstance().setConnectedPlayer(player);
-        getReceiver().getParent().showConnectedPlayerMenu();
     }
 }

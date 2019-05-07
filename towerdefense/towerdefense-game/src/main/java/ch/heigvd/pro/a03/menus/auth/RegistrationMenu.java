@@ -34,7 +34,7 @@ public class RegistrationMenu extends Menu {
         confirmPasswordField.setPasswordCharacter('*');
 
         TextButton registrationButton = new TextButton("Register", skin);
-        registrationButton.addListener(new ButtonCommand(new RegisterCommand(this)));
+        registrationButton.addListener(new ButtonCommand(new RegisterCommand(this, authMenu)));
 
         // Add actors in table
         getMenu().defaults().prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.TEXT_FIELD_HEIGHT).left();
@@ -63,5 +63,9 @@ public class RegistrationMenu extends Menu {
 
     public String getPassword() {
         return passwordField.getText();
+    }
+
+    public boolean passwordsMatch() {
+        return passwordField.getText().equals(confirmPasswordField.getText());
     }
 }

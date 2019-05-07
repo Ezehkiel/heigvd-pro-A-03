@@ -25,7 +25,7 @@ public class ConnectionMenu extends Menu {
         passwordField.setPasswordCharacter('*');
 
         TextButton loginButton = new TextButton("Log in", skin);
-        loginButton.addListener(new ButtonCommand(new LoginCommand(this)));
+        loginButton.addListener(new ButtonCommand(new LoginCommand(this, authMenu)));
 
         // Add actors in table
         getMenu().defaults().prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.TEXT_FIELD_HEIGHT).left();

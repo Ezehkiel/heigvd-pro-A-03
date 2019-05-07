@@ -6,13 +6,17 @@ import ch.heigvd.pro.a03.commands.auth.AuthCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.UI;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.utils.Align;
 
 public class AuthMenu extends Menu {
 
     private TextButton cancelButton;
 
+    private Label errorLabel;
     private AuthSelectionMenu authSelectionMenu;
     private RegistrationMenu registrationMenu;
     private ConnectionMenu connectionMenu;
@@ -23,7 +27,8 @@ public class AuthMenu extends Menu {
 
         this.skin = skin;
 
-        getMenu().defaults();
+        errorLabel = new Label("", skin);
+        errorLabel.setColor(Color.RED);
 
         cancelButton = new TextButton("Cancel", skin);
         cancelButton.addListener(new ButtonCommand(new AuthCommand(this) {
@@ -44,6 +49,8 @@ public class AuthMenu extends Menu {
 
         getMenu().clear();
 
+        addErrorLabel();
+
         getMenu().add(connectionMenu.getMenu()).spaceBottom(UI.SPACING);
         addCancelButton();
     }
@@ -52,6 +59,8 @@ public class AuthMenu extends Menu {
 
         getMenu().clear();
 
+        addErrorLabel();
+
         getMenu().add(registrationMenu.getMenu()).spaceBottom(UI.SPACING);
         addCancelButton();
     }
@@ -59,6 +68,8 @@ public class AuthMenu extends Menu {
     public void showAuthSelectionMenu() {
 
         getMenu().clear();
+
+        addErrorLabel();
 
         getMenu().add(authSelectionMenu.getMenu());
     }
@@ -72,11 +83,28 @@ public class AuthMenu extends Menu {
 
         getMenu().clear();
 
+        addErrorLabel();
+
         getMenu().add(new ConnectedPlayerMenu(player, this, skin).getMenu()).expandY();
     }
 
     private void addCancelButton() {
         getMenu().row();
         getMenu().add(cancelButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
+    }
+
+    private void addErrorLabel() {
+
+        clearError();
+        getMenu().add(errorLabel);
+        getMenu().row();
+    }
+
+    public void showError(String message) {
+        errorLabel.setText(message);
+    }
+
+    public void clearError() {
+        errorLabel.setText("");
     }
 }
