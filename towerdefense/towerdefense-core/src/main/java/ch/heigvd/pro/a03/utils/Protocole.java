@@ -1,8 +1,6 @@
 package ch.heigvd.pro.a03.utils;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 
 public class Protocole {
 
@@ -29,8 +27,15 @@ public class Protocole {
     public String getData() {
         return data;
     }
-    public static void sendProtocol(PrintWriter out, int protocolId, String data){
-        out.println(String.format("%03d",protocolId)+"-"+data+"\r\n");
-        out.flush();
+
+    public static void sendProtocol(BufferedWriter out, int protocolId, String data) {
+
+        try {
+            out.write(String.format("%03d-%s\r\n", protocolId * 100, data));
+            out.flush();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
