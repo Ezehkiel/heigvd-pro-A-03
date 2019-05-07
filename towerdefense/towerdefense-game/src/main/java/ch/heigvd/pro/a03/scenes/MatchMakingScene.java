@@ -24,7 +24,7 @@ public class MatchMakingScene extends Scene {
 
     public void showPlayerMenu() {
 
-        playerMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), gameClient, getSkin());
+        playerMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), this, gameClient, getSkin());
         playerMenu.getMenu().setFillParent(true);
 
         getStage().addActor(playerMenu.getMenu());
@@ -43,5 +43,9 @@ public class MatchMakingScene extends Scene {
                     }
                 }
         );
+    }
+
+    public void startGame() {
+        GameLauncher.getInstance().getSceneManager().set(new GameScene());
     }
 }

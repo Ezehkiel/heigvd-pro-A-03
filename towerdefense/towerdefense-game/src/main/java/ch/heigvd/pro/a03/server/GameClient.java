@@ -1,7 +1,6 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.utils.Protocole;
-import com.oracle.tools.packager.Log;
 
 import java.io.*;
 import java.net.Socket;
@@ -86,10 +85,10 @@ public class GameClient {
                     protocole = Protocole.receive(in);
                 }
 
-                Log.info("Game party if full.");
+                LOG.info("Game party if full.");
 
                 Protocole.sendProtocol(out, 3, "START");
-                Protocole.receive(in);
+                Protocole protocole1 = Protocole.receive(in);
 
                 showReadyButton.execute();
 
@@ -100,21 +99,19 @@ public class GameClient {
     }
 
     /**
-     * Tells the server that the player is ready.
+     * Tells the server that the player is ready. Blocks everything until every players are ready.
      */
     public void ready(Executable startGame) {
-        new Thread(() -> {
-            try {
-                Protocole.sendProtocol(out, 3, "YES");
-                Protocole.receive(in);
+        try {
+            Protocole.sendProtocol(out, 3, "YES");
+            Protocole protocole = Protocole.receive(in);
 
-                LOG.info("Game is starting");
-                startGame.execute();
+            LOG.info("Game is starting");
+            startGame.execute();
 
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

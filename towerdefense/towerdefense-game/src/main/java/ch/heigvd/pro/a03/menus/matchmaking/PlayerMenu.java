@@ -7,6 +7,7 @@ import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.commands.gameclient.GameClientCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.scenes.MatchMakingScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.UI;
@@ -22,26 +23,23 @@ public class PlayerMenu extends Menu {
     private TextButton readyButton;
     private TextButton cancelButton;
 
-    public PlayerMenu(User user , GameClient gameClient, Skin skin) {
+    public PlayerMenu(User user, MatchMakingScene scene, GameClient gameClient, Skin skin) {
 
         this.user = user;
 
         usernameLabel = new Label("", skin);
         usernameLabel.setAlignment(Align.center);
 
-        Executable startGameCommand = new Command<GameLauncher>(GameLauncher.getInstance()) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().getSceneManager().add(new GameScene());
-            }
-        };
-
         readyButton = new TextButton("Ready!", skin);
         readyButton.addListener(new ButtonCommand(new GameClientCommand(gameClient) {
             @Override
             public void execute(Object... args) {
-
-                getReceiver().ready(startGameCommand);
+                getReceiver().ready(new Command<MatchMakingScene>(scene) {
+                    @Override
+                    public void execute(Object... args) {
+                        getReceiver().startGame();
+                    }
+                });
             }
         }));
 
@@ -64,13 +62,13 @@ public class PlayerMenu extends Menu {
 
         getMenu().defaults().prefWidth(UI.BUTTON_WIDTH).spaceBottom(UI.SPACING);
         getMenu().add(usernameLabel).growX();
-        getMenu().row();
 
         if (withReadyButton) {
-            getMenu().add(readyButton).prefHeight(UI.BUTTON_HEIGHT);
             getMenu().row();
+            getMenu().add(readyButton).prefHeight(UI.BUTTON_HEIGHT);
         }
 
-        getMenu().add(cancelButton).prefHeight(UI.BUTTON_HEIGHT);
+        //getMenu().row();
+        //getMenu().add(cancelButton).prefHeight(UI.BUTTON_HEIGHT);
     }
 }

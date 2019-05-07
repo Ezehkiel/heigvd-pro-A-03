@@ -54,8 +54,6 @@ public class GameServer implements Runnable{
         if (players.size() == gameMode) {
 
             LOG.info("A game server has started!");
-
-            broadCastMessage("END");
             new Thread(this).start();
         }
     }
