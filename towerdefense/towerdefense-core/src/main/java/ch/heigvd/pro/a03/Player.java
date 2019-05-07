@@ -35,7 +35,7 @@ public class Player implements Serializable {
     }
 
     public void removeMoney(int money) {
-        if (money<0) {
+        if (money>=0) {
             if (this.money - money >= 0) {
                 this.money -= money;
             } else {
