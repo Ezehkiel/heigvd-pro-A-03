@@ -99,6 +99,10 @@ public abstract class Scene {
         return skin;
     }
 
+    /**
+     * Sets the stage
+     * @param stage new stage
+     */
     public void setStage(Stage stage) {
         this.stage = stage;
     }

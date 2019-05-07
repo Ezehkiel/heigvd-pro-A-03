@@ -10,8 +10,10 @@ public class ValidationState extends ServerState{
     @Override
     public void run() {
         gameServer.broadCastMessage("READY");
+
+        GameServer.LOG.info("Wait for players to be ready.");
         try {
-            gameServer.waitForPlayers("YES");
+            gameServer.waitForPlayers(getId() + "00-YES");
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

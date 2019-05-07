@@ -50,15 +50,9 @@ public class SocketServer implements Runnable{
 
                 Socket clientSocket = serverSocket.accept();
 
-                ObjectOutputStream oos = new ObjectOutputStream(clientSocket.getOutputStream());
-                LinkedList<PlayerEvent> tmp = new LinkedList<>();
-                tmp.add(new TurretEvent(1, TurretEventType.ADD,new Point(1,3)));
-                tmp.add(new UnitEvent(2,UnitEventType.UPGRADE));
-                tmp.add(new SendUnitEvent(2,2));
 
-                oos.writeObject(tmp);
 
-                //new Thread(new Worker(clientSocket)).start();
+                new Thread(new Worker(clientSocket)).start();
                 System.out.println("Writed");
 
             } catch (IOException ex) {

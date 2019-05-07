@@ -4,7 +4,7 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.users.User;
-import ch.heigvd.pro.a03.utils.HttpServerUtils;
+import ch.heigvd.pro.a03.server.HttpServerUtils;
 
 public abstract class AuthCommand extends Command<AuthMenu> {
 
