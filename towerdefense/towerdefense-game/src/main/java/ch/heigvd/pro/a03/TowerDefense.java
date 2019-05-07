@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
 import ch.heigvd.pro.a03.warentities.Base;
 
+import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
