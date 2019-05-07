@@ -10,7 +10,7 @@ public class Tank extends Unit {
     }
 
     public Tank(Point position){
-        super("Tank", position,500,500,10,15,500,4,500);
+        this("Tank", position,500,500,10,15,500,4,500);
     }
 
 

@@ -10,6 +10,6 @@ public class Soldier extends Unit {
     }
 
     public Soldier(Point position){
-        super("Soldier", position,200,200,10,5,100,3,200);
+        this("Soldier", position,200,200,10,5,100,3,200);
     }
 }
