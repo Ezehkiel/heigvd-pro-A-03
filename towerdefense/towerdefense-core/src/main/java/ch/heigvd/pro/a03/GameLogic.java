@@ -8,14 +8,14 @@ import java.util.LinkedList;
 
 public class GameLogic {
 
-    Player p1,p2;
+    LinkedList<Player> players;
     LinkedList<Map> maps;
     private boolean endMatch;
     private boolean endRound;
 
     public GameLogic(Player player1, Player player2, Map map1, Map map2) {
-        p1=player1;
-        p2=player2;
+        players.add(player1);
+        players.add(player2);
         maps.add(map1);
         maps.add(map2);
         endMatch = false;
@@ -23,10 +23,10 @@ public class GameLogic {
 
     }
 
-    public GameLogic(){
-        this(new Player("player1"),new Player("player2"),
-                new Map(9,12,new Base(new Point(0,4))),
-                new Map(9,12,new Base(new Point(0,4))));
+    public GameLogic() {
+        this(new Player("player0"), new Player("player1"),
+                new Map(9, 12, new Base(new Point(0, 4))),
+                new Map(9, 12, new Base(new Point(0, 4))));
     }
 
     public void playGame() {
@@ -47,8 +47,9 @@ public class GameLogic {
             }
         }
 
-        p1.addMoney(1000);
-        p2.addMoney(1000);
+        for (Player p : players) {
+            p.addMoney(1000);
+        }
 
         endRound = false;
         LinkedList<Unit> units;
@@ -68,5 +69,14 @@ public class GameLogic {
         this.endMatch = match;
     }
 
+    public Map getPlayerMap(int index) {
+
+        return maps.get(index);
+    }
+
+    public Player getPlayer(int index) {
+
+        return players.get(index);
+    }
 
 }
