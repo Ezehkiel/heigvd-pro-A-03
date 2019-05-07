@@ -26,7 +26,7 @@ public class TowerDefense {
 
         this.scene = scene;
 
-        map = new Map(20, 12, new Base("Base",new Point(19,12),500,500));
+        map = new Map(20, 12, new Base(new Point(19,12)));
 
         stateMachine = new StateMachine();
 

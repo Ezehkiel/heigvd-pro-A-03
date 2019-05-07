@@ -170,15 +170,15 @@ public class GameScene extends Scene {
             switch (selectedTurretType) {
 
                 case MACHINE_GUN:
-                    turret = new MachineGunTurret("Machine Gun",new Point(x, y), 10, 2, 5, 3, 10);
+                    turret = new MachineGunTurret(new Point(x,y));
                     break;
 
                 case MORTAR:
-                    turret = new MortarTurret("Mortar",new Point(x, y), 10, 2, 5, 3, 10);
+                    turret = new MortarTurret(new Point(x, y));
                     break;
 
                 case SLOWER:
-                    turret = new LaserGunTurret("Slower",new Point(x, y), 10, 2, 5, 3, 10);
+                    turret = new LaserGunTurret(new Point(x, y));
                     break;
             }
 
