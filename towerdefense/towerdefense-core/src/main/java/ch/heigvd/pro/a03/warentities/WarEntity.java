@@ -9,15 +9,15 @@ abstract public class WarEntity {
 
     private Point position;//position that the entity will take at the grid 
 
-    private int totalHealth;
-    private int healthPoints;
-    private int defensePoint;
-    private int attackPoints;
-    private int speed;
-    private int attackCoolDown;
-    private double range;
-    private int price;
-    private String name;
+    protected int totalHealth;
+    protected int healthPoints;
+    protected int defensePoint;
+    protected int attackPoints;
+    protected int speed;
+    protected int attackCoolDown;
+    protected double range;
+    protected int price;
+    protected String name;
 
 
     private int id;
@@ -51,7 +51,7 @@ abstract public class WarEntity {
      * @return true if its in range
      * @breif Uses the distance between this and target to determine if target is in range.
      */
-    protected boolean isInRange(WarEntity target) {
+    public boolean isInRange(WarEntity target) {
         return distance(this, target) <= range;
     }
 

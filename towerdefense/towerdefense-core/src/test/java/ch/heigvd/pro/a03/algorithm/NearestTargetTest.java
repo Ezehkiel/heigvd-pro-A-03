@@ -49,8 +49,8 @@ public class NearestTargetTest {
         units.add(soldier);
         map.setUnits(units);
 
-        NearestTarget nt = new NearestTarget(map);
-        assert (nt.getNearestTarget(soldier) == mgt1);
+        //we check mgt1 is the nearest structure from soldier on this map
+        assert(NearestTarget.getNearestInRangeStructure(soldier, map) == mgt1);
 
 
     }
