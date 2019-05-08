@@ -16,7 +16,7 @@ import java.util.List;
 public class NearestTargetTest {
 
     @Test
-    void NearestNeighborTest(){
+    void NearestNeighborTest() {
 //Map used for the test
 
 // 0 1 2 3 4 5 6
@@ -50,7 +50,7 @@ public class NearestTargetTest {
         map.setUnits(units);
 
         NearestTarget nt = new NearestTarget(map);
-        assert(nt.getNearestTarget(soldier) == mgt1);
+        assert (nt.getNearestTarget(soldier) == mgt1);
 
 
     }

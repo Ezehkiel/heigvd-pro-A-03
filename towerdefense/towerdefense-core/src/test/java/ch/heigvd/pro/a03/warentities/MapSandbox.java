@@ -1,6 +1,6 @@
-package ch.heigvd.pro.a03;
+package ch.heigvd.pro.a03.warentities;
 
-import ch.heigvd.pro.a03.warentities.Base;
+import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.units.Soldier;
 import ch.heigvd.pro.a03.warentities.units.Unit;
@@ -32,7 +32,7 @@ public class MapSandbox {
         //We create a Map with some WarEntities into it: (as described in previous comments)
 
         //Create a map
-        Base base = new Base("Superbase", new Point(6, 5), 1000, 5, 1);
+        Base base = new Base("Superbase", new Point(6, 5), 10000, 5, 1);
         Map map = new Map(6, 7, base);
         //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 50, 0, 1, 1, 1000, 5, 12);
@@ -54,6 +54,7 @@ public class MapSandbox {
             System.out.println("Turret 1 health" + mgt1.getHealthPoint());
             System.out.println("Turret 2 health" + mgt2.getHealthPoint());
             System.out.println("Turret 3 health" + mgt3.getHealthPoint());
+            System.out.println("Base     health"+ base.getHealthPoint());
             System.out.print("\n\n");
             map.update();
         }

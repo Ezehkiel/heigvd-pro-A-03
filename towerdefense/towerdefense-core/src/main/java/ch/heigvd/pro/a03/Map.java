@@ -21,13 +21,13 @@ public class Map {
 
 
     public Map(int row, int col, Base base) {
-        this.row=row;
-        this.col=col;
+        this.row = row;
+        this.col = col;
         this.size = new Dimension(row, col);
         structures = new Structure[row][col];
-        units=new LinkedList<>();
-        this.base=base;
-        setStructureAt(base,base.getPosition().y,base.getPosition().x);
+        units = new LinkedList<>();
+        this.base = base;
+        setStructureAt(base, base.getPosition().y, base.getPosition().x);
 
     }
 
@@ -45,7 +45,7 @@ public class Map {
 
     public Structure getStructureAt(int row, int col) {
 
-        if (!inMap(row,col)) {
+        if (!inMap(row, col)) {
             return null;
         }
 
@@ -62,7 +62,7 @@ public class Map {
 
     }
 
-    public void addUnit(Unit u){
+    public void addUnit(Unit u) {
         units.add(u);
     }
 
@@ -85,9 +85,9 @@ public class Map {
 
     public void update() {
 
-        for(int i =0; i<row;++i){
-            for(int j=0;j<col;++j){
-                if(structures[i][j] != null){
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                if (structures[i][j] != null) {
                     structures[i][j].update(this);
                 }
 
@@ -95,7 +95,7 @@ public class Map {
 
         }
 
-        for(Unit u: units){
+        for (Unit u : units) {
 
             u.update(this);
         }
@@ -103,18 +103,18 @@ public class Map {
     }
 
 
-    public boolean isEndSimulation(){
+    public boolean isEndSimulation() {
 
 
         endSimulation = true;
-        for(Unit u: units){
+        for (Unit u : units) {
             if (!u.isEntityDestroyed()) {
                 endSimulation = false;
                 break;
             }
         }
 
-        if(endSimulation){
+        if (endSimulation) {
             units.clear();
         }
 
@@ -122,7 +122,7 @@ public class Map {
 
     }
 
-    public boolean isEndMatch(){
+    public boolean isEndMatch() {
 
 
         return base.isEntityDestroyed();
@@ -130,24 +130,26 @@ public class Map {
 
 
     @Override
-    public String toString(){
-        if(size.width == 0 || size.height == 0) return "";
+    public String toString() {
+        if (row == 0 || col == 0) return "";
 
-        WarEntity[][] warEntities = new WarEntity[size.height][size.width];
-        for(int i = 0; i < size.height; ++i)
-            for(int j = 0; j < size.width; ++j)
+        WarEntity[][] warEntities = new WarEntity[row][col];
+        for (int i = 0; i < row; ++i)
+            for (int j = 0; j < col; ++j)
                 warEntities[i][j] = structures[i][j];
-        for(Unit u: units) warEntities[u.getPosition().y][u.getPosition().x] = u;
+        for (Unit u : units){
+            warEntities[u.getPosition().y][u.getPosition().x] = u;
+        }
 
         String toRet = "";
 
-        for(int j = 0; j < warEntities[0].length; ++j) toRet += "   " + j;
+        for (int j = 0; j < warEntities[0].length; ++j) toRet += "   " + j;
         toRet += '\n';
 
-        for(int i = 0; i < warEntities.length; ++i){
+        for (int i = 0; i < warEntities.length; ++i) {
             toRet += i;
-            for(int j = 0; j < warEntities[0].length; ++j){
-                if(warEntities[i][j] != null) toRet += " " + warEntities[i][j].symbol();
+            for (int j = 0; j < warEntities[0].length; ++j) {
+                if (warEntities[i][j] != null) toRet += " " + warEntities[i][j].symbol();
                 else toRet += "  - ";
             }
             toRet += '\n';
