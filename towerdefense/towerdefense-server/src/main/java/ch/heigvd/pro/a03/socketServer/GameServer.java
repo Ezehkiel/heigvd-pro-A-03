@@ -45,16 +45,23 @@ public class GameServer implements Runnable{
 
         LOG.info("A client joined a game server!");
 
-        broadCastMessage("PLAYERFOUND");
+        client.ID = clients.size();
+
         for (Player p : clients){
             Player.sendPlayer(client,((Client)p).ous);
             Player.sendPlayer(p,client.ous);
         }
 
-        client.ID = clients.size();
+
+
+
         clients.add(client);
 
         if (clients.size() == gameMode) {
+            for (Player p : clients){
+                Player.sendPlayer(null,((Client)p).ous);
+                sendProtocol(((Client) p).out,2,String.valueOf(((Client) p).getId()));
+            }
 
             LOG.info("A game server has started!");
             new Thread(this).start();
