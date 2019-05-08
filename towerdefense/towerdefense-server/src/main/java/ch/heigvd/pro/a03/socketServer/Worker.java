@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.logging.Logger;
 
+import static ch.heigvd.pro.a03.utils.Protocole.receive;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 public class Worker implements Runnable{
@@ -44,17 +45,22 @@ public class Worker implements Runnable{
         try {
             if(in.readLine().equals("100-START")){
                 sendProtocol(out,1,"OK");
+                //Get username
+                Protocole prot = receive(in);
+                sendProtocol(out,1,"OK");
+
                 int gameMode = Integer.parseInt(Protocole.receive(in).getData());
                 sendProtocol(out,1,"OK");
+
                 sendProtocol(out,1,"END");
                 while (!in.readLine().equals("200-START"));
-                Player p = new Player(socket);
+                Client p = new Client(socket,prot.getData());
 
                 GameServer server = null;
                 for (GameServer s : servers.get(gameMode)) {
-                    if (s.players.size() < gameMode) {
+                    if (s.clients.size() < gameMode) {
                         server = s;
-                        LOG.info(String.format("Add player for server with game mode %d", gameMode));
+                        LOG.info(String.format("Add client for server with game mode %d", gameMode));
                         break;
                     }
                 }
