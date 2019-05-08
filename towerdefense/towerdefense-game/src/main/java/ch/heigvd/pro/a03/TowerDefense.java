@@ -9,12 +9,16 @@ import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class TowerDefense {
 
     private GameScene scene;
 
-    private Map map;
+    public static final int MAP_WIDTH = 9;
+    public static final int MAP_HEIGHT = 12;
+
+    private Map[] maps;
 
     // States variables
     private StateMachine stateMachine;
@@ -24,11 +28,13 @@ public class TowerDefense {
         PLAY, OPPONENT_PLAY, SIMULATION, WAIT
     }
 
-    public TowerDefense(GameScene scene) {
+    public TowerDefense(GameScene scene, int playerCount) {
 
         this.scene = scene;
-
-        map = new Map(20, 12, new Base(new Point(19,12)));
+        maps = new Map[playerCount];
+        for (int i = 0; i < maps.length; ++i) {
+            maps[i] = new Map(MAP_HEIGHT, MAP_WIDTH, new Base(new Point(4,11)));
+        }
 
         stateMachine = new StateMachine();
 
@@ -42,15 +48,17 @@ public class TowerDefense {
         stateMachine.changeState(getState(GameStateType.WAIT));
     }
 
+
+
     /* ----- Turret Management -----*/
 
-    public boolean isCellOccupied(int x, int y) {
-        return map.getStructureAt(x, y) != null;
+    public boolean isCellOccupied(int mapId, int x, int y) {
+        return maps[mapId].getStructureAt(y, x) != null;
     }
 
-    public Turret getTurretAt(int x, int y) {
+    public Turret getTurretAt(int mapId, int x, int y) {
 
-        Structure structure = map.getStructureAt(x, y);
+        Structure structure = maps[mapId].getStructureAt(y, x);
         if (structure instanceof Turret) {
             return (Turret) structure;
         }
@@ -58,38 +66,42 @@ public class TowerDefense {
         return null;
     }
 
-    public boolean placeTurret(Turret turret) {
+    public boolean placeTurret(int mapId, Turret turret) {
 
-        if (!isInState(GameStateType.PLAY) || map.getStructureAt(turret.getPosition().x, turret.getPosition().y) != null) {
+        if (!isInState(GameStateType.PLAY) || maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) != null) {
             return false;
         }
 
         try {
-            map.setStructureAt(turret, turret.getPosition().x, turret.getPosition().y);
+            maps[mapId].setStructureAt(turret, turret.getPosition().y, turret.getPosition().x);
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
 
-        scene.updateMap(map);
+        scene.updateMaps();
 
         return true;
     }
 
-    public boolean destroyTurret(Turret turret) {
+    public boolean destroyTurret(int mapId, Turret turret) {
 
-        if (!isInState(GameStateType.PLAY) || map.getStructureAt(turret.getPosition().x, turret.getPosition().y) == null) {
+        if (!isInState(GameStateType.PLAY) || maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) == null) {
             return false;
         }
 
         try {
-            map.setStructureAt(null, turret.getPosition().x, turret.getPosition().y);
+            maps[mapId].setStructureAt(null, turret.getPosition().y, turret.getPosition().x);
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
 
-        scene.updateMap(map);
+        scene.updateMaps();
 
         return true;
+    }
+
+    public Map[] getMaps() {
+        return maps;
     }
 
     private boolean isInState(GameStateType stateType) {

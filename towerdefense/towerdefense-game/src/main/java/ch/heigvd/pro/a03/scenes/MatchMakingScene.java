@@ -46,6 +46,6 @@ public class MatchMakingScene extends Scene {
     }
 
     public void startGame() {
-        GameLauncher.getInstance().getSceneManager().set(new GameScene());
+        GameLauncher.getInstance().getSceneManager().set(new GameScene(2));
     }
 }
