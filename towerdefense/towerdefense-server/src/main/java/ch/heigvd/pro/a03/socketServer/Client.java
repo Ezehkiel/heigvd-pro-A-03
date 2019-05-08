@@ -10,8 +10,7 @@ import java.util.logging.Logger;
 
 public class Client extends Player {
     Socket socket;
-    static int nextId=1;
-    int id;
+
 
     BufferedReader in;
     BufferedWriter out;
@@ -21,7 +20,6 @@ public class Client extends Player {
     public Client(Socket socket,String username) {
         super(username);
         this.socket = socket;
-        this.id = nextId++;
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader( new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -41,7 +39,7 @@ public class Client extends Player {
     }
 
     public int getId() {
-        return id;
+        return super.ID;
     }
 
     public ObjectInputStream getOis() {

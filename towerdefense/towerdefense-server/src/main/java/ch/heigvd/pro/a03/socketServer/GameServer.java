@@ -1,5 +1,6 @@
 package ch.heigvd.pro.a03.socketServer;
 
+import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
 
@@ -44,10 +45,13 @@ public class GameServer implements Runnable{
 
         LOG.info("A client joined a game server!");
 
-        // TODO send current client's infos to new client
-        broadCastMessage("PLAYERFOUND"); // TODO send client infos
+        broadCastMessage("PLAYERFOUND");
+        for (Player p : clients){
+            Player.sendPlayer(client,((Client)p).ous);
+            Player.sendPlayer(p,client.ous);
+        }
 
-        client.id = clients.size();
+        client.ID = clients.size();
         clients.add(client);
 
         if (clients.size() == gameMode) {
@@ -89,12 +93,12 @@ public class GameServer implements Runnable{
     public void waitForPlayers(String message) throws InterruptedException {
         Thread t[] = new Thread[clients.size()];
         for(Client p : clients){
-            t[p.id] = new Thread(new waiter(p,message));
-            t[p.id].start();
+            t[p.ID] = new Thread(new waiter(p,message));
+            t[p.ID].start();
         }
 
         for(Client p : clients){
-            t[p.id].join();
+            t[p.ID].join();
         }
     }
 

@@ -1,8 +1,5 @@
 package ch.heigvd.pro.a03;
 
-
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +10,7 @@ public class Player implements Serializable {
     private String name;
     private int money;
     private static int count=0;
-    public final int ID;
+    public int ID;
 
     public Player(String name) {
         this.name = name;

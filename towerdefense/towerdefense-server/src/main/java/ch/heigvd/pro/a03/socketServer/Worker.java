@@ -45,9 +45,12 @@ public class Worker implements Runnable{
         try {
             if(in.readLine().equals("100-START")){
                 sendProtocol(out,1,"OK");
+                //Get username
+                Protocole prot = receive(in);
+                sendProtocol(out,1,"OK");
+
                 int gameMode = Integer.parseInt(Protocole.receive(in).getData());
                 sendProtocol(out,1,"OK");
-                Protocole prot = receive(in);
 
                 sendProtocol(out,1,"END");
                 while (!in.readLine().equals("200-START"));
