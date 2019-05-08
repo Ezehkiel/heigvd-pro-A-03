@@ -11,7 +11,7 @@ public class ValidationState extends ServerState{
     public void run() {
         gameServer.broadCastMessage("READY");
 
-        GameServer.LOG.info("Wait for players to be ready.");
+        GameServer.LOG.info("Wait for clients to be ready.");
         try {
             gameServer.waitForPlayers(getId() + "00-YES");
         } catch (InterruptedException e) {

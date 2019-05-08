@@ -49,11 +49,7 @@ public class SocketServer implements Runnable{
             try {
 
                 Socket clientSocket = serverSocket.accept();
-
-
-
                 new Thread(new Worker(clientSocket)).start();
-                System.out.println("Writed");
 
             } catch (IOException ex) {
                 Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);

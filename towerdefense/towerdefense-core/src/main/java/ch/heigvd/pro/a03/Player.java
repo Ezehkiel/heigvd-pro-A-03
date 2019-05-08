@@ -1,5 +1,11 @@
 package ch.heigvd.pro.a03;
 
+
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Player implements Serializable {
@@ -42,6 +48,24 @@ public class Player implements Serializable {
                 System.out.println("can't afford the entity");
             }
 
+        }
+    }
+    public static Player getPlayer(ObjectInputStream in) {
+        Player player = null;
+        try {
+            player = (Player) in.readObject();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return player;
+    }
+    public static void sendPlayer(Player player, ObjectOutputStream out) {
+        try {
+            out.writeObject(player);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

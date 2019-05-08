@@ -3,7 +3,6 @@ package ch.heigvd.pro.a03.socketServer;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.logging.Logger;
@@ -24,11 +23,11 @@ public class GameServer implements Runnable{
     public ServerState currentState;
 
     private int gameMode;
-    public ArrayList<Player> players;
+    public ArrayList<Client> clients;
 
     public GameServer(int gameMode) {
         this.gameMode = gameMode;
-        this.players = new ArrayList<>();
+        this.clients = new ArrayList<>();
         this.ValidationState = new ValidationState(3,this) ;
         this.FirstRoundState = new FirstRoundState(4,this) ;
         this.RoundState = new RoundState(5,this) ;
@@ -41,17 +40,17 @@ public class GameServer implements Runnable{
         };
     }
 
-    public void playerJoin(Player player) {
+    public void playerJoin(Client client) {
 
-        LOG.info("A player joined a game server!");
+        LOG.info("A client joined a game server!");
 
-        // TODO send current player's infos to new player
-        broadCastMessage("PLAYERFOUND"); // TODO send player infos
+        // TODO send current client's infos to new client
+        broadCastMessage("PLAYERFOUND"); // TODO send client infos
 
-        player.id = players.size();
-        players.add(player);
+        client.id = clients.size();
+        clients.add(client);
 
-        if (players.size() == gameMode) {
+        if (clients.size() == gameMode) {
 
             LOG.info("A game server has started!");
             new Thread(this).start();
@@ -72,7 +71,7 @@ public class GameServer implements Runnable{
 
         // HACKS
         try {
-            LOG.info("Wait for players to change state from " + currentState.getId() + " to " + newState.getId());
+            LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
             waitForPlayers(newState.getId()+"00-START");
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -84,27 +83,27 @@ public class GameServer implements Runnable{
         currentState.run();
     }
     public void broadCastMessage(String message){
-        for(Player p : players)
+        for(Client p : clients)
             sendProtocol(p.getOut(),currentState.getId(),message);
     }
     public void waitForPlayers(String message) throws InterruptedException {
-        Thread t[] = new Thread[players.size()];
-        for(Player p : players){
+        Thread t[] = new Thread[clients.size()];
+        for(Client p : clients){
             t[p.id] = new Thread(new waiter(p,message));
             t[p.id].start();
         }
 
-        for(Player p : players){
+        for(Client p : clients){
             t[p.id].join();
         }
     }
 
     private class waiter implements Runnable{
         String response;
-        Player player;
-        public waiter(Player player, String response) {
+        Client client;
+        public waiter(Client client, String response) {
             this.response = response;
-            this.player = player;
+            this.client = client;
         }
 
         @Override
@@ -112,7 +111,7 @@ public class GameServer implements Runnable{
 
             while (true) {
                 try {
-                    if (!Protocole.receive(player.getIn()).getData().equals(response)) {
+                    if (!Protocole.receive(client.getIn()).getData().equals(response)) {
                         break;
                     }
                 } catch (IOException e) {
@@ -120,7 +119,7 @@ public class GameServer implements Runnable{
                 }
             }
 
-            GameServer.LOG.info(String.format("Player %d is ready.", player.getId()));
+            GameServer.LOG.info(String.format("Client %d is ready.", client.getId()));
         }
     }
 }

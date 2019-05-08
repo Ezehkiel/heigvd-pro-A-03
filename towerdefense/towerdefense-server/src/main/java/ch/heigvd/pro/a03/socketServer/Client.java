@@ -1,12 +1,14 @@
 package ch.heigvd.pro.a03.socketServer;
 
+import ch.heigvd.pro.a03.Player;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Player {
+public class Client extends Player {
     Socket socket;
     static int nextId=1;
     int id;
@@ -16,7 +18,8 @@ public class Player {
     ObjectInputStream ois = null;
     ObjectOutputStream ous = null;
 
-    public Player(Socket socket) {
+    public Client(Socket socket,String username) {
+        super(username);
         this.socket = socket;
         this.id = nextId++;
         try {
