@@ -77,7 +77,7 @@ abstract public class WarEntity {
      */
     public void dealDamage(int damageTaken) {
 
-        int tmp = damageTaken * (100 / (100 + defensePoint));
+        int tmp = (damageTaken * 100) / (100 + defensePoint);
 
         if (healthPoints - tmp >= 0) {
             healthPoints -= tmp;

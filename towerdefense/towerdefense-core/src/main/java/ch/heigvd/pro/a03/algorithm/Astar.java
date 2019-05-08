@@ -54,8 +54,7 @@ import java.util.List;
 
 /**
  * A* algorithm for path finding
- *
- * */
+ */
 
 public class Astar {
 
@@ -68,11 +67,10 @@ public class Astar {
     private Position finalPosition;
 
 
-
     public Astar(int rows, int cols, Position initialPosition, Position finalPosition, int hvCost) {
-        this.horiVertiCost=hvCost;
-        this.initialPosition=initialPosition;
-        this.finalPosition=finalPosition;
+        this.horiVertiCost = hvCost;
+        this.initialPosition = initialPosition;
+        this.finalPosition = finalPosition;
         this.searchArea = new Position[rows][cols];
         this.openList = new PriorityQueue<Position>(new Comparator<Position>() {
             @Override
@@ -99,11 +97,11 @@ public class Astar {
     }
 
     /**
-     * @brief Constructor with a default value of movement of 10
-     * @param rows number of rows of the gird
-     * @param cols number of columns of the gird
+     * @param rows            number of rows of the gird
+     * @param cols            number of columns of the gird
      * @param initialPosition initial position
-     * @param finalPosition target position
+     * @param finalPosition   target position
+     * @brief Constructor with a default value of movement of 10
      */
     public Astar(int rows, int cols, Position initialPosition, Position finalPosition) {
         this(rows, cols, initialPosition, finalPosition, DEFAULT_HV_COST);
@@ -122,7 +120,7 @@ public class Astar {
     }
 
     public void setBlockPos(int row, int col) {//will add the blockage in the map
-            setBlock(row, col);
+        setBlock(row, col);
     }
 
 
@@ -135,10 +133,10 @@ public class Astar {
             Position current = openList.poll(); //retrieve remove the first element of the Queue
             closedSet.add(current);
             if (isFinalPosition(current)) {
-                List<Position> positionPath=getPath(current);
-                List<Point> path=new ArrayList<Point>();
-                for(Position p :positionPath){
-                    path.add(new Point(p.getRow(),p.getCol()));
+                List<Position> positionPath = getPath(current);
+                List<Point> path = new ArrayList<Point>();
+                for (int i = 1; i < positionPath.size(); i++) {
+                    path.add(new Point(positionPath.get(i).getCol(), positionPath.get(i).getRow()));
                 }
                 return path;
 
@@ -152,9 +150,9 @@ public class Astar {
     }
 
     /**
-     * @breif retrieves the path
      * @param current the current position
      * @return A list containing the path to the current position
+     * @breif retrieves the path
      */
     private List<Position> getPath(Position current) {
         List<Position> path = new ArrayList<Position>();
@@ -223,11 +221,11 @@ public class Astar {
 
 
     /**
-     * @brief add's the blocked positions to the search area.
      * @param row coordinate y of the grid
      * @param col coordinate x of the grid
+     * @brief add's the blocked positions to the search area.
      */
-    private void setBlock(int row, int col){
+    private void setBlock(int row, int col) {
         this.searchArea[row][col].setBlock(true);
     }
 
@@ -238,7 +236,6 @@ public class Astar {
     private boolean isFinalPosition(Position current) {
         return current.equals(finalPosition);
     }
-
 
 
 }
