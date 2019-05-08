@@ -26,8 +26,7 @@ public class Worker implements Runnable{
     Socket socket;
     private BufferedWriter out;
     private BufferedReader in;
-    private static final int protcoleId=1;
-    int nbPlayer;
+
     public Worker(Socket socket) {
         this.socket = socket;
 
@@ -37,7 +36,6 @@ public class Worker implements Runnable{
         } catch (IOException e) {
             e.printStackTrace();
         }
-        nbPlayer =0;
     }
 
     @Override
@@ -54,11 +52,11 @@ public class Worker implements Runnable{
 
                 sendProtocol(out,1,"END");
                 while (!in.readLine().equals("200-START"));
-                Client p = new Client(socket,prot.getData());
+                Client p = new Client(socket);
 
                 GameServer server = null;
                 for (GameServer s : servers.get(gameMode)) {
-                    if (s.clients.size() < gameMode) {
+                    if (s.getClientsCount() < gameMode) {
                         server = s;
                         LOG.info(String.format("Add client for server with game mode %d", gameMode));
                         break;
@@ -72,16 +70,7 @@ public class Worker implements Runnable{
                     servers.get(gameMode).add(server);
                 }
 
-                server.playerJoin(p);
-
-//                if(waitingList.get(gameMode).size()==1) {
-//                    sendProtocol(out,2,"WAITINGPLAYER");
-//                }else{
-//                    sendProtocol(out,2,"PLAYERFOUND");
-//                }
-//                while (!canLaunchaGame(gameMode));
-//                new Thread(new GameServer(waitingList.get(gameMode))).start();
-//                sendProtocol(out, 2, "END");
+                server.playerJoin(p, prot.getData());
             }
         } catch (IOException e) {
             e.printStackTrace();

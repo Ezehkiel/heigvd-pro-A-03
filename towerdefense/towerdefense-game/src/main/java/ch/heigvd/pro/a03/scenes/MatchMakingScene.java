@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.menus.matchmaking.PlayerMenu;
 import ch.heigvd.pro.a03.server.GameClient;
@@ -33,7 +34,7 @@ public class MatchMakingScene extends Scene {
                 new Command<MatchMakingScene>(this) {
                     @Override
                     public void execute(Object... args) {
-                        System.out.println("New player found");
+                        System.out.println(((Player) args[0]).getName() + " has arrived.");
                     }
                 },
                 new Command<MatchMakingScene>(this) {

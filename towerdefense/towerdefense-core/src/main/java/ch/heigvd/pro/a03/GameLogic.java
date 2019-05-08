@@ -29,7 +29,7 @@ public class GameLogic {
     }
 
     public GameLogic() {
-        this(new Player("player0"), new Player("player1"),
+        this(new Player(0, "player0"), new Player(1, "player1"),
                 new Map(9, 12, new Base(new Point(0, 4))),
                 new Map(9, 12, new Base(new Point(0, 4))));
     }

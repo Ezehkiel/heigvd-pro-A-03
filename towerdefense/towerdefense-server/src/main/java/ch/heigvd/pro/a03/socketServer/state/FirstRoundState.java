@@ -1,7 +1,6 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.event.Event;
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
 
@@ -19,11 +18,11 @@ public class FirstRoundState extends ServerState{
     @Override
     public void run() {
 
-        for(Client p :gameServer.clients){
-            gameServer.broadCastMessage(String.valueOf(p.getId()));
-            LinkedList<Event> playerEvents = getEvents(p.getOis());
+        for(Client client : gameServer.getClients()) {
+            gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
+            LinkedList<Event> playerEvents = getEvents(client.getOis());
             // Send this to map
-            sendProtocol(p.getOut(),gameServer.currentState.getId(),"OK");
+            sendProtocol(client.getOut(),gameServer.currentState.getId(),"OK");
         }
         gameServer.setCurrentState(gameServer.RoundState);
     }

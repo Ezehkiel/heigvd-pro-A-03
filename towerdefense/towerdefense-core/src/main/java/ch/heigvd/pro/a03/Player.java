@@ -9,13 +9,12 @@ public class Player implements Serializable {
 
     private String name;
     private int money;
-    private static int count=0;
-    public int ID;
+    public final int ID;
 
-    public Player(String name) {
+    public Player(int id, String name) {
+        this.ID = id;
         this.name = name;
         this.money = 3500;
-        ID=count++;
     }
 
     public String getName() {
@@ -24,10 +23,6 @@ public class Player implements Serializable {
 
     public int getMoney() {
         return money;
-    }
-
-    public int getID() {
-        return ID;
     }
 
     public void addMoney(int money){
@@ -51,11 +46,13 @@ public class Player implements Serializable {
         Player player = null;
         try {
             player = (Player) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            //e.printStackTrace();
         }
+
+        System.out.println(player);
+
         return player;
     }
     public static void sendPlayer(Player player, ObjectOutputStream out) {

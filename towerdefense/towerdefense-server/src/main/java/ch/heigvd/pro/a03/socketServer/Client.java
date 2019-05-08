@@ -8,17 +8,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Client extends Player {
-    Socket socket;
+public class Client {
 
+    Socket socket;
+    private Player player;
 
     BufferedReader in;
     BufferedWriter out;
     ObjectInputStream ois = null;
     ObjectOutputStream ous = null;
 
-    public Client(Socket socket,String username) {
-        super(username);
+    public Client(Socket socket) {
+
+        this.player = null;
         this.socket = socket;
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
@@ -30,16 +32,20 @@ public class Client extends Player {
         }
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public BufferedReader getIn() {
         return in;
     }
 
     public BufferedWriter getOut() {
         return out;
-    }
-
-    public int getId() {
-        return super.ID;
     }
 
     public ObjectInputStream getOis() {
