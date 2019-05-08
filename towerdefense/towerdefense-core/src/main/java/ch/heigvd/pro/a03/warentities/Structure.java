@@ -5,7 +5,7 @@ import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
 
-public class Structure extends WarEntity {
+public abstract class Structure extends WarEntity {
 
     public Structure(String name,Point position, int totalHealth, int defPoint,int attackCoolDown) {
         super(name,position,totalHealth,defPoint, attackCoolDown);

@@ -156,6 +156,7 @@ abstract public class WarEntity {
     @Override
     public String toString() {
         return "WarEntity{" +
+                "name=" + name +
                 "position=" + position +
                 ", totalHealth=" + totalHealth +
                 ", healthPoint=" + healthPoints +
@@ -164,6 +165,9 @@ abstract public class WarEntity {
                 ", range=" + range +
                 '}';
     }
+
+    //Should return a 3 characters string retresenting the WarEntity. Ex: " B ", "Sol" etc...
+    abstract public String symbol();
 
     public abstract void update(Map map);
 

@@ -1,34 +1,40 @@
 package ch.heigvd.pro.a03.algorithm;
 
+import ch.heigvd.pro.a03.Map;
+import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.units.Unit;
+
+import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
 public class NearestTarget {
 
-    private int rows;
-    private int cols;
-    private boolean[][] isTarget;
     private boolean[][] isMarked;
+    private Map map;
 
-    public NearestTarget(int rows, int cols, List<Vec2> targets){
-        assert(rows > 0 && cols > 0);
-        assert(!targets.isEmpty());
-        this.rows = rows;
-        this.cols = cols;
-        isTarget = new boolean[rows][cols];
-        for(Vec2 v: targets) isTarget[v.getRow()][v.getCol()] = true;
+    public NearestTarget(Map map){
+        isMarked = new boolean[map.getRow()][map.getCol()];
+        this.map = map;
     }
 
     /**
-     * @param startingPosition
-     * @param range
-     * @return the location of the nearest neighbour in given range
+     * @param unit
+     * @return the location of the nearest Structure in given range of the given unit
      * if their is none, null is returned
      */
-    public Vec2 getNearestTarget(Vec2 startingPosition, int range){
-        isMarked = new boolean[rows][cols];
+    public Structure getNearestTarget(Unit unit){
+
+        Vec2 startingPosition = new Vec2(unit.getPosition().y, unit.getPosition().x);
+        int range = (int) unit.getRange();
+
+        //clean marked locations
+        cleanIsMarked();
+
         //Vec2 root = startingPosition;
-        LinkedList<Vec2> queue = new LinkedList<>(); queue.add(startingPosition); queue.add(null);
+        LinkedList<Vec2> queue = new LinkedList<>();
+        queue.add(startingPosition);
+        queue.add(null);
         isMarked[startingPosition.getRow()][startingPosition.getCol()] = true;
         for(int i = 0; i < range;){
             Vec2 next = queue.remove();
@@ -39,7 +45,7 @@ public class NearestTarget {
             }
             List<Vec2> neighbours = getNeighboursOf(next);
             Vec2 target = getATargetIn(neighbours);
-            if(target != null) return target;
+            if(target != null) return map.getStructureAt(target.getRow(), target.getCol());
             queue.addAll(neighbours);
         }
         return null;
@@ -54,7 +60,7 @@ public class NearestTarget {
             l.add(new Vec2(row - 1, col));
             isMarked[row - 1][col] = true;
         }
-        if(row < rows && !isMarked[row + 1][col]){
+        if(row < map.getRow() && !isMarked[row + 1][col]){
             l.add(new Vec2(row + 1, col));
             isMarked[row + 1][col] = true;
         }
@@ -62,7 +68,7 @@ public class NearestTarget {
             l.add(new Vec2(row, col - 1));
             isMarked[row][col - 1] = true;
         }
-        if(col < cols && !isMarked[row][col + 1]){
+        if(col < map.getCol() && !isMarked[row][col + 1]){
             l.add(new Vec2(row, col + 1));
             isMarked[row][col + 1] = true;
         }
@@ -71,7 +77,7 @@ public class NearestTarget {
     }
 
     private Vec2 getATargetIn(List<Vec2> ps){
-        for(Vec2 p: ps) if(isTarget[p.getRow()][p.getCol()]) return p;
+        for(Vec2 p: ps) if(map.getStructureAt(p.getRow(),p.getCol()) != null) return p;
         return null;
     }
 
@@ -89,6 +95,12 @@ public class NearestTarget {
             this.position = position;
             this.parent = parent;
         }
+    }
+
+    private void cleanIsMarked(){
+        for(int i = 0; i < isMarked.length; ++i)
+            for(int j = 0; j < isMarked[0].length; ++j)
+                isMarked[i][j] = false;
     }
 
 }

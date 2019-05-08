@@ -14,4 +14,9 @@ public class MachineGunTurret extends Turret {
         this("MachineGun",position,500,1500,10,500,10,200);
     }
 
+    @Override
+    public String symbol() {
+        if(isEntityDestroyed()) return "[X]";
+        else return "MGT";
+    }
 }

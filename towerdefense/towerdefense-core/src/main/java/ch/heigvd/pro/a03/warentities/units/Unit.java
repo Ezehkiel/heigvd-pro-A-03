@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 
 
-public class Unit extends WarEntity {
+public abstract class Unit extends WarEntity {
 
     private Astar pathFinding;
     private List<Point> path;

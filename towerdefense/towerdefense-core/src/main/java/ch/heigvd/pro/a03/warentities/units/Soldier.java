@@ -12,4 +12,11 @@ public class Soldier extends Unit {
     public Soldier(Point position){
         this("Soldier", position,200,200,10,5,100,3,200);
     }
+
+    @Override
+    public String symbol() {
+        if(isEntityDestroyed()) return "X";
+        else return "Sol";
+    }
+
 }

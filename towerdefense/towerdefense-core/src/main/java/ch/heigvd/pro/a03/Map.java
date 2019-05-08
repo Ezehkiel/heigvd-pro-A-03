@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
@@ -128,6 +129,32 @@ public class Map {
     }
 
 
+    @Override
+    public String toString(){
+        if(size.width == 0 || size.height == 0) return "";
+
+        WarEntity[][] warEntities = new WarEntity[size.height][size.width];
+        for(int i = 0; i < size.height; ++i)
+            for(int j = 0; j < size.width; ++j)
+                warEntities[i][j] = structures[i][j];
+        for(Unit u: units) warEntities[u.getPosition().y][u.getPosition().x] = u;
+
+        String toRet = "";
+
+        for(int j = 0; j < warEntities[0].length; ++j) toRet += "   " + j;
+        toRet += '\n';
+
+        for(int i = 0; i < warEntities.length; ++i){
+            toRet += i;
+            for(int j = 0; j < warEntities[0].length; ++j){
+                if(warEntities[i][j] != null) toRet += " " + warEntities[i][j].symbol();
+                else toRet += "  - ";
+            }
+            toRet += '\n';
+        }
+
+        return toRet;
+    }
 
 
 }

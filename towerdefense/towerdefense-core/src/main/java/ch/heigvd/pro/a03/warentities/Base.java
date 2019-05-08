@@ -25,4 +25,11 @@ public class Base extends Structure {
         return endGame;
 
     }
+
+    @Override
+    public String symbol() {
+        if(isEntityDestroyed()) return "[X]";
+        else return " B ";
+    }
+
 }

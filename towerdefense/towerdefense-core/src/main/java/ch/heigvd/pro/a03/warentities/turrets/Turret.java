@@ -6,7 +6,7 @@ import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.Point;
 
-public class Turret extends Structure {
+public abstract class Turret extends Structure {
 
 
     public Turret(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int attackPoints, int range, int price) {
