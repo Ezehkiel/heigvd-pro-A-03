@@ -26,7 +26,7 @@ public class GameModeScene extends Scene {
         playButton.addListener(new ButtonCommand(new SetSceneCommand(GameLauncher.getInstance())) {
             @Override
             public void executeCommand() {
-                getCommand().execute(new GameScene());
+                getCommand().execute(new GameScene(2));
             }
         });
 

@@ -1,25 +1,36 @@
 package ch.heigvd.pro.a03.socketServer;
 
 
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.player.TurretEvent;
+import ch.heigvd.pro.a03.event.player.*;
+
+import javax.naming.ldap.SortKey;
+import java.awt.*;
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 
 
 // RES Exemple
 public class SocketServer implements Runnable{
 
     final static Logger LOG = Logger.getLogger(SocketServer.class.getName());
-    static ArrayList<Player> connectedPlayer;
-
+    ArrayList<GameServer> gameServers;
     int port;
 
+
+
     public SocketServer(int port) {
-        connectedPlayer = new ArrayList<>();
         this.port = port;
+        gameServers = new ArrayList<>();
     }
 
     public void run() {
@@ -38,7 +49,8 @@ public class SocketServer implements Runnable{
             try {
 
                 Socket clientSocket = serverSocket.accept();
-                new Thread(new MatchMaker(clientSocket)).start();
+                new Thread(new Worker(clientSocket)).start();
+
             } catch (IOException ex) {
                 Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
             }

@@ -129,6 +129,9 @@ public class GameLauncher implements ApplicationListener {
      */
     public static void main(String[] args) {
 
+        // Change Logger format
+        System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
+
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = GameLauncher.TITLE;
         config.width = GameLauncher.WIDTH;

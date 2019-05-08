@@ -1,6 +1,9 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.algorithm.Astar;
+import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -9,32 +12,122 @@ public class Map {
 
     private Dimension size;
     private Structure[][] structures;
-    //private Collection<Unit> units;
+    private LinkedList<Unit> units;
+    private int row;
+    private int col;
+    private Base base;
+    private boolean endSimulation;
 
-    public Map(int width, int height) {
-        this.size = new Dimension(width, height);
-        structures = new Structure[width][height];
+
+    public Map(int row, int col, Base base) {
+        this.row=row;
+        this.col=col;
+        this.size = new Dimension(row, col);
+        structures = new Structure[row][col];
+        units=new LinkedList<>();
+        this.base=base;
+        setStructureAt(base,base.getPosition().y,base.getPosition().x);
+
     }
 
-    public Structure getStructureAt(int x, int y) {
+    public Base getBase() {
+        return base;
+    }
 
-        if (!inMap(x, y)) {
+    public int getRow() {
+        return row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public Structure getStructureAt(int row, int col) {
+
+        if (!inMap(row,col)) {
             return null;
         }
 
-        return structures[x][y];
+        return structures[row][col];
     }
 
-    public void setStructureAt(Structure structure, int x, int y) {
+    public void setStructureAt(Structure structure, int row, int col) {
 
-        if (!inMap(x, y)) {
+        if (!inMap(row, col)) {
             throw new IndexOutOfBoundsException("Position not in map");
         }
 
-        structures[x][y] = structure;
+        structures[row][col] = structure;
+
     }
 
-    public boolean inMap(int x, int y) {
-        return x >= 0 && x < size.width && y >= 0 && y < size.height;
+    public void addUnit(Unit u){
+        units.add(u);
     }
+
+
+    public Structure[][] getStructures() {
+        return structures;
+    }
+
+    public void setUnits(LinkedList<Unit> units) {
+        this.units = units;
+    }
+
+    public LinkedList<Unit> getUnits() {
+        return units;
+    }
+
+    public boolean inMap(int row, int col) {
+        return (row >= 0 && row < this.row && col >= 0 && col < this.col);
+    }
+
+    public void update() {
+
+        for(int i =0; i<row;++i){
+            for(int j=0;j<col;++j){
+                if(structures[i][j] != null){
+                    structures[i][j].update(this);
+                }
+
+            }
+
+        }
+
+        for(Unit u: units){
+
+            u.update(this);
+        }
+
+    }
+
+
+    public boolean isEndSimulation(){
+
+
+        endSimulation = true;
+        for(Unit u: units){
+            if (!u.isEntityDestroyed()) {
+                endSimulation = false;
+                break;
+            }
+        }
+
+        if(endSimulation){
+            units.clear();
+        }
+
+        return endSimulation;
+
+    }
+
+    public boolean isEndMatch(){
+
+
+        return base.isEntityDestroyed();
+    }
+
+
+
+
 }

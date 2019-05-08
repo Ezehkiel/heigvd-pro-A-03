@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.commands.game.GameSceneCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -26,7 +27,7 @@ public class TurretSelectionMenu extends Menu {
         machineGun.addListener(new ButtonCommand(new GameSceneCommand(scene) {
             @Override
             public void execute(Object... args) {
-                getReceiver().selectTurret(GameScene.TurretType.MACHINE_GUN);
+                getReceiver().selectTurret(WarEntityType.TurretType.MACHINEGUN);
             }
         }));
 
@@ -34,7 +35,7 @@ public class TurretSelectionMenu extends Menu {
         mortar.addListener(new ButtonCommand(new GameSceneCommand(scene) {
             @Override
             public void execute(Object... args) {
-                getReceiver().selectTurret(GameScene.TurretType.MORTAR);
+                getReceiver().selectTurret(WarEntityType.TurretType.MORTAR);
             }
         }));
 
@@ -42,7 +43,7 @@ public class TurretSelectionMenu extends Menu {
         slower.addListener(new ButtonCommand(new GameSceneCommand(scene) {
             @Override
             public void execute(Object... args) {
-                getReceiver().selectTurret(GameScene.TurretType.SLOWER);
+                getReceiver().selectTurret(WarEntityType.TurretType.SLOWER);
             }
         }));
 

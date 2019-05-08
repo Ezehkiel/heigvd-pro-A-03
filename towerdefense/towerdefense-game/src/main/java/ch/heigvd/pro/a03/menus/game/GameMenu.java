@@ -48,10 +48,10 @@ public class GameMenu extends Menu {
         getMenu().add(unitSelectionMenu.getMenu());
     }
 
-    public void showTurretMenu(TowerDefense towerDefense, Turret turret) {
+    public void showTurretMenu(TowerDefense towerDefense, int mapId, Turret turret) {
 
         getMenu().clear();
 
-        getMenu().add(new TurretMenu(this, towerDefense, turret, skin).getMenu());
+        getMenu().add(new TurretMenu(this, towerDefense, mapId, turret, skin).getMenu());
     }
 }

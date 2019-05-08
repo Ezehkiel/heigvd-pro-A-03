@@ -1,5 +1,6 @@
 package ch.heigvd.pro.a03.users;
 
+import java.util.Date;
 import java.util.Objects;
 
 public class User {
@@ -8,26 +9,21 @@ public class User {
     private String password;
     private int id;
     private String token;
-
-    public int getId() {
-        return id;
-    }
-
-
-    public String getUsername() {
-        return username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-
+    private int nbPartieJoue;
+    private int getNbPartieGagne;
+    private Date lastLogin;
 
     public User(int id, String userName,String motDePasse){
         this.id = id;
         this.username = userName;
         this.password = motDePasse;
+    }
+
+    public User (int id, String userName,String motDePasse, int nbPartieJoue, int getNbPartieGagne, Date lastLogin){
+        this(id, userName, motDePasse);
+        this.nbPartieJoue = nbPartieJoue;
+        this.getNbPartieGagne = getNbPartieGagne;
+        this.lastLogin = lastLogin;
     }
 
 
@@ -42,6 +38,18 @@ public class User {
         User user = (User) o;
         return Objects.equals(this.username, user.getUsername()) &&
                 Objects.equals(this.password, user.password);
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public String getToken() {

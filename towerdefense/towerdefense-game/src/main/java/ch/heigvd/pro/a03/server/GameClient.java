@@ -1,58 +1,64 @@
 package ch.heigvd.pro.a03.server;
-
-import ch.heigvd.pro.a03.utils.Communication;
+import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.utils.Protocole;
 
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
+import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-
-import static ch.heigvd.pro.a03.utils.Communication.readProtocol;
+import java.util.logging.Logger;
 
 public class GameClient {
 
-    private static GameClient instance;
+    public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
 
     private final String HOST;
     private final int PORT;
 
     private Socket socket;
-    private OutputStreamWriter out;
-    private InputStreamReader in;
+    private BufferedWriter out;
+    private BufferedReader in;
+    private ObjectOutputStream objectOut;
+    private ObjectInputStream objectIn;
 
     private int playerNumber = -1;
 
-    private GameClient() {
-        HOST = "ezehkiel.ch";
+    public GameClient() {
+        HOST = "localhost";
         PORT = 4567;
-    }
-
-    public static GameClient getInstance() {
-
-        if (instance == null) {
-            instance = new GameClient();
-        }
-
-        return instance;
     }
 
     /**
      * Connect to the server with a socket
      * @return true if connected to the server
      */
-    public boolean connect() {
+    public boolean connect(Executable command) {
 
         try {
-            Socket socket = new Socket(HOST, PORT);
+            socket = new Socket(HOST, PORT);
 
-            out = new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8);
-            in = new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8);
+            out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
+            in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
 
-            Communication.writeProtocol(out, Protocole.CLIENTWANTPLAYMULTI);
+            new Thread(() -> {
 
-            return Communication.readProtocol(in) == Protocole.ISCLIENTREADY;
+                try {
+                    Protocole.sendProtocol(out, 1, "START");
+                    Protocole.receive(in);
+
+                    Protocole.sendProtocol(out, 1, "2");
+                    Protocole.receive(in);
+                    Protocole.receive(in);
+
+                    LOG.info("Connected to game server!");
+
+                    command.execute();
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+
+            return true;
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,15 +67,64 @@ public class GameClient {
         return false;
     }
 
-    public void ready() {
+    /**
+     * Gets the players of the game.
+     */
+    public void getPlayers(Executable showPlayer, Executable showReadyButton) {
+        new Thread(() -> {
+            try {
 
+                Protocole.sendProtocol(out, 2, "START");
+
+                objectIn = new ObjectInputStream(socket.getInputStream());
+                objectOut = new ObjectOutputStream(socket.getOutputStream());
+
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+                    showPlayer.execute();
+                    protocole = Protocole.receive(in);
+                }
+
+                LOG.info("Game party if full.");
+
+                Protocole.sendProtocol(out, 3, "START");
+                Protocole protocole1 = Protocole.receive(in);
+
+                showReadyButton.execute();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    /**
+     * Tells the server that the player is ready. Blocks everything until every players are ready.
+     */
+    public void ready(Executable startGame) {
         try {
-            Communication.writeProtocol(out, Protocole.CLIENTREADY);
+            Protocole.sendProtocol(out, 3, "YES");
+            Protocole protocole = Protocole.receive(in);
 
-            playerNumber = readProtocol(in) == Protocole.YOURAREPLAYERONE ? 1 : 2;
+            LOG.info("Game is starting");
+            startGame.execute();
 
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Tells the server that the player has left the game.
+     */
+    public void quit() {
+
+        try {
+            socket.close();
+            out.close();
+            in.close();
+        } catch (IOException e) {
+            e.printStackTrace();;
         }
     }
 
