@@ -1,12 +1,15 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
+import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.utils.Protocole;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class GameClient {
@@ -22,14 +25,13 @@ public class GameClient {
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
 
-    private int playerNumber = -1;
-
+    public final int PLAYERS_COUNT;
     private Player player = null;
 
-    public GameClient() {
+    public GameClient(int playersCount) {
         HOST = "localhost";
         PORT = 4567;
-
+        PLAYERS_COUNT = playersCount;
     }
 
     /**
@@ -130,6 +132,73 @@ public class GameClient {
         }
     }
 
+    public void firstTurn() {
+
+        LOG.info("First Round starting.");
+
+        new Thread(() -> {
+            try {
+                Protocole.sendProtocol(out, 4, "START");
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+                    if (Integer.parseInt(protocole.getData()) == player.ID) {
+                        LOG.info("My turn.");
+                        Event.sendEvents(new LinkedList<>(), objectOut);
+                        Protocole.receive(in);
+                        LOG.info("I end my turn.");
+                    } else {
+                        LOG.info("Player " + protocole.getData() + "'s turn.");
+                    }
+
+                    protocole = Protocole.receive(in);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            round(args -> System.out.println("Received Maps."));
+
+        }).start();
+    }
+
+    public void round(Executable showMaps) {
+        LOG.info("Round Stating.");
+
+        new Thread(() -> {
+
+            try {
+
+                Protocole.sendProtocol(out, 5, "START");
+
+                showMaps.execute(receiveObject());
+
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+
+                    if (Integer.parseInt(protocole.getData()) == player.ID) {
+
+                        LOG.info("My Turn");
+                        player = (Player) receiveObject();
+
+                        Event.sendEvents(new LinkedList<>(), objectOut);
+                        LOG.info("I end my turn.");
+
+                    } else {
+                        LOG.info("Player " + protocole.getData() + "'s turn.");
+                    }
+
+                    showMaps.execute(receiveObject());
+
+                    protocole = Protocole.receive(in);
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
     /**
      * Tells the server that the player has left the game.
      */
@@ -144,7 +213,13 @@ public class GameClient {
         }
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
+    private Object receiveObject() {
+        try {
+            return objectIn.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

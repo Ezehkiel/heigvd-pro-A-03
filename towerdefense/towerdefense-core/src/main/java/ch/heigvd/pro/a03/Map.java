@@ -1,16 +1,14 @@
 package ch.heigvd.pro.a03;
 
-import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
-import java.awt.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Map {
+public class Map implements Serializable {
 
-    private Dimension size;
     private Structure[][] structures;
     private LinkedList<Unit> units;
     private int row;
@@ -22,7 +20,6 @@ public class Map {
     public Map(int row, int col, Base base) {
         this.row=row;
         this.col=col;
-        this.size = new Dimension(row, col);
         structures = new Structure[row][col];
         units=new LinkedList<>();
         this.base=base;

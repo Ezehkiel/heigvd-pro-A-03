@@ -14,7 +14,7 @@ public class MatchMakingScene extends Scene {
 
     public MatchMakingScene() {
 
-        gameClient = new GameClient();
+        gameClient = new GameClient(2);
         gameClient.connect(new Command<MatchMakingScene>(this) {
             @Override
             public void execute(Object... args) {
@@ -47,6 +47,6 @@ public class MatchMakingScene extends Scene {
     }
 
     public void startGame() {
-        GameLauncher.getInstance().getSceneManager().set(new GameScene(2));
+        GameLauncher.getInstance().getSceneManager().set(new GameScene(gameClient));
     }
 }

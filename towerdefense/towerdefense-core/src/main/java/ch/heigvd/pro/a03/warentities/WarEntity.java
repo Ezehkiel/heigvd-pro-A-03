@@ -4,8 +4,9 @@ package ch.heigvd.pro.a03.warentities;
 import ch.heigvd.pro.a03.Map;
 
 import java.awt.*;
+import java.io.Serializable;
 
-abstract public class WarEntity {
+abstract public class WarEntity implements Serializable {
 
     private Point position;//position that the entity will take at the grid 
 

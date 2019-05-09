@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03.scenes;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
+import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.TiledMapManager;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
@@ -33,13 +34,16 @@ public class GameScene extends Scene {
 
     private TiledMapManager tiledMapManager;
 
+    private GameClient gameClient;
+
     private TowerDefense game;
     private WarEntityType.TurretType selectedTurretType;
 
     private GameMenu gameMenu;
 
-    public GameScene(int playerCount) {
+    public GameScene(GameClient gameClient) {
 
+        this.gameClient = gameClient;
         gameCamera = new OrthographicCamera();
         gameViewport = new ScreenViewport(gameCamera);
         gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
@@ -51,15 +55,17 @@ public class GameScene extends Scene {
 
         getStage().addActor(gameMenu.getMenu());
 
-        game = new TowerDefense(this, playerCount);
-        tiledMapManager = new TiledMapManager(TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, playerCount);
+        game = new TowerDefense(this, gameClient);
+        tiledMapManager = new TiledMapManager(TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT);
+
+        gameClient.firstTurn();
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        game.getStateMachine().update(deltaTime);
+        //game.getStateMachine().update(deltaTime);
         updateCamera();
 
         tiledMapManager.getRenderer().setView(gameCamera);

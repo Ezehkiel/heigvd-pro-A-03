@@ -1,12 +1,14 @@
 package ch.heigvd.pro.a03;
 
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
 import ch.heigvd.pro.a03.warentities.Base;
 
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import com.badlogic.gdx.Game;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -14,6 +16,7 @@ import java.util.ArrayList;
 public class TowerDefense {
 
     private GameScene scene;
+    private GameClient gameClient;
 
     public static final int MAP_WIDTH = 9;
     public static final int MAP_HEIGHT = 12;
@@ -28,10 +31,11 @@ public class TowerDefense {
         PLAY, OPPONENT_PLAY, SIMULATION, WAIT
     }
 
-    public TowerDefense(GameScene scene, int playerCount) {
+    public TowerDefense(GameScene scene, GameClient gameClient) {
 
         this.scene = scene;
-        maps = new Map[playerCount];
+        this.gameClient = gameClient;
+        maps = new Map[gameClient.PLAYERS_COUNT];
         for (int i = 0; i < maps.length; ++i) {
             maps[i] = new Map(MAP_HEIGHT, MAP_WIDTH, new Base(new Point(4,11)));
         }

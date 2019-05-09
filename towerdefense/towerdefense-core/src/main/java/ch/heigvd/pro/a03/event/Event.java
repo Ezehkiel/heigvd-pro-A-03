@@ -1,7 +1,5 @@
 package ch.heigvd.pro.a03.event;
 
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -38,7 +36,10 @@ public class Event {
         }
     }
     public static void sendEvents(LinkedList<Event> events, ObjectOutputStream out) {
-        for (Event playerEvent : events)
-            sendEvent(playerEvent,out);
+        try {
+            out.writeObject(events);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -21,7 +21,10 @@ public class FirstRoundState extends ServerState{
         for(Client client : gameServer.getClients()) {
             gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
             LinkedList<Event> playerEvents = getEvents(client.getOis());
-            // Send this to map
+
+            // TODO update the map
+            GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");
+
             sendProtocol(client.getOut(),gameServer.currentState.getId(),"OK");
         }
         gameServer.setCurrentState(gameServer.RoundState);

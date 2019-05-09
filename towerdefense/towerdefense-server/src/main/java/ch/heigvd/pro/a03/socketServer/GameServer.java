@@ -1,10 +1,12 @@
 package ch.heigvd.pro.a03.socketServer;
 
+import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
@@ -26,10 +28,13 @@ public class GameServer implements Runnable {
     private int arrivedPlayersCount;
     private Client[] clients;
 
+    private GameLogic gameLogic;
+
     public GameServer(int gameMode) {
         this.PLAYER_COUNT = gameMode;
         this.arrivedPlayersCount = 0;
         this.clients = new Client[PLAYER_COUNT];
+        this.gameLogic = null;
         this.ValidationState = new ValidationState(3, this);
         this.FirstRoundState = new FirstRoundState(4, this);
         this.RoundState = new RoundState(5, this);
@@ -63,15 +68,20 @@ public class GameServer implements Runnable {
 
         if (arrivedPlayersCount == PLAYER_COUNT) {
 
+            Player[] players = new Player[PLAYER_COUNT];
             for (Client c : clients) {
 
                 // tell the client that everyone arrived
                 Player.sendPlayer(null, c.ous);
                 // tell the client which player he is
                 Player.sendPlayer(c.getPlayer(), c.ous);
+
+                players[c.getPlayer().ID] = c.getPlayer();
             }
 
             LOG.info("A game server has started!");
+            gameLogic = new GameLogic(players);
+
             new Thread(this).start();
         }
     }
@@ -107,6 +117,12 @@ public class GameServer implements Runnable {
             sendProtocol(client.getOut(), currentState.getId(), message);
     }
 
+    public void broadCastObject(Object object) {
+        for (Client client : clients) {
+            sendObject(client.getOus(), object);
+        }
+    }
+
     public void waitForPlayers(String message) throws InterruptedException {
         Thread t[] = new Thread[PLAYER_COUNT];
         for (Client client : clients) {
@@ -116,6 +132,14 @@ public class GameServer implements Runnable {
 
         for (Client client : clients) {
             t[client.getPlayer().ID].join();
+        }
+    }
+
+    public void sendObject(ObjectOutputStream ous, Object object) {
+        try {
+            ous.writeObject(object);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -151,5 +175,9 @@ public class GameServer implements Runnable {
 
     public Client[] getClients() {
         return clients;
+    }
+
+    public GameLogic getGameLogic() {
+        return gameLogic;
     }
 }
