@@ -1,6 +1,5 @@
 package ch.heigvd.pro.a03;
 
-import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
@@ -17,10 +16,11 @@ public class Map {
     private int row;
     private int col;
     private Base base;
-    private boolean endSimulation;
+    private boolean endMatch;
+    public final int ID;
 
 
-    public Map(int row, int col, Base base) {
+    public Map(int row, int col, Base base, int id) {
         this.row = row;
         this.col = col;
         this.size = new Dimension(row, col);
@@ -28,8 +28,10 @@ public class Map {
         units = new LinkedList<>();
         this.base = base;
         setStructureAt(base, base.getPosition().y, base.getPosition().x);
+        ID = id;
 
     }
+
 
     public Base getBase() {
         return base;
@@ -83,12 +85,12 @@ public class Map {
         return (row >= 0 && row < this.row && col >= 0 && col < this.col);
     }
 
-    public void update() {
+    public void update(int tickId) {
 
         for (int i = 0; i < row; ++i) {
             for (int j = 0; j < col; ++j) {
                 if (structures[i][j] != null) {
-                    structures[i][j].update(this);
+                    structures[i][j].update(tickId, this);
                 }
 
             }
@@ -97,35 +99,20 @@ public class Map {
 
         for (Unit u : units) {
 
-            u.update(this);
+            u.update(tickId, this);
         }
 
     }
 
-
-    public boolean isEndSimulation() {
-
-
-        endSimulation = true;
-        for (Unit u : units) {
-            if (!u.isEntityDestroyed()) {
-                endSimulation = false;
-                break;
-            }
-        }
-
-        if (endSimulation) {
-            units.clear();
-        }
-
-        return endSimulation;
-
-    }
 
     public boolean isEndMatch() {
 
+        endMatch = true;
+        if (!base.isEntityDestroyed()) {
+            endMatch = false;
+        }
 
-        return base.isEntityDestroyed();
+        return endMatch;
     }
 
 
@@ -137,7 +124,7 @@ public class Map {
         for (int i = 0; i < row; ++i)
             for (int j = 0; j < col; ++j)
                 warEntities[i][j] = structures[i][j];
-        for (Unit u : units){
+        for (Unit u : units) {
             warEntities[u.getPosition().y][u.getPosition().x] = u;
         }
 

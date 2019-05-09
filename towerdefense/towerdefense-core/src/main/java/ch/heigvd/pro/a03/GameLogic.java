@@ -15,6 +15,8 @@ public class GameLogic {
     private boolean endMatch;
     private boolean endRound;
 
+    private int nbTick;
+
     public GameLogic(Player player1, Player player2, Map map1, Map map2) {
         players=new LinkedList<>();
         maps=new LinkedList<>();
@@ -25,30 +27,30 @@ public class GameLogic {
         endMatch = false;
         endRound = false;
         entityCount = 0;
+        nbTick=0;
 
     }
 
     public GameLogic() {
         this(new Player("player0"), new Player("player1"),
-                new Map(9, 12, new Base(new Point(0, 4))),
-                new Map(9, 12, new Base(new Point(0, 4))));
+                new Map(9, 12, new Base(new Point(0, 4)),0),
+                new Map(9, 12, new Base(new Point(0, 4)),1));
     }
 
-    public void playGame() {
 
-        while (!endMatch) {
-            playRound();
-        }
-
-    }
 
     public void playRound() {
 
-        while (!endRound) {
+
+        while (!endRound && !endMatch) {
+
+            nbTick++;
+            EventManager.getInstance().clearEvents();
+
             for (Map m : maps) {
-                m.update();
-                endRound = m.isEndSimulation();
-                endMatch |= m.isEndMatch();
+                m.update(nbTick);
+                endRound = isEndRound(m.getUnits().isEmpty());
+                endMatch = m.isEndMatch();
             }
         }
 
@@ -56,22 +58,30 @@ public class GameLogic {
             p.addMoney(1000);
         }
 
-        endRound = false;
-        LinkedList<Unit> units;
-
-        units = maps.get(0).getUnits();
-        units.addAll(maps.get(1).getUnits());
-
-        for (Unit u : units) {
-            u.setEndSimulation();
+        for (Map m: maps){
+            m.getUnits().clear();
         }
+
+        endRound = false;
+
 
 
     }
 
+    private boolean isEndRound(boolean empty){
+        endRound=true;
 
-    public void setEndMatch(boolean match) {
-        this.endMatch = match;
+        if(!empty){
+            endRound=false;
+        }
+
+        return endRound;
+
+
+    }
+
+    public int getNbTick() {
+        return nbTick;
     }
 
     public Map getPlayerMap(int index) {

@@ -32,8 +32,8 @@ public class MapSandbox {
         //We create a Map with some WarEntities into it: (as described in previous comments)
 
         //Create a map
-        Base base = new Base("Superbase", new Point(6, 5), 10000, 5, 1);
-        Map map = new Map(6, 7, base);
+        Base base = new Base("Superbase", new Point(6, 5), 1, 5, 1);
+        Map map = new Map(6, 7, base,0);
         //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 50, 0, 1, 1, 1000, 5, 12);
         MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 1, 5, 2, 40);
@@ -50,13 +50,13 @@ public class MapSandbox {
         for(int i = 0; i < 10; ++i){
             //We print some info for visual checking to console
             System.out.println(map);
-            System.out.println("soldier health:" + soldier.getHealthPoint());
-            System.out.println("Turret 1 health" + mgt1.getHealthPoint());
-            System.out.println("Turret 2 health" + mgt2.getHealthPoint());
-            System.out.println("Turret 3 health" + mgt3.getHealthPoint());
-            System.out.println("Base     health"+ base.getHealthPoint());
+            System.out.println("soldier  health: " + soldier.getHealthPoint());
+            System.out.println("Turret 1 health: " + mgt1.getHealthPoint());
+            System.out.println("Turret 2 health: " + mgt2.getHealthPoint());
+            System.out.println("Turret 3 health: " + mgt3.getHealthPoint());
+            System.out.println("Base     health: "+ base.getHealthPoint());
             System.out.print("\n\n");
-            map.update();
+            map.update(0);
         }
 
 

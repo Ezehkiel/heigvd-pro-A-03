@@ -1,8 +1,12 @@
 package ch.heigvd.pro.a03.warentities.units;
 
+import ch.heigvd.pro.a03.EventManager;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.algorithm.Position;
+import ch.heigvd.pro.a03.event.simulation.AttackEvent;
+import ch.heigvd.pro.a03.event.simulation.DeathEvent;
+import ch.heigvd.pro.a03.event.simulation.MoveEvent;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
 
@@ -35,7 +39,7 @@ public abstract class Unit extends WarEntity {
 
 
     @Override
-    public void update(Map map) {
+    public void update(int tickId, Map map) {
 
         pathUnit(map);
 
@@ -48,6 +52,9 @@ public abstract class Unit extends WarEntity {
             if (displacementTicks == this.getSpeed()) {
 
                 displacement(map.getBase().getPosition());
+
+                EventManager.getInstance().addEvent(new MoveEvent(tickId,getId(),getPosition()));
+
                 displacementTicks = 0;
             }
 
@@ -56,8 +63,12 @@ public abstract class Unit extends WarEntity {
                 //If the enemy base is in range, the Unit will focus only on the base
 
                 if (isInRange(map.getBase())) {
-                    super.attack(map.getBase());
 
+                    EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),map.getBase().getId(),attack(map.getBase())));
+
+                    if(map.getBase().isEntityDestroyed()){
+                        EventManager.getInstance().addEvent(new DeathEvent(tickId,map.getBase().getId()));
+                    }
 
                 } else { //attacks the closest turret
 
@@ -80,7 +91,12 @@ public abstract class Unit extends WarEntity {
 
                     //attack the chosen one if their is any
                     if (closeTarget != null) {
-                        attack(closeTarget);
+
+                        EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),closeTarget.getId(),attack(closeTarget)));
+
+                        if(closeTarget.isEntityDestroyed()){
+                            EventManager.getInstance().addEvent(new DeathEvent(tickId,closeTarget.getId()));
+                        }
                     }
                 }
                 attackTicks = 0;

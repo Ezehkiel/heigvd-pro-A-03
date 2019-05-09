@@ -20,7 +20,7 @@ public class MapSimulationTest {
 
         //Create a map
         Base base = new Base("Superbase", new Point(6, 5), 100000, 5, 1);
-        Map map = new Map(6, 7, base);
+        Map map = new Map(6, 7, base,0);
         //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 500, 0, 1, 1, 10000, 5, 12);
         MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 1, 5, 2, 40);
@@ -61,7 +61,7 @@ public class MapSimulationTest {
         //###### iteration 1 ######
         System.out.println("--------iteration 1--------");
 
-        map.update();
+        map.update(0);
 
         System.out.println("full path to Base:");
         System.out.println(soldier.getPath()+"\n");
@@ -95,7 +95,7 @@ public class MapSimulationTest {
 
         //###### iteration 2 ######
         System.out.println("--------iteration 2--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -126,7 +126,7 @@ public class MapSimulationTest {
 
         //###### iteration 3 ######
         System.out.println("--------iteration 3--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -156,7 +156,7 @@ public class MapSimulationTest {
 
         //###### iteration 4 ######
         System.out.println("--------iteration 4--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -186,7 +186,7 @@ public class MapSimulationTest {
 
         //###### iteration 5 ######
         System.out.println("--------iteration 5--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -216,7 +216,7 @@ public class MapSimulationTest {
         //###### iteration 6 ######
         System.out.println("--------iteration 6--------");
 
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -247,7 +247,7 @@ public class MapSimulationTest {
         //###### iteration 7 ######
 
         System.out.println("--------iteration 7--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -278,7 +278,7 @@ public class MapSimulationTest {
 
         //###### iteration 8 ######
         System.out.println("--------iteration 8--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");
@@ -308,7 +308,7 @@ public class MapSimulationTest {
 
         //###### iteration 9 ######
         System.out.println("--------iteration 9--------");
-        map.update();
+        map.update(0);
 
         for(Unit u: units){
             System.out.println("Unit position "+u.getPosition().x +" "+ u.getPosition().y +"\n");

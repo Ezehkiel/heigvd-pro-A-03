@@ -80,16 +80,23 @@ abstract public class WarEntity {
      * 100 Defense: 100 damage
      * 200 Defense: 66 damage
      * 500 Defense: 33 damage
+     *
+     * @return the damage inflicted or
      */
-    public void dealDamage(int damageTaken) {
+    public int dealDamage(int damageTaken) {
 
         int tmp = (damageTaken * 100) / (100 + defensePoint);
+        int tmp2=0;
 
         if (healthPoints - tmp >= 0) {
             healthPoints -= tmp;
         } else {
+            tmp2=healthPoints;
             healthPoints = 0;
+
         }
+
+        return Math.min(tmp,tmp2);
     }
 
     /**
@@ -102,12 +109,20 @@ abstract public class WarEntity {
 
     }
 
-    public void attack(WarEntity target) {
+
+    /**
+     *
+     * @param target attack target
+     * @return the damage inflicted
+     */
+    public int attack(WarEntity target) {
+
+        int tmp=0;
 
         if (isInRange(target)) {
-            target.dealDamage(attackPoints);
+            tmp=target.dealDamage(attackPoints);
         }
-
+        return tmp;
     }
 
 
@@ -175,7 +190,7 @@ abstract public class WarEntity {
     //Should return a 3 characters string representing the WarEntity. Ex: " B ", "Sol" etc...
     abstract public String symbol();
 
-    public abstract void update(Map map);
+    public abstract void update(int tickId, Map map);
 
     public int getAttackCoolDown() {
         return attackCoolDown;
