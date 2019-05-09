@@ -27,7 +27,7 @@ public class TurretSelectionMenu extends Menu {
         machineGun.addListener(new ButtonCommand(new GameSceneCommand(scene) {
             @Override
             public void execute(Object... args) {
-                getReceiver().selectTurret(WarEntityType.TurretType.MACHINEGUN);
+                getReceiver().selectTurret(WarEntityType.TurretType.MACHINE_GUN);
             }
         }));
 
@@ -43,7 +43,7 @@ public class TurretSelectionMenu extends Menu {
         slower.addListener(new ButtonCommand(new GameSceneCommand(scene) {
             @Override
             public void execute(Object... args) {
-                getReceiver().selectTurret(WarEntityType.TurretType.SLOWER);
+                getReceiver().selectTurret(WarEntityType.TurretType.LASER_GUN);
             }
         }));
 
