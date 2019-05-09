@@ -13,5 +13,10 @@ public class Tank extends Unit {
         this("Tank", position,500,500,10,15,500,4,500);
     }
 
+    @Override
+    public String symbol() {
+        if(isEntityDestroyed()) return " X ";
+        else return "Tnk";
+    }
 
 }

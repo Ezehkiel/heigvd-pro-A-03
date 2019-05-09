@@ -58,6 +58,7 @@ public class Player implements Serializable {
     public static void sendPlayer(Player player, ObjectOutputStream out) {
         try {
             out.writeObject(player);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

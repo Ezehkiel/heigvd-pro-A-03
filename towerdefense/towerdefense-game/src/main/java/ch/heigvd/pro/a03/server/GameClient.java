@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.utils.Protocole;
+import org.lwjgl.Sys;
 
 import java.io.*;
 import java.net.Socket;
@@ -156,13 +157,13 @@ public class GameClient {
                 e.printStackTrace();
             }
 
-            round(args -> System.out.println("Received Maps."));
+            round(args -> System.out.println("Received Maps."), args -> System.out.println("Received Map"));
 
         }).start();
     }
 
-    public void round(Executable showMaps) {
-        LOG.info("Round Stating.");
+    public void round(Executable showMaps, Executable showMap) {
+        LOG.info("Round starting.");
 
         new Thread(() -> {
 
@@ -170,10 +171,14 @@ public class GameClient {
 
                 Protocole.sendProtocol(out, 5, "START");
 
-                showMaps.execute(receiveObject());
+                Map[] maps = (Map[]) receiveObject();
+                System.out.println(maps);
+                showMaps.execute();
 
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
+
+                    //Protocole.sendProtocol(out, 5, "OK");
 
                     if (Integer.parseInt(protocole.getData()) == player.ID) {
 
@@ -187,7 +192,9 @@ public class GameClient {
                         LOG.info("Player " + protocole.getData() + "'s turn.");
                     }
 
-                    showMaps.execute(receiveObject());
+                    Map map = (Map) receiveObject();
+                    System.out.println(map);
+                    showMap.execute();
 
                     protocole = Protocole.receive(in);
                 }

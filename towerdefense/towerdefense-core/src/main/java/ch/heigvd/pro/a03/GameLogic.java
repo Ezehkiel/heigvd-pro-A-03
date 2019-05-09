@@ -14,39 +14,42 @@ public class GameLogic {
     Map[] maps;
     private boolean endMatch;
     private boolean endRound;
+    private int nbTick;
+
 
     public GameLogic(Player[] players, Map[] maps) {
         this.players = players;
         this.maps = maps;
+
         endMatch = false;
         endRound = false;
         entityCount = 0;
-
+        nbTick = 0;
     }
 
     public GameLogic(Player[] players) {
-        this(players, new Map[]{
-                        new Map(9, 12, new Base(new Point(0, 4))),
-                        new Map(9, 12, new Base(new Point(0, 4)))
-                }
-        );
-    }
+        this(players, new Map[players.length]);
 
-    public void playGame() {
-
-        while (!endMatch) {
-            playRound();
+        for (int i = 0; i < maps.length; ++i) {
+            maps[i] = new Map(9, 12, new Base(new Point(0, 4)), i);
         }
-
     }
+
+
 
     public void playRound() {
 
-        while (!endRound) {
+
+        while (!endRound && !endMatch) {
+
+            nbTick++;
+            EventManager.getInstance().clearEvents();
+
+            endRound = isEndRound(maps);
+
             for (Map m : maps) {
-                m.update();
-                endRound = m.isEndSimulation();
-                endMatch |= m.isEndMatch();
+                m.update(nbTick);
+                endMatch = m.isEndMatch();
             }
         }
 
@@ -55,19 +58,25 @@ public class GameLogic {
         }
 
         endRound = false;
-        LinkedList<Unit> units;
 
-        units = maps[0].getUnits();
-        units.addAll(maps[1].getUnits());
-
-        for (Unit u : units) {
-            u.setEndSimulation();
+        for(Map m: maps){
+            m.getUnits().clear();
         }
     }
 
+    private boolean isEndRound(Map[] maps) {
 
-    public void setEndMatch(boolean match) {
-        this.endMatch = match;
+        for (Map map : maps) {
+            if (!map.unitsAreDead()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public int getNbTick() {
+        return nbTick;
     }
 
     public Map getPlayerMap(int index) {

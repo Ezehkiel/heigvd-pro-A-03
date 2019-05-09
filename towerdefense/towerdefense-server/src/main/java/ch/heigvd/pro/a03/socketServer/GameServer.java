@@ -99,12 +99,9 @@ public class GameServer implements Runnable {
         broadCastMessage("END");
 
         // HACKS
-        try {
-            LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
-            waitForPlayers(newState.getId() + "00-START");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
+        waitForPlayers(newState.getId() + "00-START");
+
         this.currentState = newState;
 
         LOG.info("State changed to " + currentState.getId());
@@ -123,7 +120,7 @@ public class GameServer implements Runnable {
         }
     }
 
-    public void waitForPlayers(String message) throws InterruptedException {
+    public void waitForPlayers(String message) {
         Thread t[] = new Thread[PLAYER_COUNT];
         for (Client client : clients) {
             t[client.getPlayer().ID] = new Thread(new waiter(client, message));
@@ -131,13 +128,18 @@ public class GameServer implements Runnable {
         }
 
         for (Client client : clients) {
-            t[client.getPlayer().ID].join();
+            try {
+                t[client.getPlayer().ID].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public void sendObject(ObjectOutputStream ous, Object object) {
         try {
             ous.writeObject(object);
+            ous.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }

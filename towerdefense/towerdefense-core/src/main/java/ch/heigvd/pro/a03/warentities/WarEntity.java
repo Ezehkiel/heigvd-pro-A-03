@@ -10,15 +10,15 @@ abstract public class WarEntity implements Serializable {
 
     private Point position;//position that the entity will take at the grid 
 
-    private int totalHealth;
-    private int healthPoints;
-    private int defensePoint;
-    private int attackPoints;
-    private int speed;
-    private int attackCoolDown;
-    private double range;
-    private int price;
-    private String name;
+    protected int totalHealth;
+    protected int healthPoints;
+    protected int defensePoint;
+    protected int attackPoints;
+    protected int speed;
+    protected int attackCoolDown;
+    protected double range;
+    protected int price;
+    protected String name;
 
 
     private int id;
@@ -38,7 +38,13 @@ abstract public class WarEntity implements Serializable {
 
     }
 
-    public void setID(int id) {
+    public int getId() {
+        return id;
+    }
+
+
+
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -52,7 +58,7 @@ abstract public class WarEntity implements Serializable {
      * @return true if its in range
      * @breif Uses the distance between this and target to determine if target is in range.
      */
-    protected boolean isInRange(WarEntity target) {
+    public boolean isInRange(WarEntity target) {
         return distance(this, target) <= range;
     }
 
@@ -75,16 +81,23 @@ abstract public class WarEntity implements Serializable {
      * 100 Defense: 100 damage
      * 200 Defense: 66 damage
      * 500 Defense: 33 damage
+     *
+     * @return the damage inflicted or
      */
-    public void dealDamage(int damageTaken) {
+    public int dealDamage(int damageTaken) {
 
         int tmp = (damageTaken * 100) / (100 + defensePoint);
+        int tmp2=0;
 
         if (healthPoints - tmp >= 0) {
             healthPoints -= tmp;
         } else {
+            tmp2=healthPoints;
             healthPoints = 0;
+
         }
+
+        return Math.min(tmp,tmp2);
     }
 
     /**
@@ -97,12 +110,20 @@ abstract public class WarEntity implements Serializable {
 
     }
 
-    public void attack(WarEntity target) {
+
+    /**
+     *
+     * @param target attack target
+     * @return the damage inflicted
+     */
+    public int attack(WarEntity target) {
+
+        int tmp=0;
 
         if (isInRange(target)) {
-            target.dealDamage(attackPoints);
+            tmp=target.dealDamage(attackPoints);
         }
-
+        return tmp;
     }
 
 
@@ -157,6 +178,7 @@ abstract public class WarEntity implements Serializable {
     @Override
     public String toString() {
         return "WarEntity{" +
+                "name=" + name +
                 "position=" + position +
                 ", totalHealth=" + totalHealth +
                 ", healthPoint=" + healthPoints +
@@ -166,7 +188,10 @@ abstract public class WarEntity implements Serializable {
                 '}';
     }
 
-    public abstract void update(Map map);
+    //Should return a 3 characters string representing the WarEntity. Ex: " B ", "Sol" etc...
+    abstract public String symbol();
+
+    public abstract void update(int tickId, Map map);
 
     public int getAttackCoolDown() {
         return attackCoolDown;

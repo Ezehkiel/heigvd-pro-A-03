@@ -5,7 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
-public class Event {
+public abstract class Event {
     public static LinkedList<Event> getEvents(ObjectInputStream in){
         LinkedList<Event> events =null;
         try{
@@ -31,6 +31,7 @@ public class Event {
     public static void sendEvent(Event event, ObjectOutputStream out) {
         try {
             out.writeObject(event);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -38,6 +39,7 @@ public class Event {
     public static void sendEvents(LinkedList<Event> events, ObjectOutputStream out) {
         try {
             out.writeObject(events);
+            out.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
