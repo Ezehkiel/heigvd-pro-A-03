@@ -1,8 +1,8 @@
 package ch.heigvd.pro.a03;
 
-import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
@@ -16,19 +16,22 @@ public class Map {
     private int row;
     private int col;
     private Base base;
-    private boolean endSimulation;
+    private boolean endMatch;
+    public final int ID;
 
 
-    public Map(int row, int col, Base base) {
-        this.row=row;
-        this.col=col;
+    public Map(int row, int col, Base base, int id) {
+        this.row = row;
+        this.col = col;
         this.size = new Dimension(row, col);
         structures = new Structure[row][col];
-        units=new LinkedList<>();
-        this.base=base;
-        setStructureAt(base,base.getPosition().y,base.getPosition().x);
+        units = new LinkedList<>();
+        this.base = base;
+        setStructureAt(base, base.getPosition().y, base.getPosition().x);
+        ID = id;
 
     }
+
 
     public Base getBase() {
         return base;
@@ -44,7 +47,7 @@ public class Map {
 
     public Structure getStructureAt(int row, int col) {
 
-        if (!inMap(row,col)) {
+        if (!inMap(row, col)) {
             return null;
         }
 
@@ -61,7 +64,7 @@ public class Map {
 
     }
 
-    public void addUnit(Unit u){
+    public void addUnit(Unit u) {
         units.add(u);
     }
 
@@ -82,52 +85,79 @@ public class Map {
         return (row >= 0 && row < this.row && col >= 0 && col < this.col);
     }
 
-    public void update() {
+    public void update(int tickId) {
 
-        for(int i =0; i<row;++i){
-            for(int j=0;j<col;++j){
-                if(structures[i][j] != null){
-                    structures[i][j].update(this);
+        for (int i = 0; i < row; ++i) {
+            for (int j = 0; j < col; ++j) {
+                if (structures[i][j] != null) {
+                    structures[i][j].update(tickId, this);
                 }
 
             }
 
         }
 
-        for(Unit u: units){
+        for (Unit u : units) {
 
-            u.update(this);
+            u.update(tickId, this);
+
         }
 
     }
 
+    public boolean unitsAreDead(){
 
-    public boolean isEndSimulation(){
+        boolean everyOneIsDead=true;
 
+        for(Unit u :units ){
 
-        endSimulation = true;
-        for(Unit u: units){
-            if (!u.isEntityDestroyed()) {
-                endSimulation = false;
-                break;
+            if(!u.isEntityDestroyed()){
+                everyOneIsDead=false;
             }
         }
+        return everyOneIsDead;
+    }
 
-        if(endSimulation){
-            units.clear();
+
+    public boolean isEndMatch() {
+
+        endMatch = true;
+        if (!base.isEntityDestroyed()) {
+            endMatch = false;
         }
 
-        return endSimulation;
-
-    }
-
-    public boolean isEndMatch(){
-
-
-        return base.isEntityDestroyed();
+        return endMatch;
     }
 
 
+    @Override
+    public String toString() {
+        if (row == 0 || col == 0) return "";
+
+        WarEntity[][] warEntities = new WarEntity[row][col];
+        for (int i = 0; i < row; ++i)
+            for (int j = 0; j < col; ++j)
+                warEntities[i][j] = structures[i][j];
+        for (Unit u : units) {
+            warEntities[u.getPosition().y][u.getPosition().x] = u;
+        }
+
+        String toRet = "";
+
+        for (int j = 0; j < warEntities[0].length; ++j) toRet += "   " + j;
+        toRet += '\n';
+
+        for (int i = 0; i < warEntities.length; ++i) {
+            toRet += i;
+            for (int j = 0; j < warEntities[0].length; ++j) {
+                if (warEntities[i][j] != null) toRet += " " + warEntities[i][j].symbol();
+                else toRet += "  - ";
+            }
+            toRet += '\n';
+        }
+
+        return toRet;
+    }
 
 
 }

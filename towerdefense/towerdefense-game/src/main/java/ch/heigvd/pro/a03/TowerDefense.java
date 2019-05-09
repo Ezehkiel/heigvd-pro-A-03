@@ -31,9 +31,10 @@ public class TowerDefense {
     public TowerDefense(GameScene scene, int playerCount) {
 
         this.scene = scene;
+
         maps = new Map[playerCount];
         for (int i = 0; i < maps.length; ++i) {
-            maps[i] = new Map(MAP_HEIGHT, MAP_WIDTH, new Base(new Point(4,11)));
+            maps[i] = new Map(MAP_HEIGHT, MAP_WIDTH, new Base(new Point(4,11)), i);
         }
 
         stateMachine = new StateMachine();

@@ -5,6 +5,6 @@ public interface WarEntityType {
         SCOOT,SOLIDER,TANK
     }
     enum TurretType implements WarEntityType {
-        MACHINEGUN,MORTAR,SLOWER
+        MACHINE_GUN,MORTAR,LASER_GUN
     }
 }

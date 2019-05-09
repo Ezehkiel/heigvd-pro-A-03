@@ -1,57 +1,36 @@
 package ch.heigvd.pro.a03.warentities;
 
+import ch.heigvd.pro.a03.EventManager;
 import ch.heigvd.pro.a03.Map;
+import ch.heigvd.pro.a03.algorithm.NearestTarget;
+import ch.heigvd.pro.a03.event.simulation.AttackEvent;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
 
-public class Structure extends WarEntity {
+public abstract class Structure extends WarEntity {
+
+    private int attackTics = 0;
 
     public Structure(String name,Point position, int totalHealth, int defPoint,int attackCoolDown) {
         super(name,position,totalHealth,defPoint, attackCoolDown);
     }
 
     @Override
-    public void update(Map map) {
+    public void update(int tickId, Map map) {
 
-        //we'll attack the nearest Unit which is in range if their is any (called choseOne here)
+        attackTics++;
 
-        //find the chosen one if any (the chosenOne is the nearest unit in range of this Turret)
-        Unit chosenOne = null;
-        int chosenOneDistance = Integer.MAX_VALUE;
-        for(Unit u: map.getUnits()){
-            if(isInRange(u) && distance(this, u) < chosenOneDistance){
-                chosenOne = u;
-                chosenOneDistance = distance(this, u);
+        if(attackTics == this.getAttackCoolDown()){
+            Unit nearestUnit = NearestTarget.getNearestInRangeUnit(this, map);
+            if(nearestUnit != null) {
+                EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),nearestUnit.getId(),attack(nearestUnit)));
             }
+
+            attackTics = 0;
         }
 
-        //attack the chosen one if their is any
-        if(chosenOne != null) attack(chosenOne);
 
-
-        //The following code is probably so faulty that I would suggest to rewrite it from scratch
-        //It would be easier to modify NearestTarget to use it
-
-        /*
-        //Compute potential targets
-        List<Vec2> targets = new LinkedList<>();
-        Structure[][] structures = map.getStructures();
-        for (int i = 0; i < structures.length; ++i)
-            for (int j = 0; j < structures[0].length; ++j) {
-                WarEntity e = structures[i][j];
-                if (e instanceof Unit) targets.add(new Vec2(i, j));
-            }
-
-        //compute target
-        NearestTarget nt = new NearestTarget(map.getRow(), map.getCol(), targets);
-        Vec2 target = nt.getNearestTarget(new Vec2(getPosition().x, getPosition().y), (int) getRange());
-
-        //attack target if any
-        map.get
-        if(target != null) { attack(structures[target.getRow()][target.getCol()]); }
-
-        */
     }
 
 }

@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 
-public class Event {
+public abstract class Event {
     public static LinkedList<Event> getEvents(ObjectInputStream in){
         LinkedList<Event> events =null;
         try{
