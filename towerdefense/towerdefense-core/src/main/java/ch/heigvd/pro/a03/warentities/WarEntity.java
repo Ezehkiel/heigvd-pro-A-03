@@ -37,7 +37,13 @@ abstract public class WarEntity {
 
     }
 
-    public void setID(int id) {
+    public int getId() {
+        return id;
+    }
+
+
+
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -166,7 +172,7 @@ abstract public class WarEntity {
                 '}';
     }
 
-    //Should return a 3 characters string retresenting the WarEntity. Ex: " B ", "Sol" etc...
+    //Should return a 3 characters string representing the WarEntity. Ex: " B ", "Sol" etc...
     abstract public String symbol();
 
     public abstract void update(Map map);

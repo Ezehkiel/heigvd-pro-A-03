@@ -16,13 +16,19 @@ public abstract class Structure extends WarEntity {
 
     @Override
     public void update(Map map) {
-        //Do nothing during the cool down period
-        if(++attackTics != attackCoolDown) return;
-        attackTics = 0;
 
-        //we'll attack the nearest Unit which is in range if their is any
-        Unit nearestUnit = NearestTarget.getNearestInRangeUnit(this, map);
-        if(nearestUnit != null) attack(nearestUnit);
+        attackTics++;
+
+        if(attackTics == this.getAttackCoolDown()){
+            Unit nearestUnit = NearestTarget.getNearestInRangeUnit(this, map);
+            if(nearestUnit != null) {
+                attack(nearestUnit);
+            }
+
+            attackTics = 0;
+        }
+
+
     }
 
 }
