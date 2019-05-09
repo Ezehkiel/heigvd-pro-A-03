@@ -1,4 +1,6 @@
 package ch.heigvd.pro.a03.server;
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.utils.Protocole;
 
@@ -22,9 +24,12 @@ public class GameClient {
 
     private int playerNumber = -1;
 
+    private Player player = null;
+
     public GameClient() {
         HOST = "localhost";
         PORT = 4567;
+
     }
 
     /**
@@ -43,6 +48,9 @@ public class GameClient {
 
                 try {
                     Protocole.sendProtocol(out, 1, "START");
+                    Protocole.receive(in);
+
+                    Protocole.sendProtocol(out, 1, GameLauncher.getInstance().getConnectedPlayer().getUsername());
                     Protocole.receive(in);
 
                     Protocole.sendProtocol(out, 1, "2");
@@ -79,16 +87,24 @@ public class GameClient {
                 objectIn = new ObjectInputStream(socket.getInputStream());
                 objectOut = new ObjectOutputStream(socket.getOutputStream());
 
-                Protocole protocole = Protocole.receive(in);
-                while (!protocole.getData().equals("END")) {
-                    showPlayer.execute();
-                    protocole = Protocole.receive(in);
+                Player player = Player.getPlayer(objectIn);
+                while (player != null) {
+
+                    showPlayer.execute(player);
+
+                    player = Player.getPlayer(objectIn);
                 }
 
-                LOG.info("Game party if full.");
+                this.player = Player.getPlayer(objectIn);
+
+                System.out.println("I am player " + this.player.ID);
+
+                Protocole.receive(in);
+
+                LOG.info("Game party full.");
 
                 Protocole.sendProtocol(out, 3, "START");
-                Protocole protocole1 = Protocole.receive(in);
+                Protocole.receive(in);
 
                 showReadyButton.execute();
 
@@ -104,7 +120,7 @@ public class GameClient {
     public void ready(Executable startGame) {
         try {
             Protocole.sendProtocol(out, 3, "YES");
-            Protocole protocole = Protocole.receive(in);
+            Protocole.receive(in);
 
             LOG.info("Game is starting");
             startGame.execute();

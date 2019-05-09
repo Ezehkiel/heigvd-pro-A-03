@@ -1,18 +1,20 @@
 package ch.heigvd.pro.a03;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 public class Player implements Serializable {
 
     private String name;
     private int money;
-    private static int count=0;
     public final int ID;
 
-    public Player(String name) {
+    public Player(int id, String name) {
+        this.ID = id;
         this.name = name;
         this.money = 3500;
-        ID=count++;
     }
 
     public String getName() {
@@ -21,10 +23,6 @@ public class Player implements Serializable {
 
     public int getMoney() {
         return money;
-    }
-
-    public int getID() {
-        return ID;
     }
 
     public void addMoney(int money){
@@ -42,6 +40,26 @@ public class Player implements Serializable {
                 System.out.println("can't afford the entity");
             }
 
+        }
+    }
+    public static Player getPlayer(ObjectInputStream in) {
+        Player player = null;
+        try {
+            player = (Player) in.readObject();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            //e.printStackTrace();
+        }
+
+        System.out.println(player);
+
+        return player;
+    }
+    public static void sendPlayer(Player player, ObjectOutputStream out) {
+        try {
+            out.writeObject(player);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -1,24 +1,27 @@
 package ch.heigvd.pro.a03.socketServer;
 
+import ch.heigvd.pro.a03.Player;
+
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-public class Player {
+public class Client {
+
     Socket socket;
-    static int nextId=1;
-    int id;
+    private Player player;
 
     BufferedReader in;
     BufferedWriter out;
     ObjectInputStream ois = null;
     ObjectOutputStream ous = null;
 
-    public Player(Socket socket) {
+    public Client(Socket socket) {
+
+        this.player = null;
         this.socket = socket;
-        this.id = nextId++;
         try {
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader( new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -29,16 +32,20 @@ public class Player {
         }
     }
 
+    public Player getPlayer() {
+        return player;
+    }
+
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
+
     public BufferedReader getIn() {
         return in;
     }
 
     public BufferedWriter getOut() {
         return out;
-    }
-
-    public int getId() {
-        return id;
     }
 
     public ObjectInputStream getOis() {

@@ -16,7 +16,7 @@ import java.awt.*;
 
 public class TurretMenu extends Menu {
 
-    public TurretMenu(GameMenu menu, TowerDefense towerDefense, Turret turret, Skin skin) {
+    public TurretMenu(GameMenu menu, TowerDefense towerDefense, int mapId, Turret turret, Skin skin) {
 
         ShowPlayingMenuCommand showPlayingMenuCommand = new ShowPlayingMenuCommand(menu);
 
@@ -36,7 +36,7 @@ public class TurretMenu extends Menu {
                 new Command<TowerDefense>(towerDefense) {
                     @Override
                     public void execute(Object... args) {
-                        getReceiver().destroyTurret(turret);
+                        getReceiver().destroyTurret(mapId, turret);
                     }
                 },
                 showPlayingMenuCommand
