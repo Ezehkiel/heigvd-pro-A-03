@@ -23,6 +23,10 @@ public class MapSimulationTest {
         Map map = new Map(6, 7, base,0);
         //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 500, 0, 1, 1, 10000, 5, 12);
+        Soldier soldier1 = new Soldier("Soldier1", new Point(0, 0), 500, 0, 1, 1, 10000, 5, 12);
+        Soldier soldier2 = new Soldier("Soldier2", new Point(2, 0), 500, 0, 1, 1, 10000, 5, 12);
+
+
         MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 1, 5, 2, 40);
         MachineGunTurret mgt2 = new MachineGunTurret("mgt2", new Point(4, 3), 700, 100, 1, 5, 2, 40);
         MachineGunTurret mgt3 = new MachineGunTurret("mgt3", new Point(4, 2), 700, 100, 1, 5, 2, 40);
@@ -31,6 +35,8 @@ public class MapSimulationTest {
         map.setStructureAt(mgt3, mgt3.getPosition().y, mgt3.getPosition().x);
         LinkedList<Unit> units = new LinkedList<>();
         units.add(soldier);
+        units.add(soldier1);
+        units.add(soldier2);
         map.setUnits(units);
         System.out.println("-------------------------------");
 

@@ -100,8 +100,22 @@ public class Map {
         for (Unit u : units) {
 
             u.update(tickId, this);
+
         }
 
+    }
+
+    public boolean unitsAreDead(){
+
+        boolean everyOneIsDead=true;
+
+        for(Unit u :units ){
+
+            if(!u.isEntityDestroyed()){
+                everyOneIsDead=false;
+            }
+        }
+        return everyOneIsDead;
     }
 
 

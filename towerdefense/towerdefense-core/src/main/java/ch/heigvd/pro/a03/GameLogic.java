@@ -47,9 +47,10 @@ public class GameLogic {
             nbTick++;
             EventManager.getInstance().clearEvents();
 
+            endRound = isEndRound(maps);
+
             for (Map m : maps) {
                 m.update(nbTick);
-                endRound = isEndRound(m.getUnits().isEmpty());
                 endMatch = m.isEndMatch();
             }
         }
@@ -58,25 +59,18 @@ public class GameLogic {
             p.addMoney(1000);
         }
 
-        for (Map m: maps){
-            m.getUnits().clear();
-        }
-
         endRound = false;
 
+        for(Map m: maps){
+            m.getUnits().clear();
+        }
 
 
     }
 
-    private boolean isEndRound(boolean empty){
-        endRound=true;
+    private boolean isEndRound(LinkedList<Map> maps) {
 
-        if(!empty){
-            endRound=false;
-        }
-
-        return endRound;
-
+        return maps.get(0).unitsAreDead() && maps.get(1).unitsAreDead();
 
     }
 
