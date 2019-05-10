@@ -31,7 +31,7 @@ public class GameLogic {
         this(players, new Map[players.length]);
 
         for (int i = 0; i < maps.length; ++i) {
-            maps[i] = new Map(9, 12, new Base(new Point(0, 4)), i);
+            maps[i] = new Map(9, 12, new Base(new Point(0, 4)),new Point(11,4) , i);
         }
     }
 

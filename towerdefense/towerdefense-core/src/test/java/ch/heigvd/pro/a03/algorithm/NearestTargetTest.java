@@ -36,7 +36,7 @@ public class NearestTargetTest {
 
 //Create a map
         Base base = new Base("Superbase", new Point(6, 5), 1000, 5, 1);
-        Map map = new Map(6, 7, base,0);
+        Map map = new Map(6, 7, base,new Point(11,4),0);
 //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 50, 0, 1, 1, 1000, 5, 12);
         MachineGunTurret mgt1 = new MachineGunTurret("mgt1", new Point(1, 4), 700, 100, 1, 5, 2, 40);

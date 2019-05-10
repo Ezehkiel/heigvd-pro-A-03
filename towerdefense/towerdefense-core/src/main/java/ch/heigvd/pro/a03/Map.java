@@ -152,5 +152,7 @@ public class Map implements Serializable {
         return toRet;
     }
 
-
+    public Point getSpawnPoint() {
+        return spawnPoint;
+    }
 }
