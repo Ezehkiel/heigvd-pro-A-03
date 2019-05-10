@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
+import java.awt.*;
 import java.io.Serializable;
 import java.util.LinkedList;
 
@@ -15,15 +16,17 @@ public class Map implements Serializable {
     private int row;
     private int col;
     private Base base;
+    private Point spawnPoint;
     private boolean endMatch;
     public final int ID;
 
-    public Map(int row, int col, Base base, int id) {
+    public Map(int row, int col, Base base,Point spawnPoint, int id) {
         this.row = row;
         this.col = col;
         structures = new Structure[row][col];
         units = new LinkedList<>();
         this.base = base;
+        this.spawnPoint = spawnPoint;
         setStructureAt(base, base.getPosition().y, base.getPosition().x);
         ID = id;
     }
