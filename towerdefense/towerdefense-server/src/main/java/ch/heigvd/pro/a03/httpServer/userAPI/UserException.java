@@ -7,22 +7,20 @@ class UserException extends Exception {
     private String message;
 
 
-
     private User user;
 
-    public UserException(String message, User user){
+    public UserException(String message, User user) {
         this.message = message;
         this.user = user;
     }
 
-    public String getMessage(){
+    public String getMessage() {
         return this.message;
     }
 
     public User getUser() {
         return user;
     }
-
 
 
 }

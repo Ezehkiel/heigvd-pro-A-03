@@ -23,11 +23,12 @@ import java.util.logging.Logger;
 public class UserService {
 
     final static Logger LOG = Logger.getLogger(UserService.class.getName());
-    Gson gson = new Gson();
+    private Gson gson = new Gson();
 
 
     /**
      * List all user that are registered in the DB
+     *
      * @return List<User> list with all user in it
      */
     public List<User> getAllUsers() {
@@ -35,51 +36,52 @@ public class UserService {
         return SqlRequest.getAllUserDB();
     }
 
-    public List<Score> getAllScores()  {
+    /**
+     * List all score that are registered in the DB
+     *
+     * @return List<Score> list with all score in it
+     */
+    public List<Score> getAllScores() {
         LOG.log(Level.INFO, "Request: list all scores");
         return SqlRequest.getAllScoreDB();
     }
 
 
-
     /**
      * This function return a User that we found with his username
+     *
      * @param req Request This is the request that we received from the client
-     * @return the user that we found or null if the user doesn't exist
+     * @return User the user that we found or null if the user doesn't exist
      */
+
     public User getUser(Request req) {
-        try {
-            String username = gson.fromJson(req.body(), User.class).getUsername();
-            if (username == null) {
-                throw new UserException("ERROR empty username", null);
-            }
-            LOG.log(Level.INFO, "Request: get one user");
-            User user = SqlRequest.getUserDBWithUsername(username);
-            if (user == null){
-                throw new UserException("This user doesn't exist", null);
-            }else{
-                return user;
-            }
-        }catch (UserException ex){
-            return null;
-        }
+
+        LOG.log(Level.INFO, "Request: get one user");
+        String username = gson.fromJson(req.body(), User.class).getUsername();
+
+        User user = SqlRequest.getUserDBWithUsername(username);
+        return user;
     }
 
     /**
      * We create a user with information that we received
+     *
      * @param req Request This is the request that we received from the client
      * @return we return a JSONObject with a JWT token and the user as data
      */
     public JSONObject createUser(Request req) {
-        String password = gson.fromJson(req.body(), User.class).getPassword();
-        String username = gson.fromJson(req.body(), User.class).getUsername();
 
+        LOG.log(Level.INFO, "Request: creation of an user");
+        String username = gson.fromJson(req.body(), User.class).getUsername();
+        String password = gson.fromJson(req.body(), User.class).getPassword();
 
         try {
-            if(username == null || password == null){
-                throw new UserException("Password or username empty", null);
+
+            if (username == null || password == null) {
+                throw new UserException("Password or username not present in" +
+                        " the request", null);
             }
-            LOG.log(Level.INFO, "Request: creation of an user");
+
             /* We check that the user isn't already in the DB */
             User user = getUser(req);
 
@@ -95,23 +97,25 @@ public class UserService {
 
                         return createResponse(createdUser);
                     } catch (JWTCreationException exception) {
+
                         LOG.log(Level.SEVERE, "ERROR with token's creations");
                         throw new UserException("Error with token's creations", null);
-                    }
+
+                    } // Fin try/catch
                 } else {
                     LOG.log(Level.SEVERE, "ERROR with creation of the new user");
 
                     throw new UserException("Problem with the creation of the new user", null);
-                }
+                } // Fin if createdUser
             } else {
                 LOG.log(Level.SEVERE, "ERROR user already exist");
 
                 throw new UserException("User already exist", null);
             }
-        }catch(UserException ex){
+        } catch (UserException ex) {
             JSONObject jo = new JSONObject();
             jo.put("error", true);
-            jo.put("message",ex.getMessage());
+            jo.put("message", ex.getMessage());
             jo.put("data", ex.getUser());
             return jo;
 
@@ -119,66 +123,82 @@ public class UserService {
     }
 
     /**
-     *
      * @param req Request This is the request that we received from the client
      * @return
      */
     public User updateUser(Request req) throws UserException {
         LOG.log(Level.INFO, "Request: update an user");
 
-        String password = gson.fromJson(req.body(), User.class).getPassword();
-        String username = gson.fromJson(req.body(), User.class).getUsername();
+        String password = this.gson.fromJson(req.body(), User.class).
+                getPassword();
+        String username = this.gson.fromJson(req.body(), User.class).
+                getUsername();
 
-        return SqlRequest.updateUserDB(username,Hashing.sha256()
+        return SqlRequest.updateUserDB(username, Hashing.sha256()
                 .hashString(password, StandardCharsets.UTF_8)
                 .toString());
     }
 
     /**
      * This
+     *
      * @param req Request This is the request that we received from the client
      * @return a JSONObect with the token and the user
      */
     public JSONObject loginUser(Request req) throws UserException {
-        Gson gson = new Gson();
+
+        LOG.log(Level.INFO, "Request: check that an user can login");
+        String password = this.gson.fromJson(req.body(), User.class).
+                getPassword();
+        String username = this.gson.fromJson(req.body(), User.class).
+                getUsername();
 
         try {
-            LOG.log(Level.INFO, "Request: check that an user can login");
-            String password = gson.fromJson(req.body(), User.class).getPassword();
-            String username = gson.fromJson(req.body(), User.class).getUsername();
 
-            if(username == null || password == null){
+            if (username == null || password == null) {
                 throw new UserException("Password or username not set", null);
             }
+
             User userInDataBase = SqlRequest.getUserDBWithUsername(username);
             User userLoginHttp = new User(0, username, Hashing.sha256()
                     .hashString(password, StandardCharsets.UTF_8)
                     .toString());
 
+            /* We check that the user in the database is the same that the one
+            * we received
+             */
             if (userInDataBase != null && userInDataBase.equals(userLoginHttp)) {
 
                 try {
 
-
                     SqlRequest.setLastLoginDB(userInDataBase.getId());
                     return createResponse(userInDataBase);
+
                 } catch (JWTCreationException exception) {
-                    throw new UserException("Error with the creations of the token", userInDataBase);
+                    throw new UserException("Error with the creations of the" +
+                            " token", userInDataBase);
                 }
             } else {
                 LOG.log(Level.SEVERE, "The user can't login");
-                throw new UserException("The user can't login, invalid password", userInDataBase);
+                throw new UserException("The user can't login, invalid" +
+                        " password", userInDataBase);
             }
-        }catch(UserException ex){
+        } catch (UserException ex) {
             JSONObject jo = new JSONObject();
             jo.put("error", true);
-            jo.put("message",ex.getMessage());
+            jo.put("message", ex.getMessage());
             jo.put("data", ex.getUser());
             return jo;
         }
     }
 
-    private JSONObject createResponse(User user){
+    /**
+     * This method is user to create a response with a token and the user's
+     * information in it
+     * @param user to put in the data field of the JSON
+     * @return JSONObject with all the field needed (token, data, error)
+     */
+    private JSONObject createResponse(User user) {
         JSONObject jo = new JSONObject();
 
         Algorithm algorithm = Algorithm.HMAC256("secret");
@@ -214,7 +234,7 @@ public class UserService {
             tokenResponse.put("message", "Score updated");
             return tokenResponse;
 
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
 
             tokenResponse.put("error", true);
             tokenResponse.put("message", "Invalide token");
@@ -240,13 +260,12 @@ public class UserService {
             Score score = SqlRequest.getUserScoreDB(id);
 
 
-
             tokenResponse.put("error", false);
             tokenResponse.put("data", score);
             tokenResponse.put("token", userToken);
             return tokenResponse;
 
-        } catch (JWTVerificationException exception){
+        } catch (JWTVerificationException exception) {
 
             tokenResponse.put("error", true);
             tokenResponse.put("message", "Invalide token");

@@ -14,24 +14,24 @@ public class UserController {
     Gson gson = new Gson();
 
 
-    public UserController(final UserService userService){
+    public UserController(final UserService userService) {
 
-            get("/users/scores", (req, res) -> userService.getAllScores(),json());
+        get("/users/scores", (req, res) -> userService.getAllScores(), json());
 
-            post("/users/scores", (req, res) -> userService.setScore(req, res), json());
+        post("/users/scores", (req, res) -> userService.setScore(req, res), json());
 
-            get("/users/scores/:id", (req, res) -> userService.getUserScore(req, res), json());
+        get("/users/scores/:id", (req, res) -> userService.getUserScore(req, res), json());
 
-            get("/users", (req, res) -> userService.getAllUsers(),json());
+        get("/users", (req, res) -> userService.getAllUsers(), json());
 
-            post("/users/register", (req, res) -> userService.createUser(req), json());
+        post("/users/register", (req, res) -> userService.createUser(req), json());
 
-            post("/users/login", (req, res) -> userService.loginUser(req), json());
+        post("/users/login", (req, res) -> userService.loginUser(req), json());
 
-            after((req, res) -> {
-                
-                res.type("application/json");
-            });
+        after((req, res) -> {
+
+            res.type("application/json");
+        });
 
     }
 

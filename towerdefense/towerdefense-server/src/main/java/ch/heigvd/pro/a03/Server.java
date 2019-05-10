@@ -3,10 +3,13 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.httpServer.HttpServer;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
 
-public class Server{
-
-
-
+/**
+ * This class will create the two main threads for the socker and for HTTP
+ * server. This is the entrance for the module towerdefense-server
+ *
+ * @author Didier Page, Rémi Poulard
+ */
+public class Server {
     public static void main(String[] args) {
 
         // Change Logger format
