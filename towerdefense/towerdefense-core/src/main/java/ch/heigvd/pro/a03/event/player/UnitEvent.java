@@ -1,21 +1,24 @@
 package ch.heigvd.pro.a03.event.player;
 
+import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 
-public class UnitEvent extends PlayerEvent {
+public class UnitEvent extends Event {
     UnitEventType unitEventType;
     WarEntityType.UnitType unitType;
 
-    public UnitEvent(int entityId, UnitEventType unitEventType, WarEntityType.UnitType unitType) {
-        super(entityId);
+    public UnitEvent (UnitEventType unitEventType, WarEntityType.UnitType unitType) {
+
         this.unitEventType = unitEventType;
         this.unitType = unitType;
     }
 
-    @Override
-    public String toString() {
-        return "UnitEvent{" +
-                "unitEventType=" + unitEventType +
-                '}';
+    public UnitEventType getUnitEventType() {
+        return unitEventType;
     }
+
+    public WarEntityType.UnitType getUnitType() {
+        return unitType;
+    }
+
 }

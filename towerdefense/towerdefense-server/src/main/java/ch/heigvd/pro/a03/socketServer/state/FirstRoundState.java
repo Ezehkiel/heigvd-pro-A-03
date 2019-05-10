@@ -1,12 +1,14 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
+import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.event.Event;
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.player.SendUnitEvent;
+import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
 
-import java.util.LinkedList;
-
-import static ch.heigvd.pro.a03.event.player.PlayerEvent.getEvents;
+import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
@@ -17,16 +19,20 @@ public class FirstRoundState extends ServerState{
 
     @Override
     public void run() {
+        GameLogic gameLogic = gameServer.getGameLogic();
 
         for(Client client : gameServer.getClients()) {
+
 
             // Tell everyone who's turn it is
             gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
 
             // Wait for the player's events
-            LinkedList<Event> playerEvents = getEvents(client.getOis());
-
-            // TODO update the map
+            PlayerEvent playerEvent =  getPlayerEvent(client.getOis());
+            for(UnitEvent unitEvent : playerEvent.getUnitEvents()){
+                //HACK cannot manage other type of event
+                gameLogic.getPlayerMap(((SendUnitEvent)unitEvent).getPlayerIdDestination()).addUnit(unitEvent.getUnitType().createUnit(gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()));
+            }
 
             GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");
 
