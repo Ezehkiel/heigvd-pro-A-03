@@ -1,5 +1,8 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
+import ch.heigvd.pro.a03.EventManager;
+import ch.heigvd.pro.a03.GameLogic;
+import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 
 public class SimulationState extends ServerState{
@@ -9,15 +12,17 @@ public class SimulationState extends ServerState{
 
     @Override
     public void run() {
-        //do the simulation
+        GameLogic gameLogic = this.gameServer.getGameLogic();
 
-        //check if there is a winner
-        /*if(...){
-            //Stream the result
-            gameServer.setCurrentState(gameServer.RoundState);
-        }else{
+        gameLogic.playRound();
+        gameLogic.getPlayerMap(1).getBase().isEntityDestroyed();
+
+        if(gameLogic.getWinner() != null){
             gameServer.setCurrentState(gameServer.EndState);
-        }*/
-    }
+        }else{
+            gameServer.broadCastObject(EventManager.getInstance().getEvents());
+            gameServer.setCurrentState(gameServer.RoundState);
 
+        }
+    }
 }

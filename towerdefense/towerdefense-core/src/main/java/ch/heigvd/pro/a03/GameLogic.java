@@ -93,6 +93,18 @@ public class GameLogic {
         return players[index];
     }
 
+    public Player getWinner(){
+        Player winner = null;
+
+        //Search if there is a base destroyed
+        for(Player p: players){
+           if(this.getPlayerMap(p.ID).getBase().isEntityDestroyed()){
+               winner = p;
+               break;
+           }
+        }
+        return winner;
+    }
     public int getNextEntityId() {
         return entityCount++;
     }

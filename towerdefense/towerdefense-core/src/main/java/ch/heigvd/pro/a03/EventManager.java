@@ -26,6 +26,10 @@ public class EventManager {
         events.add(e);
     }
 
+    public LinkedList<Event> getEvents() {
+        return events;
+    }
+
     public void clearEvents(){
         events.clear();
     }
