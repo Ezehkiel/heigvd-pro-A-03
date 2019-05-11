@@ -50,9 +50,4 @@ public class PlayerEvent implements Serializable {
     public LinkedList<UnitEvent> getUnitEvents() {
         return unitEvents;
     }
-
-    public void clear() {
-        unitEvents.clear();
-        turretEvents.clear();
-    }
 }

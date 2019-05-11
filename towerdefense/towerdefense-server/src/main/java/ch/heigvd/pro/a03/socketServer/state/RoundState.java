@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.GameLogic;
+import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.player.SendUnitEvent;
 import ch.heigvd.pro.a03.event.player.TurretEvent;
@@ -22,7 +23,10 @@ public class RoundState extends ServerState{
         GameLogic gameLogic = gameServer.getGameLogic();
 
         // Broadcast the maps
-        gameServer.broadCastObject(gameLogic.getMaps());
+        for (Map map : gameLogic.getMaps()) {
+            gameServer.broadCastObject(map);
+        }
+        gameServer.broadCastObject(null);
 
         for (Client client : gameServer.getClients()) {
 
@@ -37,29 +41,36 @@ public class RoundState extends ServerState{
             gameServer.sendObject(client.getOus(), client.getPlayer());
 
             // wait for player events
-            PlayerEvent playerEvent =  getPlayerEvent(client.getOis());
+            PlayerEvent playerEvent = getPlayerEvent(client.getOis());
 
-            for(TurretEvent turretEvent : playerEvent.getTurretEvents()){
+            for(TurretEvent turretEvent : playerEvent.getTurretEvents()) {
+
+                Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
                 Point position = turretEvent.getTurretPosition();
-                gameLogic.getPlayerMap(client.getPlayer().ID).setStructureAt(turretEvent.getTurretType().createTurret(position),position.y,position.x);
+                map.setStructureAt(
+                        turretEvent.getTurretType().createTurret(position), position.y, position.x
+                );
             }
+
             //HACK cannot manage other type of event
             for(UnitEvent unitEvent : playerEvent.getUnitEvents()) {
 
                 SendUnitEvent sendUnitEvent = (SendUnitEvent) unitEvent;
+                Map map = gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination());
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
-                    gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination()).addUnit(
-                            unitEvent.getUnitType().createUnit(
-                                    gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
-                            )
-                    );
+                    map.addUnit(unitEvent.getUnitType().createUnit(map.getSpawnPoint()));
                 }
             }
 
             GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");
 
             // Broadcast the new map
-            gameServer.broadCastObject(gameLogic.getPlayerMap(client.getPlayer().ID));
+//            Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
+//            gameServer.broadCastObject(map);
+            for (Map map : gameLogic.getMaps()) {
+                gameServer.broadCastObject(map);
+            }
+            gameServer.broadCastObject(null);
         }
 
         gameServer.setCurrentState(gameServer.SimulationState);

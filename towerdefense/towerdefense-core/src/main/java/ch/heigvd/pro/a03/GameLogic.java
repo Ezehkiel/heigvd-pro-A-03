@@ -78,7 +78,6 @@ public class GameLogic {
     }
 
     public Map getPlayerMap(int index) {
-
         return maps[index];
     }
 

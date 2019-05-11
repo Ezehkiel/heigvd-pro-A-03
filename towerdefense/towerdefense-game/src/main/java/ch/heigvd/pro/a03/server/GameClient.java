@@ -3,16 +3,13 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
-import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.Waiter;
-import org.lwjgl.Sys;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class GameClient {
@@ -145,10 +142,7 @@ public class GameClient {
             try {
                 Protocole.sendProtocol(out, 4, "START");
 
-                Map[] maps = (Map[]) receiveObject();
-                for (Map map : maps) {
-                    showMap.execute(map);
-                }
+                receiveMaps(showMap);
 
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
@@ -193,10 +187,7 @@ public class GameClient {
 
                 Protocole.sendProtocol(out, 5, "START");
 
-                Map[] maps = (Map[]) receiveObject();
-                for (Map map : maps) {
-                    showMap.execute(map);
-                }
+                receiveMaps(showMap);
 
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
@@ -216,13 +207,11 @@ public class GameClient {
 
                         waitForEvents.waitData();
 
-                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
-
-                        Event.sendEvents(new LinkedList<>(), objectOut);
+                        PlayerEvent playerEvent = waitForEvents.receive();
+                        PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
                     }
 
-                    Map map = (Map) receiveObject();
-                    showMap.execute(map);
+                    receiveMaps(showMap);
 
                     LOG.info("Player " + id + "'s turn end");
                     playerTurnEnd.execute();
@@ -237,6 +226,14 @@ public class GameClient {
             }
 
         }).start();
+    }
+
+    private void receiveMaps(Executable showMap) {
+        Map map = (Map) receiveObject();
+        while (map != null) {
+            showMap.execute(map);
+            map = (Map) receiveObject();
+        }
     }
 
     /**

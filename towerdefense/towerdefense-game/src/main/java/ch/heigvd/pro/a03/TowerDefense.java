@@ -146,8 +146,6 @@ public class TowerDefense {
         }
 
         if (pathFinding.findPath().isEmpty()) {
-            scene.getGameMenu().showInfo("Can't place a turret here");
-
             try {
                 maps[mapId].setStructureAt(null, turret.getPosition().y, turret.getPosition().x);
             } catch (IndexOutOfBoundsException e) {
@@ -244,7 +242,7 @@ public class TowerDefense {
     }
 
     public void clearPlayerEvents() {
-        playerEvent.clear();
+        playerEvent = new PlayerEvent();
     }
 
     public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {

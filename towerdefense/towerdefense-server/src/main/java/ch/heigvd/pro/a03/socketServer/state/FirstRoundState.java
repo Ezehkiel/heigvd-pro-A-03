@@ -1,7 +1,7 @@
 package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.GameLogic;
-import ch.heigvd.pro.a03.event.Event;
+import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.player.SendUnitEvent;
 import ch.heigvd.pro.a03.event.player.UnitEvent;
@@ -22,7 +22,10 @@ public class FirstRoundState extends ServerState{
         GameLogic gameLogic = gameServer.getGameLogic();
 
         // Broadcast the maps
-        gameServer.broadCastObject(gameLogic.getMaps());
+        for (Map map : gameLogic.getMaps()) {
+            gameServer.broadCastObject(map);
+        }
+        gameServer.broadCastObject(null);
 
         for(Client client : gameServer.getClients()) {
 
