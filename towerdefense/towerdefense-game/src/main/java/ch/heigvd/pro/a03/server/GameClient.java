@@ -6,6 +6,9 @@ import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.Waiter;
+import com.google.gson.Gson;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
@@ -89,15 +92,13 @@ public class GameClient {
                 objectIn = new ObjectInputStream(socket.getInputStream());
                 objectOut = new ObjectOutputStream(socket.getOutputStream());
 
-                Player player = Player.getPlayer(objectIn);
-                while (player != null) {
-
-                    showPlayer.execute(player);
-
-                    player = Player.getPlayer(objectIn);
+                String response = Protocole.receiveJson(in);
+                while (response != null && !response.equals("200-OK")) {
+                    showPlayer.execute(Player.fromJson(response));
+                    response = Protocole.receiveJson(in);
                 }
 
-                this.player = Player.getPlayer(objectIn);
+                this.player = Player.fromJson(Protocole.receiveJson(in));
 
                 System.out.println("I am player " + this.player.ID);
 
@@ -197,7 +198,7 @@ public class GameClient {
                     int id = Integer.parseInt(protocole.getData());
 
                     if (id == player.ID) {
-                        player = (Player) receiveObject();
+                        player = Player.fromJson(Protocole.receiveJson(in));
                     }
 
                     LOG.info("Player " + id + "'s turn start");
@@ -228,12 +229,12 @@ public class GameClient {
         }).start();
     }
 
-    private void receiveMaps(Executable showMap) {
-        Map map = (Map) receiveObject();
-        while (map != null) {
-            showMap.execute(map);
-            map = (Map) receiveObject();
-        }
+    private void receiveMaps(Executable showMaps) {
+
+        String json = Protocole.receiveJson(in);
+        if (json == null) { return; }
+
+        showMaps.execute(json);
     }
 
     /**

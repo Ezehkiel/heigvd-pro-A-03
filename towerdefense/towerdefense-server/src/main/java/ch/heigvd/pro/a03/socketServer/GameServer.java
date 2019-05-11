@@ -58,10 +58,10 @@ public class GameServer implements Runnable {
         for (int i = 0; i < arrivedPlayersCount; ++i) {
 
             // send newcomer to other players
-            Player.sendPlayer(player, clients[i].ous);
+            Protocole.sendJson(player.toJson(), clients[i].getOut());
 
             // send already present player to newcomer
-            Player.sendPlayer(clients[i].getPlayer(), client.ous);
+            Protocole.sendJson(clients[i].getPlayer().toJson(), client.getOut());
         }
 
         clients[arrivedPlayersCount++] = client;
@@ -71,10 +71,11 @@ public class GameServer implements Runnable {
             Player[] players = new Player[PLAYER_COUNT];
             for (Client c : clients) {
 
-                // tell the client that everyone arrived
-                Player.sendPlayer(null, c.ous);
-                // tell the client which player he is
-                Player.sendPlayer(c.getPlayer(), c.ous);
+                // Tell the client that everyone arrived
+                Protocole.sendProtocol(c.getOut(), 2, "OK");
+
+                // Tell the client which player he is
+                Protocole.sendJson(c.getPlayer().toJson(), c.getOut());
 
                 players[c.getPlayer().ID] = c.getPlayer();
             }
@@ -114,9 +115,9 @@ public class GameServer implements Runnable {
             sendProtocol(client.getOut(), currentState.getId(), message);
     }
 
-    public void broadCastObject(Object object) {
+    public void broadCastJson(String json) {
         for (Client client : clients) {
-            sendObject(client.getOus(), object);
+            Protocole.sendJson(json, client.getOut());
         }
     }
 
@@ -140,6 +141,7 @@ public class GameServer implements Runnable {
         try {
             ous.writeObject(object);
             ous.flush();
+//            ous.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -1,9 +1,7 @@
 package ch.heigvd.pro.a03.warentities.turrets;
 
-import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
-import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.Point;
 

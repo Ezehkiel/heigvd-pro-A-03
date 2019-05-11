@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.algorithm.Astar;
 import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.commands.Executable;
+import ch.heigvd.pro.a03.commands.game.ShowMapsCommand;
 import ch.heigvd.pro.a03.event.player.*;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
@@ -34,7 +35,7 @@ public class TowerDefense {
     private Executable roundEnd;
     private Executable playerTurnStart;
     private Executable playerTurnEnd;
-    private Executable showMap;
+    private Executable showMaps;
 
     private PlayerEvent playerEvent;
     private Waiter<PlayerEvent> playerEventWaiter;
@@ -76,20 +77,16 @@ public class TowerDefense {
         playerTurnEnd = args -> changeState(GameStateType.WAIT);
 
         roundEnd = args -> changeState(GameStateType.SIMULATION);
-        showMap = args -> {
-            Map map = (Map) args[0];
-            maps[map.ID] = map;
-            scene.updateMaps();
-        };
+        showMaps = new ShowMapsCommand(this);
 
         gameClient.firstRound(args -> changeState(
             gameClient.getPlayer().ID == (Integer) args[0] ?
                     GameStateType.FIRST_PLAY : GameStateType.OPPONENT_PLAY
         ), playerTurnEnd, args -> {
             changeState(GameStateType.WAIT);
-            gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMap, playerEventWaiter);
+            gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMaps, playerEventWaiter);
 
-        }, showMap, playerEventWaiter);
+        }, showMaps, playerEventWaiter);
     }
 
     /* ----- Turret Management -----*/
@@ -280,5 +277,9 @@ public class TowerDefense {
 
     public GameClient getGameClient() {
         return gameClient;
+    }
+
+    public void setMap(int i, Map map) {
+        maps[i] = map;
     }
 }

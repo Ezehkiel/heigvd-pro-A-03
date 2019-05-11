@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -11,10 +13,14 @@ public class Player implements Serializable {
     private int money;
     public final int ID;
 
-    public Player(int id, String name) {
-        this.ID = id;
+    private Player(int ID, String name, int money) {
+        this.ID = ID;
         this.name = name;
-        this.money = 3500;
+        this.money = money;
+    }
+
+    public Player(int id, String name) {
+        this(id, name, 3500);
     }
 
     public String getName() {
@@ -59,9 +65,26 @@ public class Player implements Serializable {
         try {
             out.writeObject(player);
             out.flush();
+//            out.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
+    public String toJson() {
+
+        JSONObject player = new JSONObject();
+        player.put("id", ID);
+        player.put("name", name);
+        player.put("money", money);
+
+        return player.toString();
+    }
+
+    public static Player fromJson(String json) {
+
+        JSONObject object = new JSONObject(json);
+        System.out.println(object.toString());
+        return new Player(object.getInt("id"), object.getString("name"), object.getInt("money"));
+    }
 }

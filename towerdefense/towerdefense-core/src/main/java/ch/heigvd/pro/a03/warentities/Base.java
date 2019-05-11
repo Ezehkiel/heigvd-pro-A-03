@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03.warentities;
 
+import org.json.JSONObject;
+
 import java.awt.*;
 
 public class Base extends Structure {
@@ -16,6 +18,10 @@ public class Base extends Structure {
         this("Base",position,15000,900, 100);
     }
 
+    private Base(Point position, int health) {
+        this(position);
+        this.healthPoints = health;
+    }
 
 
     public boolean isEntityDestroyed() {
@@ -23,7 +29,6 @@ public class Base extends Structure {
         endGame = super.isEntityDestroyed();
 
         return endGame;
-
     }
 
     @Override
@@ -32,4 +37,10 @@ public class Base extends Structure {
         else return " B ";
     }
 
+    public static Base fromJson(String json) {
+        JSONObject base = new JSONObject(json);
+        JSONObject position = base.getJSONObject("position");
+
+        return new Base(new Point(position.getInt("x"), position.getInt("y")), base.getInt("health"));
+    }
 }

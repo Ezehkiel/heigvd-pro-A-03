@@ -29,8 +29,5 @@ public abstract class Structure extends WarEntity {
 
             attackTics = 0;
         }
-
-
     }
-
 }

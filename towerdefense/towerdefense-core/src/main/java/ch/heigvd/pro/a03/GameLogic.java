@@ -2,6 +2,8 @@ package ch.heigvd.pro.a03;
 
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.units.Unit;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -51,14 +53,18 @@ public class GameLogic {
             }
         }
 
-        for (Player p : players) {
-            p.addMoney(1000);
-        }
+        giveMoneyToPlayers();
 
         endRound = false;
 
         for(Map m: maps){
             m.getUnits().clear();
+        }
+    }
+
+    public void giveMoneyToPlayers() {
+        for (Player p : players) {
+            p.addMoney(1000);
         }
     }
 
@@ -104,5 +110,19 @@ public class GameLogic {
     }
     public int getNextEntityId() {
         return entityCount++;
+    }
+
+    public String getMapsJson() {
+
+        StringBuilder json = new StringBuilder("[");
+
+        if (maps.length > 0) {
+            json.append(maps[0].toJson());
+            for (int i = 1; i < maps.length; ++i) {
+                json.append(",").append(maps[i].toJson());
+            }
+        }
+
+        return json.append("]").toString();
     }
 }

@@ -43,7 +43,6 @@ public class UnitSelectionMenu extends Menu {
             @Override
             public void execute(Object... args) {
 
-                System.out.println("Clicked!");
                 WarEntityType.UnitType[] types = new WarEntityType.UnitType[unitMenus.length];
                 int[] quantities = new int[unitMenus.length];
 

@@ -8,6 +8,10 @@ import ch.heigvd.pro.a03.event.player.TurretEvent;
 import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
+import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import ch.heigvd.pro.a03.warentities.units.Unit;
+import com.google.gson.Gson;
 
 import java.awt.*;
 import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
@@ -23,10 +27,7 @@ public class RoundState extends ServerState{
         GameLogic gameLogic = gameServer.getGameLogic();
 
         // Broadcast the maps
-        for (Map map : gameLogic.getMaps()) {
-            gameServer.broadCastObject(map);
-        }
-        gameServer.broadCastObject(null);
+        gameServer.broadCastJson(gameLogic.getMapsJson());
 
         for (Client client : gameServer.getClients()) {
 
@@ -38,7 +39,7 @@ public class RoundState extends ServerState{
             gameServer.waitForPlayers("500-OK");
 
             // send player to the client who's playing
-            gameServer.sendObject(client.getOus(), client.getPlayer());
+            Protocole.sendJson(client.getPlayer().toJson(), client.getOut());
 
             // wait for player events
             PlayerEvent playerEvent = getPlayerEvent(client.getOis());
@@ -47,9 +48,9 @@ public class RoundState extends ServerState{
 
                 Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
                 Point position = turretEvent.getTurretPosition();
-                map.setStructureAt(
-                        turretEvent.getTurretType().createTurret(position), position.y, position.x
-                );
+                Turret turret = turretEvent.getTurretType().createTurret(position);
+                map.setStructureAt(turret, position.y, position.x);
+                client.getPlayer().removeMoney(turret.getPrice());
             }
 
             //HACK cannot manage other type of event
@@ -58,19 +59,16 @@ public class RoundState extends ServerState{
                 SendUnitEvent sendUnitEvent = (SendUnitEvent) unitEvent;
                 Map map = gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination());
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
-                    map.addUnit(unitEvent.getUnitType().createUnit(map.getSpawnPoint()));
+                    Unit unit = unitEvent.getUnitType().createUnit(map.getSpawnPoint());
+                    map.addUnit(unit);
+                    client.getPlayer().removeMoney(unit.getPrice());
                 }
             }
 
             GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");
 
             // Broadcast the new map
-//            Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
-//            gameServer.broadCastObject(map);
-            for (Map map : gameLogic.getMaps()) {
-                gameServer.broadCastObject(map);
-            }
-            gameServer.broadCastObject(null);
+            gameServer.broadCastJson(gameLogic.getMapsJson());
         }
 
         gameServer.setCurrentState(gameServer.SimulationState);

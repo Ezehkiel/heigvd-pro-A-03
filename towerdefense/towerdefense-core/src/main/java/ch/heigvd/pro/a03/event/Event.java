@@ -33,6 +33,7 @@ public abstract class Event implements Serializable {
         try {
             out.writeObject(event);
             out.flush();
+//            out.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -41,6 +42,7 @@ public abstract class Event implements Serializable {
         try {
             out.writeObject(events);
             out.flush();
+//            out.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
