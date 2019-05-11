@@ -130,14 +130,17 @@ public class GameScene extends Scene {
         int x = tmpX % (TowerDefense.MAP_WIDTH + 1);
         int y = (int) Math.floor(mousePosition.y / TiledMapManager.TILE_SIZE);
 
-        System.out.println(mapId + ", " + x + ", " + y);
+        // Can only click on owned map
+        if (mapId != game.getGameClient().getPlayer().ID) {
+            return;
+        }
 
         Turret turret = null;
 
         if (game.isCellOccupied(mapId, x, y)) {
 
             turret = game.getTurretAt(mapId, x, y);
-            if (turret != null) {
+            if (turret != null && game.iAmMapOwner(mapId)) {
                 gameMenu.showTurretMenu(game, mapId, turret);
             }
 
@@ -147,7 +150,6 @@ public class GameScene extends Scene {
 
                 case MACHINE_GUN:
                     turret = new MachineGunTurret(new Point(x,y));
-
                     break;
 
                 case MORTAR:

@@ -89,7 +89,7 @@ public class TiledMapManager {
                 for (int y = 0; y < MAP_HEIGHT; ++y) {
 
                     int displayX = x + offsetX;
-                    int displayY = i == PLAYER_ID ? MAP_HEIGHT - y - 1 : y;
+                    int displayY = i == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
 
                     TiledMapTileLayer.Cell cell = layer.getCell(displayX, displayY);
                     Structure structure = maps[i].getStructureAt(y, x);

@@ -42,14 +42,11 @@ abstract public class WarEntity implements Serializable {
         return id;
     }
 
-
-
     public void setId(int id) {
         this.id = id;
     }
 
     public boolean isEntityDestroyed() {
-
         return (healthPoints == 0);
     }
 
@@ -133,6 +130,10 @@ abstract public class WarEntity implements Serializable {
 
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    public int getTotalHealth() {
+        return totalHealth;
     }
 
     public int getHealthPoint() {

@@ -1,10 +1,9 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.algorithm.Astar;
+import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.commands.Executable;
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
-import ch.heigvd.pro.a03.event.player.SendUnitEvent;
-import ch.heigvd.pro.a03.event.player.TurretEvent;
-import ch.heigvd.pro.a03.event.player.UnitEvent;
+import ch.heigvd.pro.a03.event.player.*;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
@@ -111,8 +110,12 @@ public class TowerDefense {
 
     public boolean placeTurret(int mapId, Turret turret) {
 
-        if (!isInState(GameStateType.PLAY) ||
+        if (!iAmMapOwner(mapId) || !isInState(GameStateType.PLAY) ||
                 maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) != null) {
+            return false;
+        }
+
+        if (gameClient.getPlayer().getMoney() < turret.getPrice()) {
             return false;
         }
 
@@ -122,16 +125,71 @@ public class TowerDefense {
             return false;
         }
 
-        // TODO add turret event
+        // Check for path
+        Map map = maps[mapId];
+        Astar pathFinding = new Astar(map.getRow(), map.getCol(),
+                new Position(map.getSpawnPoint().y, map.getSpawnPoint().x),
+                new Position(map.getBase().getPosition().y, map.getBase().getPosition().x));
+
+        Structure[][] blockage = map.getStructures();
+
+        // Sets the blockage
+        for (int i = 0; i < blockage.length; ++i) {
+            for (int j = 0; j < blockage[i].length; ++j) {
+                if (blockage[i][j] != null) {
+                    if (blockage[i][j] != map.getBase()) {
+                        pathFinding.setBlockPos(blockage[i][j].getPosition().y,
+                                blockage[i][j].getPosition().x);
+                    }
+                }
+            }
+        }
+
+        if (pathFinding.findPath().isEmpty()) {
+            scene.getGameMenu().showInfo("Can't place a turret here");
+
+            try {
+                maps[mapId].setStructureAt(null, turret.getPosition().y, turret.getPosition().x);
+            } catch (IndexOutOfBoundsException e) {
+                return false;
+            }
+
+            return false;
+        }
+
+        playerEvent.addTurretEvent(new TurretEvent(
+                TurretEventType.ADD, turret.getPosition(), turret.TYPE
+        ));
+
+        gameClient.getPlayer().removeMoney(turret.getPrice());
+        scene.getGameMenu().updateMoney(gameClient.getPlayer().getMoney());
 
         scene.updateMaps();
 
         return true;
     }
 
+    public boolean repairTurret(Turret turret) {
+
+        if (!turret.isEntityDestroyed() || gameClient.getPlayer().getMoney() < turret.getPrice() / 2) {
+            return false;
+        }
+
+        playerEvent.addTurretEvent(new TurretEvent(
+                TurretEventType.REPAIR, turret.getPosition(), turret.TYPE
+        ));
+
+        turret.heal(turret.getTotalHealth());
+        gameClient.getPlayer().removeMoney(turret.getPrice() / 2);
+        scene.getGameMenu().updateMoney(gameClient.getPlayer().getMoney());
+
+        return true;
+    }
+
     public boolean destroyTurret(int mapId, Turret turret) {
 
-        if (!isInState(GameStateType.PLAY) || maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) == null) {
+        if (!iAmMapOwner(mapId) || !isInState(GameStateType.PLAY) ||
+                maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) == null) {
             return false;
         }
 
@@ -141,9 +199,20 @@ public class TowerDefense {
             return false;
         }
 
+        playerEvent.addTurretEvent(new TurretEvent(
+                TurretEventType.DESTROY, turret.getPosition(), turret.TYPE
+        ));
+
+        gameClient.getPlayer().removeMoney(turret.getPrice() / 2);
+        scene.getGameMenu().updateMoney(gameClient.getPlayer().getMoney());
+
         scene.updateMaps();
 
         return true;
+    }
+
+    public boolean iAmMapOwner(int mapId) {
+        return mapId == gameClient.getPlayer().ID;
     }
 
     public Map[] getMaps() {
@@ -168,10 +237,6 @@ public class TowerDefense {
 
     public boolean changeState(GameStateType stateType) {
         return stateMachine.changeState(getState(stateType));
-    }
-
-    public void addTurretEvent(TurretEvent event) {
-        playerEvent.addTurretEvent(event);
     }
 
     public void sendEvents() {
