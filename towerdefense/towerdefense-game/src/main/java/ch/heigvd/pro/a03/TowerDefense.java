@@ -41,7 +41,7 @@ public class TowerDefense {
     private Waiter<PlayerEvent> playerEventWaiter;
 
     public enum GameStateType {
-        PLAY, OPPONENT_PLAY, SIMULATION, WAIT
+        FIRST_PLAY, PLAY, OPPONENT_PLAY, SIMULATION, WAIT
     }
 
     public TowerDefense(GameScene scene, GameClient gameClient) {
@@ -56,6 +56,7 @@ public class TowerDefense {
         stateMachine = new StateMachine();
 
         states = new GameState[] {
+                new FirstPlayState(stateMachine, this),
                 new PlayState(stateMachine, this),
                 new OpponentPlayState(stateMachine, this),
                 new SimulationState(stateMachine, this),
@@ -76,14 +77,20 @@ public class TowerDefense {
         playerTurnEnd = args -> changeState(GameStateType.WAIT);
 
         roundEnd = args -> changeState(GameStateType.SIMULATION);
-        showMap = args -> System.out.println("TODO: Update map here!");
+        showMap = args -> {
+            Map map = (Map) args[0];
+            maps[map.ID] = map;
+            scene.updateMaps();
+        };
 
-
-        gameClient.firstRound(playerTurnStart, playerTurnEnd, args -> {
+        gameClient.firstRound(args -> changeState(
+            gameClient.getPlayer().ID == (Integer) args[0] ?
+                    GameStateType.FIRST_PLAY : GameStateType.OPPONENT_PLAY
+        ), playerTurnEnd, args -> {
             changeState(GameStateType.WAIT);
             gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMap, playerEventWaiter);
 
-        }, playerEventWaiter);
+        }, showMap, playerEventWaiter);
     }
 
     /* ----- Turret Management -----*/
@@ -114,6 +121,8 @@ public class TowerDefense {
         } catch (IndexOutOfBoundsException e) {
             return false;
         }
+
+        // TODO add turret event
 
         scene.updateMaps();
 
@@ -161,16 +170,16 @@ public class TowerDefense {
         return stateMachine.changeState(getState(stateType));
     }
 
-    public void addUnitEvent(UnitEvent event) {
-        playerEvent.addUnitEvent(event);
-    }
-
     public void addTurretEvent(TurretEvent event) {
         playerEvent.addTurretEvent(event);
     }
 
     public void sendEvents() {
         playerEventWaiter.send(playerEvent);
+    }
+
+    public void clearPlayerEvents() {
+        playerEvent.clear();
     }
 
     public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {
@@ -204,5 +213,9 @@ public class TowerDefense {
         }
 
         return true;
+    }
+
+    public GameClient getGameClient() {
+        return gameClient;
     }
 }

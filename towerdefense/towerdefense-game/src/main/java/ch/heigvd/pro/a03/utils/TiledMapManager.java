@@ -34,8 +34,9 @@ public class TiledMapManager {
     private Texture mortarTexture;
     private Texture slowerTexture;
     private Texture tileTexture;
+    private final int PLAYER_ID;
 
-    public TiledMapManager(int width, int height, int mapCount) {
+    public TiledMapManager(int width, int height, int mapCount, int playerId) {
 
         notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
         machineGunTexture = new Texture(Gdx.files.internal("assets/MachineGun.png"));
@@ -46,6 +47,7 @@ public class TiledMapManager {
         MAP_WIDTH = width;
         MAP_HEIGHT = height;
         MAP_COUNT = mapCount;
+        PLAYER_ID = playerId;
 
         FULL_WIDTH = MAP_WIDTH * mapCount + mapCount - 1;
         FULL_HEIGHT = MAP_HEIGHT;
@@ -86,7 +88,10 @@ public class TiledMapManager {
             for (int x = 0; x < MAP_WIDTH; ++x) {
                 for (int y = 0; y < MAP_HEIGHT; ++y) {
 
-                    TiledMapTileLayer.Cell cell = layer.getCell(x + offsetX, y);
+                    int displayX = x + offsetX;
+                    int displayY = i == PLAYER_ID ? MAP_HEIGHT - y - 1 : y;
+
+                    TiledMapTileLayer.Cell cell = layer.getCell(displayX, displayY);
                     Structure structure = maps[i].getStructureAt(y, x);
                     if (structure != null) {
 

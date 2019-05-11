@@ -37,9 +37,7 @@ public class PlayerEvent implements Serializable {
         PlayerEvent event = null;
         try {
             event = (PlayerEvent) in.readObject();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return event;
@@ -51,5 +49,10 @@ public class PlayerEvent implements Serializable {
 
     public LinkedList<UnitEvent> getUnitEvents() {
         return unitEvents;
+    }
+
+    public void clear() {
+        unitEvents.clear();
+        turretEvents.clear();
     }
 }

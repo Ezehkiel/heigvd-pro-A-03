@@ -34,8 +34,6 @@ public class GameScene extends Scene {
 
     private TiledMapManager tiledMapManager;
 
-    private GameClient gameClient;
-
     private TowerDefense game;
     private WarEntityType.TurretType selectedTurretType;
 
@@ -43,7 +41,6 @@ public class GameScene extends Scene {
 
     public GameScene(GameClient gameClient) {
 
-        this.gameClient = gameClient;
         gameCamera = new OrthographicCamera();
         gameViewport = new ScreenViewport(gameCamera);
         gameViewport.update(GameLauncher.WIDTH, GameLauncher.HEIGHT, true);
@@ -55,18 +52,18 @@ public class GameScene extends Scene {
 
         getStage().addActor(gameMenu.getMenu());
 
-        game = new TowerDefense(this, gameClient);
-
         tiledMapManager = new TiledMapManager(
-                TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT
+                TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT, gameClient.getPlayer().ID
         );
+
+        game = new TowerDefense(this, gameClient);
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        //game.getStateMachine().update(deltaTime);
+        game.getStateMachine().update(deltaTime);
         updateCamera();
 
         tiledMapManager.getRenderer().setView(gameCamera);

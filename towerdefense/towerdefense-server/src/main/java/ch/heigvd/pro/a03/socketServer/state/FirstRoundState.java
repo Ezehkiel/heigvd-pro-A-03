@@ -21,6 +21,9 @@ public class FirstRoundState extends ServerState{
     public void run() {
         GameLogic gameLogic = gameServer.getGameLogic();
 
+        // Broadcast the maps
+        gameServer.broadCastObject(gameLogic.getMaps());
+
         for(Client client : gameServer.getClients()) {
 
             GameServer.LOG.info("Player " + client.getPlayer().ID + "'s first turn.") ;

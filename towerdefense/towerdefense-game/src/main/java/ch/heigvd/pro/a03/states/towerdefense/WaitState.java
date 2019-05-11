@@ -19,7 +19,8 @@ public class WaitState extends GameState {
 
     @Override
     public boolean canEnterState(Class<?> stateClass) {
-        return stateClass == PlayState.class ||
+        return stateClass == FirstPlayState.class ||
+                stateClass == PlayState.class ||
                 stateClass == OpponentPlayState.class ||
                 stateClass == SimulationState.class;
     }

@@ -22,6 +22,7 @@ public class UnitSelectionMenu extends Menu {
     private int totalPrice;
     private Label totalPriceLabel;
     private UnitMenu[] unitMenus;
+    private TextButton sendButton;
 
     public UnitSelectionMenu(GameMenu gameMenu, Skin skin) {
 
@@ -37,7 +38,7 @@ public class UnitSelectionMenu extends Menu {
 
         Window priceWindow = new WindowMenu(skin).getWindow();
 
-        TextButton sendButton = new TextButton("Send", skin);
+        sendButton = new TextButton("Send", skin);
         sendButton.addListener(new ButtonCommand(new Command<GameMenu>(gameMenu) {
             @Override
             public void execute(Object... args) {
@@ -100,5 +101,13 @@ public class UnitSelectionMenu extends Menu {
         }
 
         totalPriceLabel.setText(totalPrice);
+    }
+
+    public void reset() {
+        for (UnitMenu unitMenu : unitMenus) {
+            unitMenu.reset();
+        }
+        updatePrice();
+        sendButton.setVisible(true);
     }
 }

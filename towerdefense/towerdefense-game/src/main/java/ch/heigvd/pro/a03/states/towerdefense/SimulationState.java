@@ -5,9 +5,6 @@ import ch.heigvd.pro.a03.states.StateMachine;
 
 public class SimulationState extends GameState {
 
-    private float timer = 0f;
-    private int counter = 0;
-
     public SimulationState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }
@@ -16,35 +13,19 @@ public class SimulationState extends GameState {
     public void enter() {
         super.enter();
 
-        System.out.println("Let's simulate!");
+        System.out.println("Simulation starts.");
     }
 
     @Override
     public void leave() {
         super.leave();
 
-        timer = 0f;
-        counter = 0;
-
-        System.out.println("\nDone simaling!");
+        System.out.println("Simulation ends.");
     }
 
     @Override
     public void update(float deltaTime) {
         super.update(deltaTime);
-
-        timer += deltaTime;
-
-        if (timer >= 1f) {
-            counter++;
-            timer = 0f;
-
-            System.out.print(".");
-        }
-
-        if (counter == 2) {
-            changeState(TowerDefense.GameStateType.WAIT);
-        }
 
     }
 

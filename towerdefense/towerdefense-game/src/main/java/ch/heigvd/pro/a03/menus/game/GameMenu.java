@@ -55,6 +55,10 @@ public class GameMenu extends Menu {
         getMenu().add(unitSelectionMenu.getMenu());
     }
 
+    public void resetUnitSelectionMenu() {
+        unitSelectionMenu.reset();
+    }
+
     public void showTurretMenu(TowerDefense towerDefense, int mapId, Turret turret) {
 
         getMenu().clear();

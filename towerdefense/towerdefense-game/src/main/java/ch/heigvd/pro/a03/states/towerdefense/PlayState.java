@@ -15,6 +15,11 @@ public class PlayState extends GameState {
         super.enter();
 
         getGame().getScene().getGameMenu().showInfo("Your turn!");
+        getGame().clearPlayerEvents();
+        getGame().getScene().getGameMenu().updateMoney(getGame().getGameClient().getPlayer().getMoney());
+        getGame().getScene().getGameMenu().resetUnitSelectionMenu();
+        getGame().getScene().getGameMenu().getPlayingMenu().showTurretSelectionMenu();
+        getGame().getScene().getGameMenu().getPlayingMenu().showUnitsSelectionButton();
         getGame().getScene().getGameMenu().getPlayingMenu().showEndTurnButton();
         System.out.println("My turn");
     }
@@ -22,7 +27,6 @@ public class PlayState extends GameState {
     @Override
     public void leave() {
         super.leave();
-
         System.out.println("Turn ended");
     }
 

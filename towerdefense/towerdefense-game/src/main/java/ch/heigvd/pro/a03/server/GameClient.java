@@ -136,13 +136,19 @@ public class GameClient {
     }
 
     public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
-                           Executable roundEnd, Waiter<PlayerEvent> waitForEvents) {
+                           Executable roundEnd, Executable showMap,
+                           Waiter<PlayerEvent> waitForEvents) {
 
         LOG.info("First Round starting.");
 
         new Thread(() -> {
             try {
                 Protocole.sendProtocol(out, 4, "START");
+
+                Map[] maps = (Map[]) receiveObject();
+                for (Map map : maps) {
+                    showMap.execute(map);
+                }
 
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
@@ -199,12 +205,14 @@ public class GameClient {
 
                     int id = Integer.parseInt(protocole.getData());
 
+                    if (id == player.ID) {
+                        player = (Player) receiveObject();
+                    }
+
                     LOG.info("Player " + id + "'s turn start");
                     playerTurnStart.execute(id);
 
                     if (id == player.ID) {
-
-                        player = (Player) receiveObject();
 
                         waitForEvents.waitData();
 

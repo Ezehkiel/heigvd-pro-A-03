@@ -3,27 +3,22 @@ package ch.heigvd.pro.a03.menus.game;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.commands.game.GameSceneCommand;
-import ch.heigvd.pro.a03.commands.game.TowerDefenseCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.utils.UI;
-import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Touchable;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
-
-import javax.swing.plaf.basic.BasicButtonUI;
 
 public class GamePlayingMenu extends Menu {
 
     private Label infoLabel;
     private Label moneyLabel;
     private TextButton endTurnButton;
+    private TextButton selectUnitButton;
+    private Table turretSelectionMenu;
 
     public GamePlayingMenu(GameMenu menu, GameScene scene, Skin skin) {
 
@@ -37,11 +32,14 @@ public class GamePlayingMenu extends Menu {
             @Override
             public void execute(Object... args) {
                 getReceiver().getGame().sendEvents();
+                hideTurretSelectionMenu();
+                hideUnitsSelectionButton();
                 hideEndTurnButton();
             }
         }));
 
-        TextButton selectUnitButton = new TextButton("Units", skin);
+        selectUnitButton = new TextButton("Units", skin);
+        hideUnitsSelectionButton();
         selectUnitButton.addListener(new ButtonCommand(new Command<GameMenu>(menu) {
             @Override
             public void execute(Object... args) {
@@ -56,6 +54,9 @@ public class GamePlayingMenu extends Menu {
                 getReceiver().showPauseMenu();
             }
         }));
+
+        turretSelectionMenu = new TurretSelectionMenu(skin, scene).getMenu();
+        hideTurretSelectionMenu();
 
         getMenu().pad(UI.SPACING / 2f);
 
@@ -80,7 +81,7 @@ public class GamePlayingMenu extends Menu {
                 .spaceLeft(UI.SPACING);
 
         getMenu().add().expandX();
-        getMenu().add(new TurretSelectionMenu(skin, scene).getMenu());
+        getMenu().add(turretSelectionMenu);
 
         getMenu().setTouchable(Touchable.enabled);
         getMenu().addListener(new ClickListener() {
@@ -109,5 +110,21 @@ public class GamePlayingMenu extends Menu {
 
     public void hideEndTurnButton() {
         endTurnButton.setVisible(false);
+    }
+
+    public void showUnitsSelectionButton() {
+        selectUnitButton.setVisible(true);
+    }
+
+    public void hideUnitsSelectionButton() {
+        selectUnitButton.setVisible(false);
+    }
+
+    public void showTurretSelectionMenu() {
+        turretSelectionMenu.setVisible(true);
+    }
+
+    public void hideTurretSelectionMenu() {
+        turretSelectionMenu.setVisible(false);
     }
 }

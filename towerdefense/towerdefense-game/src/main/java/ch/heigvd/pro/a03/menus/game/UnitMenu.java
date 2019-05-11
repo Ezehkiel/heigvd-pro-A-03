@@ -21,6 +21,7 @@ public class UnitMenu extends WindowMenu {
     private Label nameLabel;
     public final WarEntityType.UnitType UNIT_TYPE;
     public final int PRICE;
+    private VerticalGroup addRemoveButtons;
 
     public UnitMenu(UnitSelectionMenu parent, String name, WarEntityType.UnitType unitType, Skin skin) {
         super(skin);
@@ -63,14 +64,14 @@ public class UnitMenu extends WindowMenu {
         countLabel = new Label("0", skin);
         countLabel.setAlignment(Align.right);
 
-        VerticalGroup group = new VerticalGroup();
-        group.align(Align.center);
-        group.addActor(plusButton);
-        group.addActor(minusButton);
+        addRemoveButtons = new VerticalGroup();
+        addRemoveButtons.align(Align.center);
+        addRemoveButtons.addActor(plusButton);
+        addRemoveButtons.addActor(minusButton);
 
         getWindow().defaults().prefHeight(UI.BUTTON_HEIGHT);
         getWindow().add(nameLabel).prefWidth(UI.BUTTON_SMALL_WIDTH);
-        getWindow().add(group);
+        getWindow().add(addRemoveButtons);
         getWindow().add(countLabel).expandY().grow();
     }
 
@@ -99,10 +100,12 @@ public class UnitMenu extends WindowMenu {
 
     public void disable() {
 
-        getWindow().clear();
+        addRemoveButtons.setVisible(false);
+    }
 
-        getWindow().defaults().prefHeight(UI.BUTTON_HEIGHT);
-        getWindow().add(nameLabel).prefWidth(UI.BUTTON_SMALL_WIDTH);
-        getWindow().add(countLabel).expandY().grow();
+    public void reset() {
+        count = 0;
+        updateCountLabel();
+        addRemoveButtons.setVisible(true);
     }
 }
