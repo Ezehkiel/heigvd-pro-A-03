@@ -56,9 +56,10 @@ public class GameScene extends Scene {
         getStage().addActor(gameMenu.getMenu());
 
         game = new TowerDefense(this, gameClient);
-        tiledMapManager = new TiledMapManager(TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT);
 
-        gameClient.firstTurn();
+        tiledMapManager = new TiledMapManager(
+                TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT
+        );
     }
 
     @Override
@@ -175,5 +176,13 @@ public class GameScene extends Scene {
 
     public void clearSelectedTurret() {
         selectedTurretType = null;
+    }
+
+    public GameMenu getGameMenu() {
+        return gameMenu;
+    }
+
+    public TowerDefense getGame() {
+        return game;
     }
 }

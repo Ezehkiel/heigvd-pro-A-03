@@ -1,14 +1,20 @@
 package ch.heigvd.pro.a03.menus.game;
 
 import ch.heigvd.pro.a03.TowerDefense;
+import ch.heigvd.pro.a03.event.player.SendUnitEvent;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.sun.tools.javac.util.Pair;
+
+import java.util.LinkedList;
 
 public class GameMenu extends Menu {
 
     private Skin skin;
+    private GameScene scene;
 
     private GamePlayingMenu playingMenu;
     private GamePauseMenu pauseMenu;
@@ -16,6 +22,7 @@ public class GameMenu extends Menu {
 
     public GameMenu(Skin skin, GameScene scene) {
 
+        this.scene = scene;
         this.skin = skin;
 
         getMenu().setFillParent(true);
@@ -53,5 +60,22 @@ public class GameMenu extends Menu {
         getMenu().clear();
 
         getMenu().add(new TurretMenu(this, towerDefense, mapId, turret, skin).getMenu());
+    }
+
+    public void showInfo(String text) {
+        showPlayingMenu();
+        playingMenu.updateInfo(text);
+    }
+
+    public void updateMoney(int money) {
+        playingMenu.updateMoney(money);
+    }
+
+    public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {
+        return scene.getGame().sendUnits(types, quantities);
+    }
+
+    public GamePlayingMenu getPlayingMenu() {
+        return playingMenu;
     }
 }

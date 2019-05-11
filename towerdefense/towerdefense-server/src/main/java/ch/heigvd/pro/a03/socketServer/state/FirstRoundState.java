@@ -23,15 +23,22 @@ public class FirstRoundState extends ServerState{
 
         for(Client client : gameServer.getClients()) {
 
+            GameServer.LOG.info("Player " + client.getPlayer().ID + "'s first turn.") ;
 
             // Tell everyone who's turn it is
             gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
 
             // Wait for the player's events
             PlayerEvent playerEvent =  getPlayerEvent(client.getOis());
-            for(UnitEvent unitEvent : playerEvent.getUnitEvents()){
-                //HACK cannot manage other type of event
-                gameLogic.getPlayerMap(((SendUnitEvent)unitEvent).getPlayerIdDestination()).addUnit(unitEvent.getUnitType().createUnit(gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()));
+            for(UnitEvent unitEvent : playerEvent.getUnitEvents()) {
+                SendUnitEvent sendUnitEvent = (SendUnitEvent) unitEvent;
+                for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
+                    gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination()).addUnit(
+                            unitEvent.getUnitType().createUnit(
+                                    gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
+                            )
+                    );
+                }
             }
 
             GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");

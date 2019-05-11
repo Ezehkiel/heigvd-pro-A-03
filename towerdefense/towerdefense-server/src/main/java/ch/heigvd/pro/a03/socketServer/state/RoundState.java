@@ -26,12 +26,12 @@ public class RoundState extends ServerState{
 
         for (Client client : gameServer.getClients()) {
 
-            GameServer.LOG.info("Player " + client.getPlayer().ID + "'s turn.") ;
+            GameServer.LOG.info("Player " + client.getPlayer().ID + "'s turn.");
 
             // Broadcast who's playing
             gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
 
-            //gameServer.waitForPlayers("500-OK");d
+            gameServer.waitForPlayers("500-OK");
 
             // send player to the client who's playing
             gameServer.sendObject(client.getOus(), client.getPlayer());
@@ -44,8 +44,16 @@ public class RoundState extends ServerState{
                 gameLogic.getPlayerMap(client.getPlayer().ID).setStructureAt(turretEvent.getTurretType().createTurret(position),position.y,position.x);
             }
             //HACK cannot manage other type of event
-            for(UnitEvent unitEvent : playerEvent.getUnitEvents()){
-                gameLogic.getPlayerMap(((SendUnitEvent)unitEvent).getPlayerIdDestination()).addUnit(unitEvent.getUnitType().createUnit(gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()));
+            for(UnitEvent unitEvent : playerEvent.getUnitEvents()) {
+
+                SendUnitEvent sendUnitEvent = (SendUnitEvent) unitEvent;
+                for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
+                    gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination()).addUnit(
+                            unitEvent.getUnitType().createUnit(
+                                    gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
+                            )
+                    );
+                }
             }
 
             GameServer.LOG.info("Received player " + client.getPlayer().ID + "'s events.");

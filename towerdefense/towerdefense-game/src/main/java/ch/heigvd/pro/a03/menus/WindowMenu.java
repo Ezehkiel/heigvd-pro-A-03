@@ -8,8 +8,8 @@ public class WindowMenu {
 
     private Window window;
 
-    public WindowMenu(String title, Skin skin) {
-        window = new Window(title, skin);
+    public WindowMenu(Skin skin) {
+        window = new Window("", skin);
         window.pad(UI.WINDOW_PAD);
     }
 

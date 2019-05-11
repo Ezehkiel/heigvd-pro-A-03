@@ -12,16 +12,16 @@ public class OpponentPlayState extends GameState {
     @Override
     public void enter() {
         super.enter();
+
+        getGame().getScene().getGameMenu().showInfo("Opponent's turn.");
+        System.out.println("Opponents turn");
     }
 
     @Override
     public void leave() {
         super.leave();
-    }
 
-    @Override
-    public void update(float deltaTime) {
-        super.update(deltaTime);
+        System.out.println("Turn ended");
     }
 
     @Override

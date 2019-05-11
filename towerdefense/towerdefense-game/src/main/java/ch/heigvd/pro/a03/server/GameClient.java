@@ -4,7 +4,9 @@ import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.Event;
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.Waiter;
 import org.lwjgl.Sys;
 
 import java.io.*;
@@ -133,36 +135,50 @@ public class GameClient {
         }
     }
 
-    public void firstTurn() {
+    public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
+                           Executable roundEnd, Waiter<PlayerEvent> waitForEvents) {
 
         LOG.info("First Round starting.");
 
         new Thread(() -> {
             try {
                 Protocole.sendProtocol(out, 4, "START");
+
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
-                    if (Integer.parseInt(protocole.getData()) == player.ID) {
-                        LOG.info("My turn.");
-                        Event.sendEvents(new LinkedList<>(), objectOut);
+
+                    int id = Integer.parseInt(protocole.getData());
+
+                    LOG.info("Player " + id + "'s turn start.");
+                    playerTurnStart.execute(id);
+
+                    if (id == player.ID) {
+
+                        waitForEvents.waitData();
+
+                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
+
                         Protocole.receive(in);
-                        LOG.info("I end my turn.");
-                    } else {
-                        LOG.info("Player " + protocole.getData() + "'s turn.");
                     }
 
                     protocole = Protocole.receive(in);
+
+                    LOG.info("Player " + id + "'s turn end.");
+                    playerTurnEnd.execute(id);
                 }
             } catch (IOException e) {
                 e.printStackTrace();
             }
 
-            round(args -> System.out.println("Received Maps."), args -> System.out.println("Received Map"));
+            roundEnd.execute();
 
         }).start();
     }
 
-    public void round(Executable showMaps, Executable showMap) {
+    public void round(Executable playerTurnStart, Executable playerTurnEnd,
+                      Executable roundEnd, Executable showMap,
+                      Waiter<PlayerEvent> waitForEvents) {
+
         LOG.info("Round starting.");
 
         new Thread(() -> {
@@ -172,32 +188,41 @@ public class GameClient {
                 Protocole.sendProtocol(out, 5, "START");
 
                 Map[] maps = (Map[]) receiveObject();
-                System.out.println(maps);
-                showMaps.execute();
+                for (Map map : maps) {
+                    showMap.execute(map);
+                }
 
                 Protocole protocole = Protocole.receive(in);
                 while (!protocole.getData().equals("END")) {
 
-                    //Protocole.sendProtocol(out, 5, "OK");
+                    Protocole.sendProtocol(out, 5, "OK");
 
-                    if (Integer.parseInt(protocole.getData()) == player.ID) {
+                    int id = Integer.parseInt(protocole.getData());
 
-                        LOG.info("My Turn");
+                    LOG.info("Player " + id + "'s turn start");
+                    playerTurnStart.execute(id);
+
+                    if (id == player.ID) {
+
                         player = (Player) receiveObject();
 
-                        Event.sendEvents(new LinkedList<>(), objectOut);
-                        LOG.info("I end my turn.");
+                        waitForEvents.waitData();
 
-                    } else {
-                        LOG.info("Player " + protocole.getData() + "'s turn.");
+                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
+
+                        Event.sendEvents(new LinkedList<>(), objectOut);
                     }
 
                     Map map = (Map) receiveObject();
-                    System.out.println(map);
-                    showMap.execute();
+                    showMap.execute(map);
+
+                    LOG.info("Player " + id + "'s turn end");
+                    playerTurnEnd.execute();
 
                     protocole = Protocole.receive(in);
                 }
+
+                roundEnd.execute();
 
             } catch (IOException e) {
                 e.printStackTrace();
@@ -228,5 +253,24 @@ public class GameClient {
         }
 
         return null;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int[] getOpponentsIds() {
+
+        int[] ids = new int[PLAYERS_COUNT - 1];
+        int index = 0;
+
+        for (int i = 0; i < PLAYERS_COUNT; ++i) {
+            if (i != player.ID) {
+                ids[index] = i;
+                index++;
+            }
+        }
+
+        return ids;
     }
 }

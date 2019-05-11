@@ -3,9 +3,10 @@ package ch.heigvd.pro.a03.event;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public abstract class Event {
+public abstract class Event implements Serializable {
     public static LinkedList<Event> getEvents(ObjectInputStream in){
         LinkedList<Event> events =null;
         try{

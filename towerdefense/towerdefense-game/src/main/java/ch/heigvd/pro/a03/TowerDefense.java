@@ -1,17 +1,22 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.commands.Executable;
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.player.SendUnitEvent;
+import ch.heigvd.pro.a03.event.player.TurretEvent;
+import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
+import ch.heigvd.pro.a03.utils.Waiter;
 import ch.heigvd.pro.a03.warentities.Base;
 
 import ch.heigvd.pro.a03.warentities.Structure;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
-import com.badlogic.gdx.Game;
 
 import java.awt.*;
-import java.util.ArrayList;
 
 public class TowerDefense {
 
@@ -26,6 +31,14 @@ public class TowerDefense {
     // States variables
     private StateMachine stateMachine;
     private GameState[] states;
+
+    private Executable roundEnd;
+    private Executable playerTurnStart;
+    private Executable playerTurnEnd;
+    private Executable showMap;
+
+    private PlayerEvent playerEvent;
+    private Waiter<PlayerEvent> playerEventWaiter;
 
     public enum GameStateType {
         PLAY, OPPONENT_PLAY, SIMULATION, WAIT
@@ -49,10 +62,29 @@ public class TowerDefense {
                 new WaitState(stateMachine, this)
         };
 
-        stateMachine.changeState(getState(GameStateType.WAIT));
+        changeState(GameStateType.WAIT);
+
+        playerEvent = new PlayerEvent();
+        playerEventWaiter = new Waiter<>();
+
+        // Setup commands
+        playerTurnStart = args -> changeState(
+                gameClient.getPlayer().ID == (Integer) args[0] ?
+                        GameStateType.PLAY : GameStateType.OPPONENT_PLAY
+        );
+
+        playerTurnEnd = args -> changeState(GameStateType.WAIT);
+
+        roundEnd = args -> changeState(GameStateType.SIMULATION);
+        showMap = args -> System.out.println("TODO: Update map here!");
+
+
+        gameClient.firstRound(playerTurnStart, playerTurnEnd, args -> {
+            changeState(GameStateType.WAIT);
+            gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMap, playerEventWaiter);
+
+        }, playerEventWaiter);
     }
-
-
 
     /* ----- Turret Management -----*/
 
@@ -72,7 +104,8 @@ public class TowerDefense {
 
     public boolean placeTurret(int mapId, Turret turret) {
 
-        if (!isInState(GameStateType.PLAY) || maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) != null) {
+        if (!isInState(GameStateType.PLAY) ||
+                maps[mapId].getStructureAt(turret.getPosition().y, turret.getPosition().x) != null) {
             return false;
         }
 
@@ -122,5 +155,54 @@ public class TowerDefense {
 
     public GameScene getScene() {
         return scene;
+    }
+
+    public boolean changeState(GameStateType stateType) {
+        return stateMachine.changeState(getState(stateType));
+    }
+
+    public void addUnitEvent(UnitEvent event) {
+        playerEvent.addUnitEvent(event);
+    }
+
+    public void addTurretEvent(TurretEvent event) {
+        playerEvent.addTurretEvent(event);
+    }
+
+    public void sendEvents() {
+        playerEventWaiter.send(playerEvent);
+    }
+
+    public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {
+
+        if (types.length != quantities.length) {
+            return false;
+        }
+
+        Point dummyPoint = new Point();
+        int totalPrice = 0;
+
+        for (int i = 0; i < types.length; ++i) {
+            totalPrice += types[i].createUnit(dummyPoint).getPrice() * quantities[i];
+        }
+
+        Player player = gameClient.getPlayer();
+
+        if (totalPrice > player.getMoney()) {
+            return false;
+        }
+
+        player.removeMoney(totalPrice);
+        scene.getGameMenu().updateMoney(player.getMoney());
+
+        for (int i = 0; i < types.length; ++i) {
+            for (int id : gameClient.getOpponentsIds()) {
+                if (quantities[i] > 0) {
+                    playerEvent.addUnitEvent(new SendUnitEvent(id, types[i], quantities[i]));
+                }
+            }
+        }
+
+        return true;
     }
 }

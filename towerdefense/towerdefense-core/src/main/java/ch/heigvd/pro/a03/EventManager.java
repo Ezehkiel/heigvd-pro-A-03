@@ -33,5 +33,4 @@ public class EventManager {
     public void clearEvents(){
         events.clear();
     }
-
 }
