@@ -41,6 +41,8 @@ public class GameLogic {
 
         EventManager.getInstance().clearEvents();
 
+
+
         while (!endRound && !endMatch) {
 
             nbTick++;

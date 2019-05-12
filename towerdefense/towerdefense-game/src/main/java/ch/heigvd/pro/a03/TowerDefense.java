@@ -48,6 +48,10 @@ public class TowerDefense {
         FIRST_PLAY, PLAY, OPPONENT_PLAY, SIMULATION, WAIT
     }
 
+    public void processSimEvent(SimEvent event) {
+
+    }
+
     public TowerDefense(GameScene scene, GameClient gameClient) {
 
         this.scene = scene;
