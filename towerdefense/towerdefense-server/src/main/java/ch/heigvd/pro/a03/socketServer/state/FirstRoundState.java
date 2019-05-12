@@ -6,6 +6,7 @@ import ch.heigvd.pro.a03.event.player.SendUnitEvent;
 import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
+import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
@@ -39,6 +40,7 @@ public class FirstRoundState extends ServerState{
                     Unit unit = unitEvent.getUnitType().createUnit(
                             gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
                     );
+                    ((WarEntity) unit).setId(gameLogic.getNextEntityId());
                     gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination()).addUnit(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }

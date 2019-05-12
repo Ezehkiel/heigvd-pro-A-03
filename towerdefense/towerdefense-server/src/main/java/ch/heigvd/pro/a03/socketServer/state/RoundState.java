@@ -9,6 +9,7 @@ import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 import com.google.gson.Gson;
@@ -49,6 +50,8 @@ public class RoundState extends ServerState{
                 Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
                 Point position = turretEvent.getTurretPosition();
                 Turret turret = turretEvent.getTurretType().createTurret(position);
+                ((WarEntity) turret).setId(gameLogic.getNextEntityId());
+
                 map.setStructureAt(turret, position.y, position.x);
                 client.getPlayer().removeMoney(turret.getPrice());
             }
@@ -60,6 +63,7 @@ public class RoundState extends ServerState{
                 Map map = gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination());
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
                     Unit unit = unitEvent.getUnitType().createUnit(map.getSpawnPoint());
+                    ((WarEntity) unit).setId(gameLogic.getNextEntityId());
                     map.addUnit(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }
