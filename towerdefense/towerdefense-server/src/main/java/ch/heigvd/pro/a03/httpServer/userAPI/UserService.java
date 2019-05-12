@@ -56,7 +56,7 @@ public class UserService {
             LOG.log(Level.INFO, "Request: get one user");
             User user = SqlRequest.getUserDBWithUsername(username);
             if (user == null){
-                throw new UserException("ERROR this user doesn't exist", null);
+                throw new UserException("This user doesn't exist", null);
             }else{
                 return user;
             }
@@ -77,7 +77,7 @@ public class UserService {
 
         try {
             if(username == null || password == null){
-                throw new UserException("ERROR password or username empty", null);
+                throw new UserException("Password or username empty", null);
             }
             LOG.log(Level.INFO, "Request: creation of an user");
             /* We check that the user isn't already in the DB */
@@ -96,24 +96,23 @@ public class UserService {
                         return createResponse(createdUser);
                     } catch (JWTCreationException exception) {
                         LOG.log(Level.SEVERE, "ERROR with token's creations");
-                        throw new UserException("ERROR with token's creations", null);
+                        throw new UserException("Error with token's creations", null);
                     }
                 } else {
                     LOG.log(Level.SEVERE, "ERROR with creation of the new user");
 
-                    throw new UserException("ERROR with creation of the new user", null);
+                    throw new UserException("Problem with the creation of the new user", null);
                 }
             } else {
                 LOG.log(Level.SEVERE, "ERROR user already exist");
 
-                throw new UserException("ERROR user already exist", null);
+                throw new UserException("User already exist", null);
             }
         }catch(UserException ex){
             JSONObject jo = new JSONObject();
             jo.put("error", true);
             jo.put("message",ex.getMessage());
             jo.put("data", ex.getUser());
-            LOG.log(Level.SEVERE, "ERROR user already exist");
             return jo;
 
         }
@@ -149,7 +148,7 @@ public class UserService {
             String username = gson.fromJson(req.body(), User.class).getUsername();
 
             if(username == null || password == null){
-                throw new UserException("ERROR password or username empty", null);
+                throw new UserException("Password or username not set", null);
             }
             User userInDataBase = SqlRequest.getUserDBWithUsername(username);
             User userLoginHttp = new User(0, username, Hashing.sha256()
@@ -164,11 +163,11 @@ public class UserService {
                     SqlRequest.setLastLoginDB(userInDataBase.getId());
                     return createResponse(userInDataBase);
                 } catch (JWTCreationException exception) {
-                    throw new UserException("ERROR can't create token", userInDataBase);
+                    throw new UserException("Error with the creations of the token", userInDataBase);
                 }
             } else {
                 LOG.log(Level.SEVERE, "The user can't login");
-                throw new UserException("ERROR the user can't login, invalide password", userInDataBase);
+                throw new UserException("The user can't login, invalid password", userInDataBase);
             }
         }catch(UserException ex){
             JSONObject jo = new JSONObject();

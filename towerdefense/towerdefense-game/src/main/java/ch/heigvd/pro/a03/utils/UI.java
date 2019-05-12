@@ -14,14 +14,14 @@ public class UI {
     public static Skin createSkin() {
 
         if (fontGenerator == null) {
-            fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/pixelart.ttf"));
+            fontGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/font.ttf"));
         }
 
         // generate fonts
         FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        parameter.size = 16;
+        parameter.size = 48;
         BitmapFont font = fontGenerator.generateFont(parameter);
-        parameter.size = 64;
+        parameter.size = 256;
         BitmapFont bigFont = fontGenerator.generateFont(parameter);
 
         // create skin
@@ -38,8 +38,12 @@ public class UI {
 
     /* UI SIZES */
     public static final int SPACING = 50;
+
+    public static final float WINDOW_PAD = 10;
+
     public static final int BUTTON_WIDTH = 250;
     public static final int BUTTON_SMALL_WIDTH = 100;
     public static final int BUTTON_HEIGHT = 50;
+
     public static final int TEXT_FIELD_HEIGHT = 25;
 }

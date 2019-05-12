@@ -1,13 +1,29 @@
 package ch.heigvd.pro.a03.warentities.units;
 
+import ch.heigvd.pro.a03.warentities.WarEntityType;
+
 import java.awt.*;
 
 public class Tank extends Unit {
 
-    public Tank(Point position,int totalHealth, int defPoint, int speed, int attackPoints, int range,int price) {
-        super(position,totalHealth,defPoint,speed,attackPoints,range, price);
+    public Tank(String name, Point position, int totalHealth,
+                int defPoint, int attackCoolDown, int speed,
+                int attackPoints, int range, int price) {
+
+        super(name, position, totalHealth,
+                defPoint, attackCoolDown, speed,
+                attackPoints, range, price, WarEntityType.UnitType.TANK);
 
     }
 
+    public Tank(Point position){
+        this("Tank", position,500,500,10,15,500,4,500);
+    }
+
+    @Override
+    public String symbol() {
+        if(isEntityDestroyed()) return " X ";
+        else return "Tnk";
+    }
 
 }

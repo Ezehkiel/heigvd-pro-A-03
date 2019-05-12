@@ -1,69 +1,52 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
+import ch.heigvd.pro.a03.commands.Command;
+import ch.heigvd.pro.a03.menus.matchmaking.PlayerMenu;
 import ch.heigvd.pro.a03.server.GameClient;
-import ch.heigvd.pro.a03.utils.UI;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class MatchMakingScene extends Scene {
 
+    private PlayerMenu playerMenu;
+
+    private GameClient gameClient;
 
     public MatchMakingScene() {
 
-        Label title = new Label("Searching for players", getSkin());
-        title.setAlignment(Align.center);
-
-        TextButton readyButton = new TextButton("Ready!", getSkin());
-        readyButton.addListener(new ClickListener() {
+        gameClient = new GameClient(2);
+        gameClient.connect(new Command<MatchMakingScene>(this) {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-
-                GameClient.getInstance().ready();
-                System.out.printf("You are player %d", GameClient.getInstance().getPlayerNumber());
-
-                GameLauncher.getInstance().getSceneManager().add(new GameScene());
+            public void execute(Object... args) {
+                getReceiver().showPlayerMenu();
             }
         });
+    }
 
-        // Setup menu table
-        Table menuTable = new Table();
-        menuTable.defaults().expandX().bottom();
+    public void showPlayerMenu() {
 
-        // Setup root Table
-        Table rootTable = new Table();
-        rootTable.setFillParent(true);
+        playerMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), this, gameClient, getSkin());
+        playerMenu.getMenu().setFillParent(true);
 
-        rootTable.defaults().grow();
-        rootTable.add(title);
-        rootTable.row();
-        rootTable.add(menuTable);
+        getStage().addActor(playerMenu.getMenu());
 
-        getStage().addActor(rootTable);
-
-        // Connect to server
-        new Thread() {
-
-            @Override
-            public void run() {
-                super.run();
-
-                if (GameClient.getInstance().connect()) {
-                    System.out.println("Server is ready");
-                    title.setText("Player Found! Are you ready?");
-                    menuTable.add(readyButton);
+        gameClient.getPlayers(
+                new Command<MatchMakingScene>(this) {
+                    @Override
+                    public void execute(Object... args) {
+                        System.out.println(((Player) args[0]).getName() + " has arrived.");
+                    }
+                },
+                new Command<MatchMakingScene>(this) {
+                    @Override
+                    public void execute(Object... args) {
+                        getReceiver().playerMenu.updateMenu(true);
+                    }
                 }
-            }
-        }.start();
+        );
+    }
+
+    public void startGame() {
+        GameLauncher.getInstance().getSceneManager().set(new GameScene(gameClient));
     }
 }
