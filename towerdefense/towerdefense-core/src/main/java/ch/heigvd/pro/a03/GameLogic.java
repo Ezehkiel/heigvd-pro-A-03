@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.event.simulation.AttackEvent;
+import ch.heigvd.pro.a03.event.simulation.SpawnEvent;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 import org.json.JSONArray;
@@ -38,6 +40,12 @@ public class GameLogic {
     }
 
     public void playRound() {
+
+        for(Map m :  maps){
+            for(Unit u : m.getUnits()){
+                EventManager.getInstance().addEvent(new SpawnEvent(nbTick,u.getId(),u.TYPE,m.getSpawnPoint(),m.ID));
+            }
+        }
 
         EventManager.getInstance().clearEvents();
 
