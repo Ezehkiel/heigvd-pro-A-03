@@ -180,6 +180,7 @@ public class Map implements Serializable {
                 if (b instanceof Turret) {
                     Turret turret = (Turret) b;
                     JSONObject turretJson = new JSONObject();
+                    turretJson.put("id", turret.getId());
                     turretJson.put("type", turret.TYPE.name());
                     turretJson.put("position", positionToJson(turret.getPosition()));
                     turretJson.put("destroyed", turret.isEntityDestroyed());
