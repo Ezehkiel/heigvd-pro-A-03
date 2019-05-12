@@ -15,9 +15,12 @@ import ch.heigvd.pro.a03.warentities.units.Unit;
 import com.google.gson.Gson;
 
 import java.awt.*;
+import java.util.LinkedList;
+
 import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 
 public class RoundState extends ServerState{
+
     public RoundState(int id, GameServer gameServer) {
         super(id, gameServer);
     }
@@ -27,10 +30,23 @@ public class RoundState extends ServerState{
 
         GameLogic gameLogic = gameServer.getGameLogic();
 
+        for(Client c : gameServer.getClients()){
+            Map map = gameLogic.getPlayerMap(c.getPlayer().ID);
+
+            for(int i = 0;i< gameServer.PLAYER_COUNT;i++){
+                for(Unit unit : gameServer.nextRoundUnit.get(i)){
+                    map.addUnit(unit);
+                }
+            }
+
+            gameServer.nextRoundUnit.clear();
+            gameServer.initNextRoundList();
+        }
         // Broadcast the maps
         gameServer.broadCastJson(gameLogic.getMapsJson());
 
         for (Client client : gameServer.getClients()) {
+
 
             GameServer.LOG.info("Player " + client.getPlayer().ID + "'s turn.");
 
@@ -48,6 +64,7 @@ public class RoundState extends ServerState{
             for(TurretEvent turretEvent : playerEvent.getTurretEvents()) {
 
                 Map map = gameLogic.getPlayerMap(client.getPlayer().ID);
+
                 Point position = turretEvent.getTurretPosition();
                 Turret turret = turretEvent.getTurretType().createTurret(position);
                 ((WarEntity) turret).setId(gameLogic.getNextEntityId());
@@ -64,7 +81,7 @@ public class RoundState extends ServerState{
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
                     Unit unit = unitEvent.getUnitType().createUnit(map.getSpawnPoint());
                     ((WarEntity) unit).setId(gameLogic.getNextEntityId());
-                    map.addUnit(unit);
+                    gameServer.nextRoundUnit.get(sendUnitEvent.getPlayerIdDestination()).push(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }
             }

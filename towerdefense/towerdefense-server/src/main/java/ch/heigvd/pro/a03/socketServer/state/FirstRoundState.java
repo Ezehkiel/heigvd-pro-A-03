@@ -7,16 +7,23 @@ import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
 import ch.heigvd.pro.a03.warentities.WarEntity;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
+
+import java.util.LinkedList;
 
 import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
 public class FirstRoundState extends ServerState{
+
     public FirstRoundState(int id, GameServer gameServer) {
+
         super(id, gameServer);
     }
+
+
 
     @Override
     public void run() {
@@ -41,7 +48,7 @@ public class FirstRoundState extends ServerState{
                             gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
                     );
                     ((WarEntity) unit).setId(gameLogic.getNextEntityId());
-                    gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination()).addUnit(unit);
+                    gameServer.nextRoundUnit.get(client.getPlayer().ID).push(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }
             }
