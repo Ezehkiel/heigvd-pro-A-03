@@ -112,6 +112,11 @@ public class TowerDefense {
             return false;
         }
 
+        if (turret.getPosition().x == maps[mapId].getSpawnPoint().x &&
+                turret.getPosition().y == maps[mapId].getSpawnPoint().y) {
+            return false;
+        }
+
         if (gameClient.getPlayer().getMoney() < turret.getPrice()) {
             return false;
         }
