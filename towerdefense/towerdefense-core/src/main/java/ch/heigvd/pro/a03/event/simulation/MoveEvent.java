@@ -10,4 +10,8 @@ public class MoveEvent extends SimEvent  {
         this.destinationPoint = destinationPoint;
     }
 
+    @Override
+    public String toString() {
+        return super.toString() + ", dest: " + destinationPoint.toString();
+    }
 }

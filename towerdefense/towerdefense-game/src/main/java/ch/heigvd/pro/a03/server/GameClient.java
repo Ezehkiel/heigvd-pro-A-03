@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.Waiter;
 import com.google.gson.Gson;
@@ -13,6 +14,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class GameClient {
@@ -221,6 +223,48 @@ public class GameClient {
                 }
 
                 roundEnd.execute();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
+    public void startSimulation(Executable startSimulation) {
+        LOG.info("Waiting simulation");
+
+        new Thread(() -> {
+
+            Protocole.sendProtocol(out, 6, "START");
+
+            Object o = (LinkedList<SimEvent>) receiveObject();
+
+            LOG.info("Simulation received");
+
+            startSimulation.execute(o);
+
+        }).start();
+    }
+
+    public void endSimulation(Executable roundStart, Executable gameEnd) {
+
+        LOG.info("Simulation done.");
+        new Thread(() -> {
+
+            try {
+                Protocole.sendProtocol(out, 6, "OK");
+
+                Protocole protocole = Protocole.receive(in);
+
+                if (protocole.getId() == 600) {
+
+                    roundStart.execute();
+
+                } else if (protocole.getId() == 700) {
+
+                    gameEnd.execute(Player.fromJson(Protocole.receiveJson(in)));
+                }
 
             } catch (IOException e) {
                 e.printStackTrace();

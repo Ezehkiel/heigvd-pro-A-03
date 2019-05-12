@@ -39,11 +39,11 @@ public class GameLogic {
 
     public void playRound() {
 
+        EventManager.getInstance().clearEvents();
 
         while (!endRound && !endMatch) {
 
             nbTick++;
-            EventManager.getInstance().clearEvents();
 
             endRound = isEndRound(maps);
 
@@ -96,17 +96,17 @@ public class GameLogic {
         return players[index];
     }
 
-    public Player getWinner(){
-        Player winner = null;
+    public Player getLoser() {
+        Player loser = null;
 
         //Search if there is a base destroyed
         for(Player p: players){
            if(this.getPlayerMap(p.ID).getBase().isEntityDestroyed()){
-               winner = p;
+               loser = p;
                break;
            }
         }
-        return winner;
+        return loser;
     }
     public int getNextEntityId() {
         return entityCount++;

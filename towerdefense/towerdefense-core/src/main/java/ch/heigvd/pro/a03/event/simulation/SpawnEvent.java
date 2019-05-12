@@ -7,12 +7,17 @@ import java.awt.*;
 
 public class SpawnEvent extends SimEvent {
 
-    WarEntityType EntityType;
+    WarEntityType.UnitType unitType;
     Point spawnPoint;
 
-    public SpawnEvent(int ticId, int entityId, WarEntityType entityType, Point spawnPoint) {
+    public SpawnEvent(int ticId, int entityId, WarEntityType.UnitType unitType, Point spawnPoint) {
         super(ticId, SimEventType.SPAWN, entityId);
-        EntityType = entityType;
+        this.unitType =  unitType;
         this.spawnPoint = spawnPoint;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", dest: " + spawnPoint.toString() + ", type: " + unitType;
     }
 }

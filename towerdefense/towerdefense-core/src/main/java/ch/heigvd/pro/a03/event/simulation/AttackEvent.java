@@ -9,4 +9,9 @@ public class AttackEvent extends SimEvent  {
         this.targetId = targetId;
         this.dammage = dammage;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + ", target: " + targetId + ", damage: " + dammage;
+    }
 }

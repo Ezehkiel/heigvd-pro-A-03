@@ -90,6 +90,7 @@ public class GameServer implements Runnable {
     @Override
     public void run() {
         this.setCurrentState(ValidationState);
+        LOG.info("Game ended");
     }
 
     public ServerState getCurrentState() {
@@ -118,6 +119,12 @@ public class GameServer implements Runnable {
     public void broadCastJson(String json) {
         for (Client client : clients) {
             Protocole.sendJson(json, client.getOut());
+        }
+    }
+
+    public void broadCastObject(Object object) {
+        for (Client client : clients) {
+            sendObject(client.getOus(), object);
         }
     }
 

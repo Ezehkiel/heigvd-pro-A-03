@@ -1,13 +1,13 @@
 package ch.heigvd.pro.a03;
 
-import ch.heigvd.pro.a03.event.Event;
+import ch.heigvd.pro.a03.event.simulation.SimEvent;
 
 import java.util.LinkedList;
 
 public class EventManager {
 
     private static EventManager em;
-    private LinkedList<Event> events;
+    private LinkedList<SimEvent> events;
 
     private EventManager() {
 
@@ -22,15 +22,15 @@ public class EventManager {
         return em;
     }
 
-    public void addEvent(Event e){
+    public void addEvent(SimEvent e){
         events.add(e);
     }
 
-    public LinkedList<Event> getEvents() {
+    public LinkedList<SimEvent> getEvents() {
         return events;
     }
 
     public void clearEvents(){
-        events.clear();
+        events = new LinkedList<>();
     }
 }

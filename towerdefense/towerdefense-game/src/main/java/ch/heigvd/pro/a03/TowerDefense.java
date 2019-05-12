@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.commands.game.ShowMapsCommand;
 import ch.heigvd.pro.a03.event.player.*;
+import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
@@ -17,6 +18,7 @@ import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 
 import java.awt.*;
+import java.util.LinkedList;
 
 public class TowerDefense {
 
@@ -32,6 +34,7 @@ public class TowerDefense {
     private StateMachine stateMachine;
     private GameState[] states;
 
+    private Executable roundStart;
     private Executable roundEnd;
     private Executable playerTurnStart;
     private Executable playerTurnEnd;
@@ -39,6 +42,7 @@ public class TowerDefense {
 
     private PlayerEvent playerEvent;
     private Waiter<PlayerEvent> playerEventWaiter;
+    public LinkedList<SimEvent> simEvents = null;
 
     public enum GameStateType {
         FIRST_PLAY, PLAY, OPPONENT_PLAY, SIMULATION, WAIT
@@ -73,20 +77,28 @@ public class TowerDefense {
                 gameClient.getPlayer().ID == (Integer) args[0] ?
                         GameStateType.PLAY : GameStateType.OPPONENT_PLAY
         );
-
         playerTurnEnd = args -> changeState(GameStateType.WAIT);
 
-        roundEnd = args -> changeState(GameStateType.SIMULATION);
+        roundStart = args -> gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMaps, playerEventWaiter);
+        roundEnd = a -> gameClient.startSimulation(args -> {
+            simEvents = (LinkedList<SimEvent>) args[0];
+            changeState(GameStateType.SIMULATION);
+        });
+
+
         showMaps = new ShowMapsCommand(this);
+
 
         gameClient.firstRound(args -> changeState(
             gameClient.getPlayer().ID == (Integer) args[0] ?
                     GameStateType.FIRST_PLAY : GameStateType.OPPONENT_PLAY
-        ), playerTurnEnd, args -> {
-            changeState(GameStateType.WAIT);
-            gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMaps, playerEventWaiter);
+        ), playerTurnEnd, roundStart, showMaps, playerEventWaiter);
+    }
 
-        }, showMaps, playerEventWaiter);
+    public void endSimulation() {
+        changeState(GameStateType.WAIT);
+        gameClient.endSimulation(roundStart,
+                args -> System.out.println("Game Ended. Loser: " + ((Player) args[0]).toJson()));
     }
 
     /* ----- Turret Management -----*/
