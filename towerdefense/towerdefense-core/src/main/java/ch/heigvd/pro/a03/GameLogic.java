@@ -41,15 +41,13 @@ public class GameLogic {
 
     public void playRound() {
 
+        EventManager.getInstance().clearEvents();
+
         for(Map m :  maps){
             for(Unit u : m.getUnits()){
                 EventManager.getInstance().addEvent(new SpawnEvent(nbTick,u.getId(),u.TYPE,m.getSpawnPoint(),m.ID));
             }
         }
-
-        EventManager.getInstance().clearEvents();
-
-
 
         while (!endRound && !endMatch) {
 

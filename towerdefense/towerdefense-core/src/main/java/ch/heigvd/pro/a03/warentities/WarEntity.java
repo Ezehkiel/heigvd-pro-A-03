@@ -84,17 +84,11 @@ abstract public class WarEntity implements Serializable {
     public int dealDamage(int damageTaken) {
 
         int tmp = (damageTaken * 100) / (100 + defensePoint);
-        int tmp2=0;
+        int damage = Math.min(tmp, healthPoints);
 
-        if (healthPoints - tmp >= 0) {
-            healthPoints -= tmp;
-        } else {
-            tmp2=healthPoints;
-            healthPoints = 0;
+        healthPoints -= damage;
 
-        }
-
-        return Math.min(tmp,tmp2);
+        return damage;
     }
 
     /**

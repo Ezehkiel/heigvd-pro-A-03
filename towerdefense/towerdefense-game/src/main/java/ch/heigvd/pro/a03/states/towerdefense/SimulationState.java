@@ -42,7 +42,6 @@ public class SimulationState extends GameState {
         timer += deltaTime;
         while (timer >= TIME_PER_TICK) {
 
-
             while (!getGame().simEvents.isEmpty()) {
 
                 if (getGame().simEvents.peek().TICK_ID != currentTick) {
@@ -54,19 +53,9 @@ public class SimulationState extends GameState {
 
             if (getGame().simEvents.isEmpty()) {
                 ended = true;
-                getGame().sendEvents();
+                getGame().endSimulation();
                 return;
             }
-
-//            if () {
-//                ended = true;
-//                getGame().endSimulation();
-//                return;
-//            }
-//
-//
-//            while (getGame().simEvents == null || getGame().simEvents.isEmpty())
-//            System.out.println(getGame().simEvents.pop().toString());
 
             currentTick++;
             timer -= TIME_PER_TICK;

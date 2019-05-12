@@ -5,11 +5,12 @@ import ch.heigvd.pro.a03.algorithm.Position;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.commands.game.ShowMapsCommand;
 import ch.heigvd.pro.a03.event.player.*;
-import ch.heigvd.pro.a03.event.simulation.SimEvent;
+import ch.heigvd.pro.a03.event.simulation.*;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
+import ch.heigvd.pro.a03.utils.Simulator;
 import ch.heigvd.pro.a03.utils.Waiter;
 import ch.heigvd.pro.a03.warentities.Base;
 
@@ -44,18 +45,17 @@ public class TowerDefense {
     private Waiter<PlayerEvent> playerEventWaiter;
     public LinkedList<SimEvent> simEvents = null;
 
+    private Simulator[] simulators;
+
     public enum GameStateType {
         FIRST_PLAY, PLAY, OPPONENT_PLAY, SIMULATION, WAIT
-    }
-
-    public void processSimEvent(SimEvent event) {
-
     }
 
     public TowerDefense(GameScene scene, GameClient gameClient) {
 
         this.scene = scene;
         this.gameClient = gameClient;
+        simulators = new Simulator[gameClient.PLAYERS_COUNT];
         maps = new Map[gameClient.PLAYERS_COUNT];
         for (int i = 0; i < maps.length; ++i) {
             maps[i] = new Map(MAP_HEIGHT, MAP_WIDTH, new Base(new Point(4,11)),new Point(11,4), i);
@@ -86,12 +86,11 @@ public class TowerDefense {
         roundStart = args -> gameClient.round(playerTurnStart, playerTurnEnd, roundEnd, showMaps, playerEventWaiter);
         roundEnd = a -> gameClient.startSimulation(args -> {
             simEvents = (LinkedList<SimEvent>) args[0];
+            setupSimulators();
             changeState(GameStateType.SIMULATION);
         });
 
-
         showMaps = new ShowMapsCommand(this);
-
 
         gameClient.firstRound(args -> changeState(
             gameClient.getPlayer().ID == (Integer) args[0] ?
@@ -103,6 +102,33 @@ public class TowerDefense {
         changeState(GameStateType.WAIT);
         gameClient.endSimulation(roundStart,
                 args -> System.out.println("Game Ended. Loser: " + ((Player) args[0]).toJson()));
+    }
+
+    public void setupSimulators() {
+        simulators = new Simulator[gameClient.PLAYERS_COUNT];
+        for (Map map : maps) {
+            simulators[map.ID] = new Simulator(map);
+        }
+    }
+
+    public void processSimEvent(SimEvent event) {
+
+        GameClient.LOG.info(event.toString());
+
+        switch (event.TYPE) {
+            case SPAWN:
+                simulators[event.MAP_ID].spawn((SpawnEvent) event);
+                break;
+            case MOVE:
+                simulators[event.MAP_ID].move((MoveEvent) event);
+                break;
+            case ATTACK:
+                simulators[event.MAP_ID].attack((AttackEvent) event);
+                break;
+            case DEATH:
+                simulators[event.MAP_ID].death((DeathEvent) event);
+                break;
+        }
     }
 
     /* ----- Turret Management -----*/

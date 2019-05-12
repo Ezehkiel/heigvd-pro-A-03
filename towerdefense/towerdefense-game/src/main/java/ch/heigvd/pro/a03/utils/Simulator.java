@@ -23,14 +23,14 @@ public class Simulator {
 
         for (Structure[] structures : map.getStructures()) {
             for (Structure structure : structures) {
-                entities.put(structure.getId(), structure);
+                if (structure != null) {
+                    entities.put(structure.getId(), structure);
+                }
             }
         }
     }
 
     public void spawn(SpawnEvent event) {
-
-        System.out.println(event);
 
         if (entities.containsKey(event.ENTITY_ID)) {
             return;
@@ -42,9 +42,17 @@ public class Simulator {
         entities.put(event.ENTITY_ID, unit);
     }
 
-    public void attack(AttackEvent event) {
+    public void move(MoveEvent event) {
 
-        System.out.println(event);
+        WarEntity entity = entities.get(event.ENTITY_ID);
+        if (entity instanceof Unit) {
+
+            Unit unit = (Unit) entity;
+            unit.setPosition(event.DESTINATION_POINT);
+        }
+    }
+
+    public void attack(AttackEvent event) {
 
         WarEntity entity = entities.get(event.ENTITY_ID);
         WarEntity target = entities.get(event.TARGET_ID);
@@ -56,21 +64,7 @@ public class Simulator {
         target.dealDamage(event.DAMAGE);
     }
 
-    public void move(MoveEvent event) {
-
-        System.out.println(event);
-
-        WarEntity entity = entities.get(event.ENTITY_ID);
-        if (entity instanceof Unit) {
-
-            Unit unit = (Unit) entity;
-            unit.setPosition(event.DESTINATION_POINT);
-        }
-    }
-
     public void death(DeathEvent event) {
-
-        System.out.println(event);
 
         WarEntity entity = entities.get(event.ENTITY_ID);
         entity.dealDamage(entity.getTotalHealth());
