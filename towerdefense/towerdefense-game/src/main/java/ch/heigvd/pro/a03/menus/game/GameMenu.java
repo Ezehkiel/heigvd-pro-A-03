@@ -1,15 +1,13 @@
 package ch.heigvd.pro.a03.menus.game;
 
 import ch.heigvd.pro.a03.TowerDefense;
-import ch.heigvd.pro.a03.event.player.SendUnitEvent;
+import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.sun.tools.javac.util.Pair;
 
-import java.util.LinkedList;
 
 public class GameMenu extends Menu {
 
