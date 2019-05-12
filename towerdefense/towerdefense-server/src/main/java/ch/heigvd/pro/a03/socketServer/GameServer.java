@@ -4,9 +4,12 @@ import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
@@ -30,6 +33,10 @@ public class GameServer implements Runnable {
 
     private GameLogic gameLogic;
 
+
+
+    public LinkedList<LinkedList<Unit>> nextRoundUnit;
+
     public GameServer(int gameMode) {
         this.PLAYER_COUNT = gameMode;
         this.arrivedPlayersCount = 0;
@@ -46,6 +53,9 @@ public class GameServer implements Runnable {
             public void run() {
             }
         };
+        nextRoundUnit  = new LinkedList<>();
+
+        initNextRoundList();
     }
 
     public void playerJoin(Client client, String name) {
@@ -190,5 +200,10 @@ public class GameServer implements Runnable {
 
     public GameLogic getGameLogic() {
         return gameLogic;
+    }
+    public void initNextRoundList(){
+        for(int i=0; i < PLAYER_COUNT;i++){
+            nextRoundUnit.toArray()[i] = new LinkedList<>();
+        }
     }
 }
