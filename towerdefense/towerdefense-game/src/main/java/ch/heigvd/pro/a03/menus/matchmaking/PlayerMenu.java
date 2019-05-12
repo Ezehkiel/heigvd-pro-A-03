@@ -37,6 +37,7 @@ public class PlayerMenu extends Menu {
                 getReceiver().ready(new Command<MatchMakingScene>(scene) {
                     @Override
                     public void execute(Object... args) {
+                        readyButton.setVisible(false);
                         getReceiver().startGame();
                     }
                 });

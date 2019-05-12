@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.commands.scenes.SetSceneCommand;
+import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -26,7 +27,7 @@ public class GameModeScene extends Scene {
         playButton.addListener(new ButtonCommand(new SetSceneCommand(GameLauncher.getInstance())) {
             @Override
             public void executeCommand() {
-                getCommand().execute(new GameScene(2));
+                getCommand().execute(new GameScene(new GameClient(2)));
             }
         });
 

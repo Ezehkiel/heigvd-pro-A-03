@@ -20,6 +20,25 @@ public class Protocole {
         return new Protocole(Integer.parseInt(responseArray[0]),responseArray[1]);
     }
 
+    public static String receiveJson(BufferedReader in) {
+        try {
+            return in.readLine();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static void sendJson(String json, BufferedWriter out) {
+        try {
+            out.write(json + "\r\n");
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public int getId() {
         return id;
     }

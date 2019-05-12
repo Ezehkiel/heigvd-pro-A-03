@@ -4,8 +4,9 @@ package ch.heigvd.pro.a03.warentities;
 import ch.heigvd.pro.a03.Map;
 
 import java.awt.*;
+import java.io.Serializable;
 
-abstract public class WarEntity {
+abstract public class WarEntity implements Serializable {
 
     private Point position;//position that the entity will take at the grid 
 
@@ -41,14 +42,11 @@ abstract public class WarEntity {
         return id;
     }
 
-
-
     public void setId(int id) {
         this.id = id;
     }
 
     public boolean isEntityDestroyed() {
-
         return (healthPoints == 0);
     }
 
@@ -86,17 +84,11 @@ abstract public class WarEntity {
     public int dealDamage(int damageTaken) {
 
         int tmp = (damageTaken * 100) / (100 + defensePoint);
-        int tmp2=0;
+        int damage = Math.min(tmp, healthPoints);
 
-        if (healthPoints - tmp >= 0) {
-            healthPoints -= tmp;
-        } else {
-            tmp2=healthPoints;
-            healthPoints = 0;
+        healthPoints -= damage;
 
-        }
-
-        return Math.min(tmp,tmp2);
+        return damage;
     }
 
     /**
@@ -132,6 +124,10 @@ abstract public class WarEntity {
 
     public void setPosition(Point position) {
         this.position = position;
+    }
+
+    public int getTotalHealth() {
+        return totalHealth;
     }
 
     public int getHealthPoint() {

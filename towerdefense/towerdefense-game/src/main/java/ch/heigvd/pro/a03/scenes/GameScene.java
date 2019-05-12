@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03.scenes;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
+import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.TiledMapManager;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
@@ -38,7 +39,7 @@ public class GameScene extends Scene {
 
     private GameMenu gameMenu;
 
-    public GameScene(int playerCount) {
+    public GameScene(GameClient gameClient) {
 
         gameCamera = new OrthographicCamera();
         gameViewport = new ScreenViewport(gameCamera);
@@ -51,8 +52,11 @@ public class GameScene extends Scene {
 
         getStage().addActor(gameMenu.getMenu());
 
-        game = new TowerDefense(this, playerCount);
-        tiledMapManager = new TiledMapManager(TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, playerCount);
+        tiledMapManager = new TiledMapManager(
+                TowerDefense.MAP_WIDTH, TowerDefense.MAP_HEIGHT, gameClient.PLAYERS_COUNT, gameClient.getPlayer().ID
+        );
+
+        game = new TowerDefense(this, gameClient);
     }
 
     @Override
@@ -126,14 +130,17 @@ public class GameScene extends Scene {
         int x = tmpX % (TowerDefense.MAP_WIDTH + 1);
         int y = (int) Math.floor(mousePosition.y / TiledMapManager.TILE_SIZE);
 
-        System.out.println(mapId + ", " + x + ", " + y);
+        // Can only click on owned map
+        if (mapId != game.getGameClient().getPlayer().ID) {
+            return;
+        }
 
         Turret turret = null;
 
         if (game.isCellOccupied(mapId, x, y)) {
 
             turret = game.getTurretAt(mapId, x, y);
-            if (turret != null) {
+            if (turret != null && game.iAmMapOwner(mapId)) {
                 gameMenu.showTurretMenu(game, mapId, turret);
             }
 
@@ -143,7 +150,6 @@ public class GameScene extends Scene {
 
                 case MACHINE_GUN:
                     turret = new MachineGunTurret(new Point(x,y));
-
                     break;
 
                 case MORTAR:
@@ -169,5 +175,13 @@ public class GameScene extends Scene {
 
     public void clearSelectedTurret() {
         selectedTurretType = null;
+    }
+
+    public GameMenu getGameMenu() {
+        return gameMenu;
+    }
+
+    public TowerDefense getGame() {
+        return game;
     }
 }

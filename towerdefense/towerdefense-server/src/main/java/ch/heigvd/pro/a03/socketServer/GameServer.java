@@ -1,10 +1,15 @@
 package ch.heigvd.pro.a03.socketServer;
 
+import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
@@ -26,10 +31,15 @@ public class GameServer implements Runnable {
     private int arrivedPlayersCount;
     private Client[] clients;
 
+    private GameLogic gameLogic;
+
+    public LinkedList<LinkedList<Unit>> nextRoundUnit;
+
     public GameServer(int gameMode) {
         this.PLAYER_COUNT = gameMode;
         this.arrivedPlayersCount = 0;
         this.clients = new Client[PLAYER_COUNT];
+        this.gameLogic = null;
         this.ValidationState = new ValidationState(3, this);
         this.FirstRoundState = new FirstRoundState(4, this);
         this.RoundState = new RoundState(5, this);
@@ -41,6 +51,9 @@ public class GameServer implements Runnable {
             public void run() {
             }
         };
+        nextRoundUnit  = new LinkedList<>();
+
+        initNextRoundList();
     }
 
     public void playerJoin(Client client, String name) {
@@ -53,25 +66,31 @@ public class GameServer implements Runnable {
         for (int i = 0; i < arrivedPlayersCount; ++i) {
 
             // send newcomer to other players
-            Player.sendPlayer(player, clients[i].ous);
+            Protocole.sendJson(player.toJson(), clients[i].getOut());
 
             // send already present player to newcomer
-            Player.sendPlayer(clients[i].getPlayer(), client.ous);
+            Protocole.sendJson(clients[i].getPlayer().toJson(), client.getOut());
         }
 
         clients[arrivedPlayersCount++] = client;
 
         if (arrivedPlayersCount == PLAYER_COUNT) {
 
+            Player[] players = new Player[PLAYER_COUNT];
             for (Client c : clients) {
 
-                // tell the client that everyone arrived
-                Player.sendPlayer(null, c.ous);
-                // tell the client which player he is
-                Player.sendPlayer(c.getPlayer(), c.ous);
+                // Tell the client that everyone arrived
+                Protocole.sendProtocol(c.getOut(), 2, "OK");
+
+                // Tell the client which player he is
+                Protocole.sendJson(c.getPlayer().toJson(), c.getOut());
+
+                players[c.getPlayer().ID] = c.getPlayer();
             }
 
             LOG.info("A game server has started!");
+            gameLogic = new GameLogic(players);
+
             new Thread(this).start();
         }
     }
@@ -79,6 +98,7 @@ public class GameServer implements Runnable {
     @Override
     public void run() {
         this.setCurrentState(ValidationState);
+        LOG.info("Game ended");
     }
 
     public ServerState getCurrentState() {
@@ -89,12 +109,9 @@ public class GameServer implements Runnable {
         broadCastMessage("END");
 
         // HACKS
-        try {
-            LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
-            waitForPlayers(newState.getId() + "00-START");
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
+        waitForPlayers(newState.getId() + "00-START");
+
         this.currentState = newState;
 
         LOG.info("State changed to " + currentState.getId());
@@ -107,7 +124,19 @@ public class GameServer implements Runnable {
             sendProtocol(client.getOut(), currentState.getId(), message);
     }
 
-    public void waitForPlayers(String message) throws InterruptedException {
+    public void broadCastJson(String json) {
+        for (Client client : clients) {
+            Protocole.sendJson(json, client.getOut());
+        }
+    }
+
+    public void broadCastObject(Object object) {
+        for (Client client : clients) {
+            sendObject(client.getOus(), object);
+        }
+    }
+
+    public void waitForPlayers(String message) {
         Thread t[] = new Thread[PLAYER_COUNT];
         for (Client client : clients) {
             t[client.getPlayer().ID] = new Thread(new waiter(client, message));
@@ -115,7 +144,21 @@ public class GameServer implements Runnable {
         }
 
         for (Client client : clients) {
-            t[client.getPlayer().ID].join();
+            try {
+                t[client.getPlayer().ID].join();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void sendObject(ObjectOutputStream ous, Object object) {
+        try {
+            ous.writeObject(object);
+            ous.flush();
+//            ous.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -151,5 +194,15 @@ public class GameServer implements Runnable {
 
     public Client[] getClients() {
         return clients;
+    }
+
+    public GameLogic getGameLogic() {
+        return gameLogic;
+    }
+
+    public void initNextRoundList() {
+        for(int i=0; i < PLAYER_COUNT;i++){
+            nextRoundUnit.add(new LinkedList<>());
+        }
     }
 }

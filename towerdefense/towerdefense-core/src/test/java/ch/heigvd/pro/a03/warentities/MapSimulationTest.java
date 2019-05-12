@@ -20,7 +20,7 @@ public class MapSimulationTest {
 
         //Create a map
         Base base = new Base("Superbase", new Point(6, 5), 100000, 5, 1);
-        Map map = new Map(6, 7, base,0);
+        Map map = new Map(6, 7, base,new Point(11,4),0);
         //add a Soldier and some turrets to the map
         Soldier soldier = new Soldier("Soldier", new Point(1, 2), 500, 0, 1, 1, 10000, 5, 12);
         Soldier soldier1 = new Soldier("Soldier1", new Point(0, 0), 500, 0, 1, 1, 10000, 5, 12);

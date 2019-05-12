@@ -1,13 +1,12 @@
 package ch.heigvd.pro.a03.event;
 
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public abstract class Event {
+public abstract class Event implements Serializable {
     public static LinkedList<Event> getEvents(ObjectInputStream in){
         LinkedList<Event> events =null;
         try{
@@ -33,12 +32,19 @@ public abstract class Event {
     public static void sendEvent(Event event, ObjectOutputStream out) {
         try {
             out.writeObject(event);
+            out.flush();
+//            out.reset();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
     public static void sendEvents(LinkedList<Event> events, ObjectOutputStream out) {
-        for (Event playerEvent : events)
-            sendEvent(playerEvent,out);
+        try {
+            out.writeObject(events);
+            out.flush();
+//            out.reset();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
