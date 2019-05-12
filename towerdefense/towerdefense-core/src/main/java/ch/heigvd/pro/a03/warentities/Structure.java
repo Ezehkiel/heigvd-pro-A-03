@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.EventManager;
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.algorithm.NearestTarget;
 import ch.heigvd.pro.a03.event.simulation.AttackEvent;
+import ch.heigvd.pro.a03.event.simulation.DeathEvent;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.awt.*;
@@ -25,6 +26,9 @@ public abstract class Structure extends WarEntity {
             Unit nearestUnit = NearestTarget.getNearestInRangeUnit(this, map);
             if(nearestUnit != null) {
                 EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),nearestUnit.getId(),attack(nearestUnit),map.ID));
+                if(nearestUnit.isEntityDestroyed()){
+                    EventManager.getInstance().addEvent(new DeathEvent(tickId,nearestUnit.getId(),map.ID));
+                }
             }
 
             attackTics = 0;
