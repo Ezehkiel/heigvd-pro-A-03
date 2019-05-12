@@ -112,9 +112,9 @@ public class SqlRequest {
 
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("UPDATE public.towerdefense_user SET lastLogin=now() WHERE id = ?;");
+            stmt = con.prepareStatement("UPDATE public.towerdefense_user SET lastlogin = now() WHERE id = ?;");
             stmt.setLong(1, id);
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             e.printStackTrace();
