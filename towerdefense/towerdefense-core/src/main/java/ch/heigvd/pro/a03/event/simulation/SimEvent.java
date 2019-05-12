@@ -8,15 +8,17 @@ public class SimEvent extends Event implements Serializable {
     public final SimEventType TYPE;
     public final int TICK_ID;
     public final int ENTITY_ID;
+    public final int MAP_ID;
 
-    public SimEvent(int tickId, SimEventType type, int entityId) {
+    public SimEvent(int tickId, SimEventType type, int entityId, int map_id) {
         this.TYPE = type;
         this.TICK_ID = tickId;
         this.ENTITY_ID = entityId;
+        MAP_ID = map_id;
     }
 
     @Override
     public String toString() {
-        return String.format("%s of %d at %d", TYPE.name(), ENTITY_ID, TICK_ID);
+        return String.format("%s of %d at %d on map %S", TYPE.name(), ENTITY_ID, TICK_ID,MAP_ID);
     }
 }

@@ -4,8 +4,8 @@ public class AttackEvent extends SimEvent  {
     int targetId;
     int dammage;
 
-    public AttackEvent(int ticId, int entityId, int targetId, int dammage) {
-        super(ticId, SimEventType.ATTACK, entityId);
+    public AttackEvent(int ticId, int entityId, int targetId, int dammage,int map_id) {
+        super(ticId, SimEventType.ATTACK, entityId, map_id);
         this.targetId = targetId;
         this.dammage = dammage;
     }

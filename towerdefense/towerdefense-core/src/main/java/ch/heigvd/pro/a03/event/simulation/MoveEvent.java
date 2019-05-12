@@ -5,8 +5,8 @@ import java.awt.*;
 public class MoveEvent extends SimEvent  {
     Point destinationPoint;
 
-    public MoveEvent(int ticId, int entityId, Point destinationPoint) {
-        super(ticId, SimEventType.MOVE, entityId);
+    public MoveEvent(int ticId, int entityId, Point destinationPoint,int map_id) {
+        super(ticId, SimEventType.MOVE, entityId, map_id);
         this.destinationPoint = destinationPoint;
     }
 

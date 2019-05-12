@@ -24,7 +24,7 @@ public abstract class Structure extends WarEntity {
         if(attackTics == this.getAttackCoolDown()){
             Unit nearestUnit = NearestTarget.getNearestInRangeUnit(this, map);
             if(nearestUnit != null) {
-                EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),nearestUnit.getId(),attack(nearestUnit)));
+                EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),nearestUnit.getId(),attack(nearestUnit),map.ID));
             }
 
             attackTics = 0;

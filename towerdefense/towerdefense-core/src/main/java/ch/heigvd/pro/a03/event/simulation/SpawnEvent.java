@@ -10,8 +10,8 @@ public class SpawnEvent extends SimEvent {
     WarEntityType.UnitType unitType;
     Point spawnPoint;
 
-    public SpawnEvent(int ticId, int entityId, WarEntityType.UnitType unitType, Point spawnPoint) {
-        super(ticId, SimEventType.SPAWN, entityId);
+    public SpawnEvent(int ticId, int entityId, WarEntityType.UnitType unitType, Point spawnPoint,int map_id) {
+        super(ticId, SimEventType.SPAWN, entityId, map_id);
         this.unitType =  unitType;
         this.spawnPoint = spawnPoint;
     }
