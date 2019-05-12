@@ -33,8 +33,6 @@ public class GameServer implements Runnable {
 
     private GameLogic gameLogic;
 
-
-
     public LinkedList<LinkedList<Unit>> nextRoundUnit;
 
     public GameServer(int gameMode) {
@@ -201,9 +199,10 @@ public class GameServer implements Runnable {
     public GameLogic getGameLogic() {
         return gameLogic;
     }
-    public void initNextRoundList(){
+
+    public void initNextRoundList() {
         for(int i=0; i < PLAYER_COUNT;i++){
-            nextRoundUnit.toArray()[i] = new LinkedList<>();
+            nextRoundUnit.add(new LinkedList<>());
         }
     }
 }

@@ -30,18 +30,16 @@ public class RoundState extends ServerState{
 
         GameLogic gameLogic = gameServer.getGameLogic();
 
-        for(Client c : gameServer.getClients()){
+        for (Client c : gameServer.getClients()) {
+
             Map map = gameLogic.getPlayerMap(c.getPlayer().ID);
-
-            for(int i = 0;i< gameServer.PLAYER_COUNT;i++){
-                for(Unit unit : gameServer.nextRoundUnit.get(i)){
-                    map.addUnit(unit);
-                }
+            for (Unit unit : gameServer.nextRoundUnit.get(c.getPlayer().ID)) {
+                map.addUnit(unit);
             }
-
-            gameServer.nextRoundUnit.clear();
-            gameServer.initNextRoundList();
         }
+        gameServer.nextRoundUnit.clear();
+        gameServer.initNextRoundList();
+
         // Broadcast the maps
         gameServer.broadCastJson(gameLogic.getMapsJson());
 
@@ -67,7 +65,7 @@ public class RoundState extends ServerState{
 
                 Point position = turretEvent.getTurretPosition();
                 Turret turret = turretEvent.getTurretType().createTurret(position);
-                ((WarEntity) turret).setId(gameLogic.getNextEntityId());
+                turret.setId(gameLogic.getNextEntityId());
 
                 map.setStructureAt(turret, position.y, position.x);
                 client.getPlayer().removeMoney(turret.getPrice());
@@ -80,7 +78,7 @@ public class RoundState extends ServerState{
                 Map map = gameLogic.getPlayerMap(sendUnitEvent.getPlayerIdDestination());
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
                     Unit unit = unitEvent.getUnitType().createUnit(map.getSpawnPoint());
-                    ((WarEntity) unit).setId(gameLogic.getNextEntityId());
+                    unit.setId(gameLogic.getNextEntityId());
                     gameServer.nextRoundUnit.get(sendUnitEvent.getPlayerIdDestination()).push(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }
