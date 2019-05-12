@@ -1,7 +1,6 @@
 package ch.heigvd.pro.a03.states.towerdefense;
 
 import ch.heigvd.pro.a03.TowerDefense;
-import ch.heigvd.pro.a03.event.simulation.*;
 import ch.heigvd.pro.a03.states.StateMachine;
 
 public class SimulationState extends GameState {
@@ -11,12 +10,17 @@ public class SimulationState extends GameState {
     }
 
     private boolean ended = false;
+    private final float TIME_PER_TICK = 1f; // Ticks per seconds
+    private float timer = 0f;
+    private int currentTick = 0;
 
     @Override
     public void enter() {
         super.enter();
 
         ended = false;
+        timer = 0f;
+
         System.out.println("Simulation starts.");
     }
 
@@ -31,15 +35,20 @@ public class SimulationState extends GameState {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        if (!ended && getGame().simEvents != null) {
+        if (ended) { return; }
 
-            if (getGame().simEvents.isEmpty()) {
+        timer += deltaTime;
+        while (timer >= TIME_PER_TICK) {
+
+            if (getGame().simEvents == null || getGame().simEvents.isEmpty()) {
                 ended = true;
                 getGame().endSimulation();
                 return;
             }
 
             System.out.println(getGame().simEvents.pop().toString());
+
+            timer -= TIME_PER_TICK;
         }
     }
 
