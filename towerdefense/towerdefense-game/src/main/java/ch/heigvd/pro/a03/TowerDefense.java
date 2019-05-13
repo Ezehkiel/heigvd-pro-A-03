@@ -10,7 +10,7 @@ import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
-import ch.heigvd.pro.a03.utils.Simulator;
+import ch.heigvd.pro.a03.simulation.Simulator;
 import ch.heigvd.pro.a03.utils.Waiter;
 import ch.heigvd.pro.a03.warentities.Base;
 
