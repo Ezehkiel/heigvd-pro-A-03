@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.scenes.SceneManager;
 import ch.heigvd.pro.a03.users.User;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
@@ -24,6 +25,8 @@ public class GameLauncher implements ApplicationListener {
 
     private SceneManager sceneManager;
 
+    private Music mp3Music;
+
     /**
      * Default constructor, called by getInstance() if needed
      */
@@ -32,6 +35,8 @@ public class GameLauncher implements ApplicationListener {
 
         connectedPlayer = null;
         sceneManager = new SceneManager();
+
+
     }
 
     /**
@@ -73,7 +78,13 @@ public class GameLauncher implements ApplicationListener {
 
     @Override
     public void create () {
+
+        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("/Users/andresmoreno/Documents/HEIG-VD/Second Year/Second Semester/PRO/heigvd-pro-A-03/towerdefense/towerdefense-game/src/main/resources/assets/Distant Tales .mp3"));
+        mp3Music.play();
+        mp3Music.setLooping(true);
+
         sceneManager.add(new MainMenuScene());
+
     }
 
     @Override
