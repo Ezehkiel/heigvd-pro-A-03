@@ -67,7 +67,7 @@ public abstract class Unit extends WarEntity {
 
                 //If the enemy base is in range, the Unit will focus only on the base
 
-                if (isInRange(map.getBase())) {
+                if (isInRange(map.getBase()) && !map.getBase().isEntityDestroyed()) {
 
                     EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),map.getBase().getId(),attack(map.getBase()),map.ID));
 

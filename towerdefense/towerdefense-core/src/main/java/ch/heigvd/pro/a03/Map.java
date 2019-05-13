@@ -117,12 +117,7 @@ public class Map implements Serializable {
 
 
     public boolean isEndMatch() {
-
-        endMatch = true;
-        if (!base.isEntityDestroyed()) {
-            endMatch = false;
-        }
-
+        endMatch = base.isEntityDestroyed();
         return endMatch;
     }
 

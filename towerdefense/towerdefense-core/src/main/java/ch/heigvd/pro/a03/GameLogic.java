@@ -60,6 +60,10 @@ public class GameLogic {
             for (Map m : maps) {
                 m.update(nbTick);
                 endMatch = m.isEndMatch();
+
+                if (endMatch) {
+                    break;
+                }
             }
         }
 

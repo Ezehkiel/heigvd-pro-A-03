@@ -11,6 +11,7 @@ public class Base extends Structure {
     public Base(String name,Point position, int totalHealth, int defPoint, int attackCoolDown) {
         super(name,position, totalHealth, defPoint,attackCoolDown);
         this.setAttackPoints(1000);
+        this.setRange(5);
         endGame = false;
     }
 
