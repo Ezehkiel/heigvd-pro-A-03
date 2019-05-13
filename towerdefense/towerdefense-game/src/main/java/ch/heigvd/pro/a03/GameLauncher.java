@@ -79,7 +79,7 @@ public class GameLauncher implements ApplicationListener {
     @Override
     public void create () {
 
-        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("/Users/andresmoreno/Documents/HEIG-VD/Second Year/Second Semester/PRO/heigvd-pro-A-03/towerdefense/towerdefense-game/src/main/resources/assets/Distant Tales .mp3"));
+        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("assets/Distant Tales .mp3"));
         mp3Music.play();
         mp3Music.setLooping(true);
 
@@ -142,8 +142,6 @@ public class GameLauncher implements ApplicationListener {
 
         // Change Logger format
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-
-        GameLauncher.getInstance().setConnectedPlayer(new User(0, "Jack", null));
 
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.title = GameLauncher.TITLE;

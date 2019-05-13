@@ -1,4 +1,4 @@
-package ch.heigvd.pro.a03.utils;
+package ch.heigvd.pro.a03.simulation;
 
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.TowerDefense;
@@ -6,26 +6,31 @@ import ch.heigvd.pro.a03.event.simulation.AttackEvent;
 import ch.heigvd.pro.a03.event.simulation.DeathEvent;
 import ch.heigvd.pro.a03.event.simulation.MoveEvent;
 import ch.heigvd.pro.a03.event.simulation.SpawnEvent;
+import ch.heigvd.pro.a03.states.towerdefense.SimulationState;
+import ch.heigvd.pro.a03.utils.TextureManager;
+import ch.heigvd.pro.a03.utils.TiledMapManager;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Vector2;
 
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Random;
 
 public class Simulator {
 
+    private static final int UNIT_SIZE = 32;
     private static final Random random = new Random();
     private Map map;
     private int playerId;
     private HashMap<Integer, WarEntity> entities;
     private HashMap<Integer, Point> offsets;
+    private HashMap<Integer, Animator> animators;
     private ArrayList<Bullet> bullets;
 
     public Simulator(Map map, int playerId) {
@@ -34,6 +39,7 @@ public class Simulator {
         this.playerId = playerId;
         entities = new HashMap<>();
         offsets = new HashMap<>();
+        animators = new HashMap<>();
         bullets = new ArrayList<>();
 
         for (Structure[] structures : map.getStructures()) {
@@ -56,6 +62,11 @@ public class Simulator {
 
         entities.put(event.ENTITY_ID, unit);
         offsets.put(event.ENTITY_ID, new Point(randomOffset(), randomOffset()));
+
+        Vector2 position = pointVec(offsetedPosition(unit));
+        animators.put(event.ENTITY_ID, new Animator(position, new Vector2(position),
+                TiledMapManager.TILE_SIZE / (unit.getSpeed() * SimulationState.TIME_PER_TICK)
+        ));
     }
 
     public void move(MoveEvent event) {
@@ -63,8 +74,8 @@ public class Simulator {
         WarEntity entity = entities.get(event.ENTITY_ID);
         if (entity instanceof Unit) {
 
-            Unit unit = (Unit) entity;
-            unit.setPosition(event.DESTINATION_POINT);
+            entity.setPosition(event.DESTINATION_POINT);
+            animators.get(entity.getId()).setDestination(pointVec(offsetedPosition(entity)));
         }
     }
 
@@ -79,9 +90,11 @@ public class Simulator {
 
         target.dealDamage(event.DAMAGE);
 
-        Point start = offsetedPosition(entity);
-        Point end = offsetedPosition(target);
-        bullets.add(new Bullet(new Vector2(start.x, start.y), new Vector2(end.x, end.y)));
+        if (target instanceof Structure) {
+            bullets.add(new Bullet(animators.get(entity.getId()).getPosition().cpy(), pointVec(offsetedPosition(target))));
+        } else {
+            bullets.add(new AutonomousBullet(pointVec(offsetedPosition(entity)), animators.get(target.getId())));
+        }
     }
 
     public void death(DeathEvent event) {
@@ -92,28 +105,27 @@ public class Simulator {
 
     public void update(float deltaTime) {
 
-        LinkedList<Integer> toDelete = new LinkedList<>();
+        for (Animator animator : animators.values()) {
+            animator.update(deltaTime);
+        }
 
         for (int i = 0; i < bullets.size(); ++i) {
             bullets.get(i).update(deltaTime);
-            if (bullets.get(i).hasArrived()) {
-                toDelete.add(i);
-            }
         }
     }
 
     public void drawSprites(SpriteBatch spriteBatch) {
-
-
         for (WarEntity entity : entities.values()) {
             if (entity instanceof Unit && !entity.isEntityDestroyed()) {
                 Unit unit = (Unit) entity;
 
-                Point position = offsetedPosition(entity);
+                Animator animator = animators.get(unit.getId());
                 spriteBatch.draw(
-                        TextureManager.getUnitTexture(unit.TYPE),
-                        position.x, position.y,
-                        32, 32
+                        new TextureRegion(TextureManager.getUnitTexture(unit.TYPE)),
+                        animator.position.x - UNIT_SIZE / 2f, animator.position.y - UNIT_SIZE / 2f,
+                        UNIT_SIZE / 2f, UNIT_SIZE / 2f,
+                        UNIT_SIZE, UNIT_SIZE,
+                        1, 1, animator.getDirectionAngle() - 90
                 );
             }
         }
@@ -138,19 +150,22 @@ public class Simulator {
         if (entity instanceof Unit) {
 
             return new Point(
-                    displayX * TiledMapManager.TILE_SIZE + offsets.get(entity.getId()).x,
-                    displayY * TiledMapManager.TILE_SIZE + offsets.get(entity.getId()).y
+                    displayX * TiledMapManager.TILE_SIZE + offsets.get(entity.getId()).x + UNIT_SIZE / 2,
+                    displayY * TiledMapManager.TILE_SIZE + offsets.get(entity.getId()).y + UNIT_SIZE / 2
             );
-
         }
 
         return new Point(
-                displayX * TiledMapManager.TILE_SIZE + 32,
-                displayY * TiledMapManager.TILE_SIZE + 32
+                displayX * TiledMapManager.TILE_SIZE + UNIT_SIZE,
+                displayY * TiledMapManager.TILE_SIZE + UNIT_SIZE
         );
     }
 
     private int randomOffset() {
         return random.nextInt(32);
+    }
+
+    private Vector2 pointVec(Point point) {
+        return new Vector2(point.x, point.y);
     }
 }
