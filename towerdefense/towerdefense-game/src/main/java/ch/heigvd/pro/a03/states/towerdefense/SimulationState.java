@@ -1,7 +1,6 @@
 package ch.heigvd.pro.a03.states.towerdefense;
 
 import ch.heigvd.pro.a03.TowerDefense;
-import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.states.StateMachine;
 
 public class SimulationState extends GameState {
@@ -11,7 +10,7 @@ public class SimulationState extends GameState {
     }
 
     private boolean ended = false;
-    private final float TIME_PER_TICK = 1f; // Ticks per seconds
+    private final float TIME_PER_TICK = 1f/50; // Ticks per seconds
     private float timer = 0f;
     private int currentTick = 0;
 

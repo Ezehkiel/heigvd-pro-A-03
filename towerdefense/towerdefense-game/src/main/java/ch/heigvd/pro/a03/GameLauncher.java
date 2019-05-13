@@ -24,6 +24,8 @@ public class GameLauncher implements ApplicationListener {
 
     private SceneManager sceneManager;
 
+
+
     /**
      * Default constructor, called by getInstance() if needed
      */

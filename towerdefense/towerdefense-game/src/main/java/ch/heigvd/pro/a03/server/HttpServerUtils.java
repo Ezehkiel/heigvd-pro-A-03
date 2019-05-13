@@ -22,7 +22,7 @@ public class HttpServerUtils {
 
     private static String errorMessage;
 
-    private static final String url = "https://ezehkiel.ch:3945";
+    private static final String url = "http://127.0.0.1:3945";
 
     public static User login(String username, String password) {
 
