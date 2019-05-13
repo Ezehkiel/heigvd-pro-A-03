@@ -41,6 +41,7 @@ public class ShowMapsCommand extends TowerDefenseCommand {
             JSONObject turretJson = turrets.getJSONObject(i);
             Turret turret = WarEntityType.TurretType.valueOf(turretJson.getString("type"))
                     .createTurret(pointFromJson(turretJson.getJSONObject("position").toString()));
+            turret.setId(turretJson.getInt("id"));
             map.setStructureAt(turret, turret.getPosition().y, turret.getPosition().x);
         }
 

@@ -1,15 +1,11 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.GameLauncher;
-import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.Waiter;
-import com.google.gson.Gson;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.*;
 import java.net.Socket;
@@ -34,7 +30,7 @@ public class GameClient {
     private Player player = null;
 
     public GameClient(int playersCount) {
-        HOST = "localhost";
+        HOST = "localhost";//"ezehkiel.ch";
         PORT = 4567;
         PLAYERS_COUNT = playersCount;
     }
