@@ -79,7 +79,7 @@ public class GameLauncher implements ApplicationListener {
     @Override
     public void create () {
 
-        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("/Users/andresmoreno/Documents/HEIG-VD/Second Year/Second Semester/PRO/heigvd-pro-A-03/towerdefense/towerdefense-game/src/main/resources/assets/Distant Tales .mp3"));
+        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("assets/Distant Tales .mp3"));
         mp3Music.play();
         mp3Music.setLooping(true);
 
