@@ -91,6 +91,10 @@ abstract public class WarEntity implements Serializable {
         return damage;
     }
 
+    public void kill() {
+        healthPoints = 0;
+    }
+
     /**
      * @param amount the amount of hp that will be restored
      */
