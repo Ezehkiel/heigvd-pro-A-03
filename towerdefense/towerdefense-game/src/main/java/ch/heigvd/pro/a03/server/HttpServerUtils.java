@@ -70,7 +70,9 @@ public class HttpServerUtils {
             errorMessage = response.getString("message");
         }else{
             JSONObject data = (JSONObject) response.get("data");
-            player = new User(data.getInt("id"), data.getString("username"), null);
+            player = new User(data.getInt("id"), data.getString("username"), null,
+                    data.getInt("nbPartieJoue"), data.getInt("nbPartieGagne"),
+                    null);
             player.setToken(response.getString("token"));
         }
 
