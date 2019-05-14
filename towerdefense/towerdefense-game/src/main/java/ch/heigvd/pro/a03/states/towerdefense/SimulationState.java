@@ -10,7 +10,7 @@ public class SimulationState extends GameState {
     }
 
     private boolean ended = false;
-    private final float TIME_PER_TICK = 1f/50; // Ticks per seconds
+    public static final float TIME_PER_TICK = 0.05f; // 20 per seconds
     private float timer = 0f;
     private int currentTick = 0;
 
@@ -23,6 +23,7 @@ public class SimulationState extends GameState {
         currentTick = 0;
 
         System.out.println("Simulation starts.");
+        System.out.println(getGame().simEvents.size() + " events.");
     }
 
     @Override

@@ -117,12 +117,7 @@ public class Map implements Serializable {
 
 
     public boolean isEndMatch() {
-
-        endMatch = true;
-        if (!base.isEntityDestroyed()) {
-            endMatch = false;
-        }
-
+        endMatch = base.isEntityDestroyed();
         return endMatch;
     }
 
@@ -167,6 +162,7 @@ public class Map implements Serializable {
         map.put("height", row);
 
         JSONObject baseJson = new JSONObject();
+        baseJson.put("id", base.getId());
         baseJson.put("health", base.getHealthPoint());
         baseJson.put("position", positionToJson(base.getPosition()));
 

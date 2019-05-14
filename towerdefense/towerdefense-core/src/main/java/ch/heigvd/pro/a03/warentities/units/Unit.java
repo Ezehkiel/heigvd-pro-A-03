@@ -56,9 +56,9 @@ public abstract class Unit extends WarEntity {
 
             if (displacementTicks == this.getSpeed()) {
 
-                displacement(map.getBase().getPosition());
-
-                EventManager.getInstance().addEvent(new MoveEvent(tickId,getId(),getPosition(),map.ID));
+                if (displacement(map.getBase().getPosition())) {
+                    EventManager.getInstance().addEvent(new MoveEvent(tickId, getId(), getPosition(), map.ID));
+                }
 
                 displacementTicks = 0;
             }
@@ -67,7 +67,7 @@ public abstract class Unit extends WarEntity {
 
                 //If the enemy base is in range, the Unit will focus only on the base
 
-                if (isInRange(map.getBase())) {
+                if (isInRange(map.getBase()) && !map.getBase().isEntityDestroyed()) {
 
                     EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),map.getBase().getId(),attack(map.getBase()),map.ID));
 
@@ -150,15 +150,15 @@ public abstract class Unit extends WarEntity {
      * @param basePosition the base position
      * @breif moves the unit to the next position and checks that is not the base
      */
-    public void displacement(Point basePosition) {
+    public boolean displacement(Point basePosition) {
         if (it.hasNext()) {
             Point end = it.next();
             if (!end.equals(basePosition)) {
                 super.setPosition(end);
+                return true;
             }
         }
-
-
+        return false;
     }
 
 

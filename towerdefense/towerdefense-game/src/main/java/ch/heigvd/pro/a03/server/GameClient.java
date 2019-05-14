@@ -30,7 +30,7 @@ public class GameClient {
     private Player player = null;
 
     public GameClient(int playersCount) {
-        HOST = "127.0.0.1";
+        HOST = "ezehkiel.ch";
         PORT = 4567;
         PLAYERS_COUNT = playersCount;
     }

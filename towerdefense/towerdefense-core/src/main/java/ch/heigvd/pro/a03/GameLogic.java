@@ -36,12 +36,14 @@ public class GameLogic {
 
         for (int i = 0; i < maps.length; ++i) {
             maps[i] = new Map(12, 9, new Base(new Point(4, 0)),new Point(4,11) , i);
+            maps[i].getBase().setId(getNextEntityId());
         }
     }
 
     public void playRound() {
 
         EventManager.getInstance().clearEvents();
+        nbTick = 0;
 
         for(Map m :  maps){
             for(Unit u : m.getUnits()){
@@ -58,6 +60,10 @@ public class GameLogic {
             for (Map m : maps) {
                 m.update(nbTick);
                 endMatch = m.isEndMatch();
+
+                if (endMatch) {
+                    break;
+                }
             }
         }
 
