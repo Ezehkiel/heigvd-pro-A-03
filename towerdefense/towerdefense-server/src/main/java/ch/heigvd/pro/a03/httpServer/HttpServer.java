@@ -15,14 +15,18 @@ public class HttpServer implements Runnable {
     final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
 
     int port;
+    private String token;
+    private static HttpServer instance;
 
-    public String getToken() {
-        return token;
+
+    public static HttpServer getInstance() {
+        if(instance == null){
+            instance = new HttpServer(3945);
+        }
+        return instance;
     }
 
-    private String token;
-
-    public HttpServer(int port) {
+    private HttpServer(int port) {
         port(port);
         this.port = port;
         Algorithm algorithm = Algorithm.HMAC256("P2z6cA9CGt5Oq");
@@ -37,6 +41,9 @@ public class HttpServer implements Runnable {
         new UserController(new UserService());
         System.out.println(this.token);
 
+    }
+    public String getToken() {
+        return token;
     }
 }
 

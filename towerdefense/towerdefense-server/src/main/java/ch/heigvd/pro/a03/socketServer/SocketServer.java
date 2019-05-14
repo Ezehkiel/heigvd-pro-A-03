@@ -1,19 +1,10 @@
 package ch.heigvd.pro.a03.socketServer;
 
 
-import ch.heigvd.pro.a03.event.player.PlayerEvent;
-import ch.heigvd.pro.a03.event.player.TurretEvent;
-import ch.heigvd.pro.a03.event.player.*;
-
-import javax.naming.ldap.SortKey;
-import java.awt.*;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,12 +16,19 @@ public class SocketServer implements Runnable{
     final static Logger LOG = Logger.getLogger(SocketServer.class.getName());
     ArrayList<GameServer> gameServers;
     int port;
+    private static SocketServer instance = null;
 
+    public static SocketServer getInstance() {
+        if(instance == null){
+            return new SocketServer(4567);
+        }
+        return instance;
 
+    }
 
-    public SocketServer(int port) {
+    private SocketServer(int port) {
         this.port = port;
-        gameServers = new ArrayList<>();
+        this.gameServers = new ArrayList<>();
     }
 
     public void run() {

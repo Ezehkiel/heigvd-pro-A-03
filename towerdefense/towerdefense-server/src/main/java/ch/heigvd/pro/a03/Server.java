@@ -16,9 +16,9 @@ public class Server{
         secure(keyStoreLocation, keyStorePassword, null, null);
         // Change Logger format
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-
         // Run HTTP on other thread;
-        new Thread(new HttpServer(3945)).start();
-        new Thread(new SocketServer(4567)).start();
+        new Thread(HttpServer.getInstance()).start();
+
+        new Thread(SocketServer.getInstance()).start();
     }
 }
