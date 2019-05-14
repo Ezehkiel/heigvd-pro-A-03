@@ -11,6 +11,7 @@ public class Base extends Structure {
     public Base(String name,Point position, int totalHealth, int defPoint, int attackCoolDown) {
         super(name,position, totalHealth, defPoint,attackCoolDown);
         this.setAttackPoints(1000);
+        this.setRange(5);
         endGame = false;
     }
 
@@ -18,8 +19,9 @@ public class Base extends Structure {
         this("Base",position,15000,900, 100);
     }
 
-    private Base(Point position, int health) {
+    private Base(int id, Point position, int health) {
         this(position);
+        setId(id);
         this.healthPoints = health;
     }
 
@@ -41,6 +43,10 @@ public class Base extends Structure {
         JSONObject base = new JSONObject(json);
         JSONObject position = base.getJSONObject("position");
 
-        return new Base(new Point(position.getInt("x"), position.getInt("y")), base.getInt("health"));
+        return new Base(
+                base.getInt("id"),
+                new Point(position.getInt("x"), position.getInt("y")),
+                base.getInt("health")
+        );
     }
 }

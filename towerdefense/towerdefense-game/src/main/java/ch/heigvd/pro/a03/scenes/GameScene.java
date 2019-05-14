@@ -15,7 +15,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 import com.badlogic.gdx.math.Vector3;
@@ -39,7 +41,13 @@ public class GameScene extends Scene {
 
     private GameMenu gameMenu;
 
+    private SpriteBatch spriteBatch;
+    private ShapeRenderer shapeRenderer;
+
     public GameScene(GameClient gameClient) {
+
+        spriteBatch = new SpriteBatch();
+        shapeRenderer = new ShapeRenderer();
 
         gameCamera = new OrthographicCamera();
         gameViewport = new ScreenViewport(gameCamera);
@@ -67,14 +75,16 @@ public class GameScene extends Scene {
         updateCamera();
 
         tiledMapManager.getRenderer().setView(gameCamera);
+        getGame().updateSimulation(deltaTime);
     }
 
     @Override
     public void draw() {
         gameViewport.apply();
         tiledMapManager.getRenderer().render();
+        getGame().drawSimulation(spriteBatch, shapeRenderer);
 
-        // Sow menu
+        // Show menu
         super.draw();
     }
 

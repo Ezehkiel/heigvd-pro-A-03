@@ -10,13 +10,16 @@ import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.states.StateMachine;
 import ch.heigvd.pro.a03.states.towerdefense.*;
-import ch.heigvd.pro.a03.utils.Simulator;
+import ch.heigvd.pro.a03.simulation.Simulator;
 import ch.heigvd.pro.a03.utils.Waiter;
 import ch.heigvd.pro.a03.warentities.Base;
 
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.awt.*;
 import java.util.LinkedList;
@@ -107,7 +110,33 @@ public class TowerDefense {
     public void setupSimulators() {
         simulators = new Simulator[gameClient.PLAYERS_COUNT];
         for (Map map : maps) {
-            simulators[map.ID] = new Simulator(map);
+            simulators[map.ID] = new Simulator(map, gameClient.getPlayer().ID);
+        }
+    }
+
+    public void updateSimulation(float deltaTime) {
+        if (stateMachine.getState() instanceof SimulationState) {
+            for (Simulator simulator : simulators) {
+                simulator.update(deltaTime);
+            }
+        }
+    }
+
+    public void drawSimulation(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
+
+        if (stateMachine.getState() instanceof SimulationState) {
+            spriteBatch.begin();
+            for (Simulator simulator : simulators) {
+                simulator.drawSprites(spriteBatch);
+            }
+            spriteBatch.end();
+
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+            shapeRenderer.setColor(Color.ORANGE);
+            for (Simulator simulator : simulators) {
+                simulator.drawShapes(shapeRenderer);
+            }
+            shapeRenderer.end();
         }
     }
 
