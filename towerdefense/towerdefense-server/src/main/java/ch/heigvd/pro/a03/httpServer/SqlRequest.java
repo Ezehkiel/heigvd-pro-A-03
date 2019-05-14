@@ -59,7 +59,8 @@ public class SqlRequest {
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"));
+                return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"),
+                        rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"), rs.getDate("lastLogin"));
             }
 
 
