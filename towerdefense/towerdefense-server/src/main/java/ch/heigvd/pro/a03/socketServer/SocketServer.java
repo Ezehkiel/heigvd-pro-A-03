@@ -20,7 +20,7 @@ public class SocketServer implements Runnable{
 
     public static SocketServer getInstance() {
         if(instance == null){
-            return new SocketServer(4567);
+            instance = new SocketServer(4567);
         }
         return instance;
 
