@@ -16,12 +16,12 @@ public class HttpServer implements Runnable {
 
     int port;
     private String token;
-    private static HttpServer instance = null;
+    private static HttpServer instance;
 
 
     public static HttpServer getInstance() {
         if(instance == null){
-            return new HttpServer(3945);
+            instance = new HttpServer(3945);
         }
         return instance;
     }

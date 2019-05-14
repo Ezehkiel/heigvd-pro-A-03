@@ -4,8 +4,10 @@ import ch.heigvd.pro.a03.EventManager;
 import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.httpServer.HttpServer;
+import ch.heigvd.pro.a03.httpServer.SqlRequest;
 import ch.heigvd.pro.a03.socketServer.Client;
 import ch.heigvd.pro.a03.socketServer.GameServer;
+import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.utils.Protocole;
 import org.json.JSONObject;
 
@@ -40,7 +42,10 @@ public class SimulationState extends ServerState {
             for(int i = 0; i<gameServer.PLAYER_COUNT; ++i){
                 if(gameServer.getClients()[i].getPlayer().ID != loser.ID){
                     String serverToken = HttpServer.getInstance().getToken();
-                    String data = "{\"token\": \"" + serverToken + "\", \"idWinner\": \"" + gameServer.getClients()[i].getPlayer().ID + "\", \"idLoser\": \""+ loser.ID + "\"}";
+                    User loserUser = SqlRequest.getUserDBWithUsername(loser.getName());
+                    User winnerUser =SqlRequest.getUserDBWithUsername(gameServer.getClients()[i].getPlayer().getName());
+                    String data = "{\"token\": \"" + serverToken + "\", \"idWinner\": \"" +
+                            winnerUser.getId()+ "\", \"idLoser\": \"" + loserUser.getId() + "\"}";
                     HttpURLConnection connection = null;
                     try {
 
@@ -65,6 +70,7 @@ public class SimulationState extends ServerState {
                                 responseBuilder.append(line);
                             }
 
+                            System.out.println(responseBuilder.toString());
 
                             JSONObject response = new JSONObject(responseBuilder.toString());
                             boolean haveError = response.getBoolean("error");
