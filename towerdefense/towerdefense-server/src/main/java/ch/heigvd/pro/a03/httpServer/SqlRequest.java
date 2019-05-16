@@ -126,11 +126,11 @@ public class SqlRequest {
         List<Score> scores = new ArrayList<>();
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("SELECT id, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user;");
+            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user;");
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                scores.add(new Score(rs.getInt("id"),rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
+                scores.add(new Score(rs.getInt("id"), rs.getString("username"), rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
             }
 
         } catch (SQLException e) {
@@ -171,12 +171,12 @@ public class SqlRequest {
     static public Score getUserScoreDB(long id){
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("SELECT id, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
+            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                return new Score(rs.getInt("id"),rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"));
+                return new Score(rs.getInt("id"), rs.getString("username"), rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"));
             }
 
         } catch (SQLException e) {

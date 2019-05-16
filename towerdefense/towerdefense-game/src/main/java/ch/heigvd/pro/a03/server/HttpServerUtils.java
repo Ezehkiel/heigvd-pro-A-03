@@ -1,6 +1,8 @@
 package ch.heigvd.pro.a03.server;
 
+import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -10,6 +12,7 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class HttpServerUtils {
 
@@ -22,7 +25,7 @@ public class HttpServerUtils {
 
     private static String errorMessage;
 
-    private static final String url = "https://ezehkiel.ch:3945";
+    private static final String url = "http://127.0.0.1:3945";
 
     public static User login(String username, String password) {
 
@@ -33,6 +36,22 @@ public class HttpServerUtils {
 
             if (connection != null && writeData(connection, data)) {
                 return playerFromResponse(connection);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
+    public static ArrayList<Score> allScore() {
+
+        try {
+
+            HttpURLConnection connection = getConnection("users/scores");
+
+            if (connection != null) {
+                return scoresFromResponse(connection);
             }
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -58,6 +77,18 @@ public class HttpServerUtils {
         return null;
     }
 
+    private static ArrayList<Score> scoresFromResponse(HttpURLConnection connection) throws IOException {
+        ArrayList<Score> allScores = new ArrayList<>();
+        JSONArray response = new JSONArray(readData(connection));
+
+        System.out.println(response);
+        for(Object obj : response){
+            JSONObject score = (JSONObject) obj;
+            allScores.add(new Score(score.getInt("userId"), score.getString("username"),
+                    score.getInt("nbPartieJoue"), score.getInt("nbPartieGagne")));
+        }
+        return allScores;
+    }
     private static User playerFromResponse(HttpURLConnection connection) throws IOException {
         User player = null;
         if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
@@ -95,6 +126,24 @@ public class HttpServerUtils {
 
         return null;
     }
+
+    private static HttpURLConnection getConnection(String path) {
+
+        try {
+            HttpURLConnection connection = (HttpURLConnection) new URL(url + "/" + path).openConnection();
+
+            connection.setRequestMethod("GET");
+            connection.setDoOutput(true);
+
+            return connection;
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+        return null;
+    }
+
 
     private static boolean writeData(HttpURLConnection connection, String data) {
 
