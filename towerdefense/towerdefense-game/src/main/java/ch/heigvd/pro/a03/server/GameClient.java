@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.simulation.SimEvent;
+import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.Waiter;
 
@@ -17,9 +18,6 @@ public class GameClient {
 
     public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
 
-    private final String HOST;
-    private final int PORT;
-
     private Socket socket;
     private BufferedWriter out;
     private BufferedReader in;
@@ -30,8 +28,6 @@ public class GameClient {
     private Player player = null;
 
     public GameClient(int playersCount) {
-        HOST = "ezehkiel.ch";
-        PORT = 4567;
         PLAYERS_COUNT = playersCount;
     }
 
@@ -42,7 +38,7 @@ public class GameClient {
     public boolean connect(Executable command) {
 
         try {
-            socket = new Socket(HOST, PORT);
+            socket = new Socket(Config.getServerIp(), Config.getServerPort());
 
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
