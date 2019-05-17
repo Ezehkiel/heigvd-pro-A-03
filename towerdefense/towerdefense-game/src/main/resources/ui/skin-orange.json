@@ -1,0 +1,64 @@
+{
+  "Color": {
+    "white": {
+      "a": 1,
+      "b": 1,
+      "g": 1,
+      "r": 1
+    },
+    "black": {
+      "a": 1,
+      "b": 0,
+      "g": 0,
+      "r": 0
+    }
+  },
+  "ButtonStyle": {
+    "default": {
+      "up": "button",
+      "down": "button-pressed"
+    },
+    "arrow-up": {
+      "up": "arrow-up",
+      "down": "arrow-up-pressed"
+    },
+    "arrow-down": {
+      "up": "arrow-down",
+      "down": "arrow-down-pressed"
+    }
+  },
+  "TextButtonStyle": {
+    "default": {
+      "up": "button",
+      "down": "button-pressed",
+      "font": "font",
+      "fontColor": "white"
+    }
+  },
+  "LabelStyle": {
+    "default": {
+      "font": "font",
+      "fontColor": "white"
+    },
+    "title": {
+      "parent": "default",
+      "font": "font-big"
+    }
+  },
+  "TextFieldStyle": {
+    "default": {
+      "background": "button-pressed",
+      "font": "font",
+      "fontColor": "white",
+      "selection": "selection",
+      "cursor": "cursor"
+    }
+  },
+  "WindowStyle": {
+    "default": {
+      "background": "button",
+      "titleFont": "font",
+      "titleFontColor": "white"
+    }
+  }
+}

@@ -10,8 +10,14 @@ import java.util.logging.Logger;
 import static spark.Spark.port;
 
 
-
+/**
+ * This class creates an instance of HTTPserver. Its will start Spark and who
+ * will listen on the different endpoint that we have created.
+ *
+ * @author Rémi Poulard, Didier Page
+ */
 public class HttpServer implements Runnable {
+
     final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
 
     int port;
@@ -26,25 +32,40 @@ public class HttpServer implements Runnable {
         return instance;
     }
 
+    /**
+     * Constructor
+     *
+     * @param port the port to listen on
+     */
     private HttpServer(int port) {
         port(port);
         this.port = port;
-        Algorithm algorithm = Algorithm.HMAC256("P2z6cA9CGt5Oq");
-        this.token = JWT.create().sign(algorithm);
+
+        /* We create the token of the server. It will be used when the server
+         * will add score via the API */
+        this.token = JWT.create().sign(Algorithm.HMAC256("P2z6cA9CGt5Oq"));
 
     }
 
+    /**
+     * When the server start, the controller for endpoint is created
+     */
     @Override
     public void run() {
         LOG.info("Starting the http server on port :" + this.port);
 
         new UserController(new UserService());
-        System.out.println(this.token);
-
     }
+
+    /**
+     * get token of the server
+     *
+     * @return the token
+     */
     public String getToken() {
         return token;
     }
+
 }
 
 

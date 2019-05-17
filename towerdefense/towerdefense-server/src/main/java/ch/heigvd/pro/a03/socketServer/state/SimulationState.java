@@ -19,6 +19,9 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * The state call the game logic to calculate the simulation and send itto client
+ */
 public class SimulationState extends ServerState {
     public SimulationState(int id, GameServer gameServer) {
         super(id, gameServer);

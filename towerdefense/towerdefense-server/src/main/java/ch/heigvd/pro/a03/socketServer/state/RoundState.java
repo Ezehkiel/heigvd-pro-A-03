@@ -19,6 +19,9 @@ import java.util.LinkedList;
 
 import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 
+/**
+ * The normal round state, it ask the unit and the turrent to all client
+ */
 public class RoundState extends ServerState{
 
     public RoundState(int id, GameServer gameServer) {
@@ -30,6 +33,7 @@ public class RoundState extends ServerState{
 
         GameLogic gameLogic = gameServer.getGameLogic();
 
+        // Send the previous round's unit
         for (Client c : gameServer.getClients()) {
 
             Map map = gameLogic.getPlayerMap(c.getPlayer().ID);

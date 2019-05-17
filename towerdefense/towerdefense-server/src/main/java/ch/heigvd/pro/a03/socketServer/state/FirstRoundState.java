@@ -16,6 +16,9 @@ import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
+/**
+ * The first round state ask the client his units
+ */
 public class FirstRoundState extends ServerState{
 
     public FirstRoundState(int id, GameServer gameServer) {
@@ -48,7 +51,7 @@ public class FirstRoundState extends ServerState{
                             gameLogic.getPlayerMap(client.getPlayer().ID).getSpawnPoint()
                     );
                     ((WarEntity) unit).setId(gameLogic.getNextEntityId());
-                    gameServer.nextRoundUnit.get(client.getPlayer().ID).push(unit);
+                    gameServer.nextRoundUnit.get(sendUnitEvent.getPlayerIdDestination()).push(unit);
                     client.getPlayer().removeMoney(unit.getPrice());
                 }
             }
