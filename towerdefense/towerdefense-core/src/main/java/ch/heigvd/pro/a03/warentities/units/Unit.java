@@ -9,6 +9,7 @@ import ch.heigvd.pro.a03.event.simulation.DeathEvent;
 import ch.heigvd.pro.a03.event.simulation.MoveEvent;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
 
 import java.awt.*;
 import java.util.Iterator;
@@ -24,8 +25,11 @@ public abstract class Unit extends WarEntity {
     private int displacementTicks;
     private int attackTicks;
 
+    public final WarEntityType.UnitType TYPE;
 
-    public Unit(String name, Point position, int totalHealth, int defPoint, int attackCoolDown, int speed, int attackPoints, int range, int price) {
+    public Unit(String name, Point position, int totalHealth,
+                int defPoint, int attackCoolDown, int speed,
+                int attackPoints, int range, int price, WarEntityType.UnitType type) {
         super(name, position, totalHealth, defPoint, attackCoolDown);
         super.setAttackPoints(attackPoints);
         super.setRange(range);
@@ -35,6 +39,7 @@ public abstract class Unit extends WarEntity {
         displacementTicks = 0;
         attackTicks = 0;
 
+        TYPE = type;
     }
 
 
@@ -51,9 +56,9 @@ public abstract class Unit extends WarEntity {
 
             if (displacementTicks == this.getSpeed()) {
 
-                displacement(map.getBase().getPosition());
-
-                EventManager.getInstance().addEvent(new MoveEvent(tickId,getId(),getPosition()));
+                if (displacement(map.getBase().getPosition())) {
+                    EventManager.getInstance().addEvent(new MoveEvent(tickId, getId(), getPosition(), map.ID));
+                }
 
                 displacementTicks = 0;
             }
@@ -62,12 +67,12 @@ public abstract class Unit extends WarEntity {
 
                 //If the enemy base is in range, the Unit will focus only on the base
 
-                if (isInRange(map.getBase())) {
+                if (isInRange(map.getBase()) && !map.getBase().isEntityDestroyed()) {
 
-                    EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),map.getBase().getId(),attack(map.getBase())));
+                    EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),map.getBase().getId(),attack(map.getBase()),map.ID));
 
                     if(map.getBase().isEntityDestroyed()){
-                        EventManager.getInstance().addEvent(new DeathEvent(tickId,map.getBase().getId()));
+                        EventManager.getInstance().addEvent(new DeathEvent(tickId,map.getBase().getId(),map.ID));
                     }
 
                 } else { //attacks the closest turret
@@ -92,10 +97,10 @@ public abstract class Unit extends WarEntity {
                     //attack the chosen one if their is any
                     if (closeTarget != null) {
 
-                        EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),closeTarget.getId(),attack(closeTarget)));
+                        EventManager.getInstance().addEvent(new AttackEvent(tickId,getId(),closeTarget.getId(),attack(closeTarget),map.ID));
 
                         if(closeTarget.isEntityDestroyed()){
-                            EventManager.getInstance().addEvent(new DeathEvent(tickId,closeTarget.getId()));
+                            EventManager.getInstance().addEvent(new DeathEvent(tickId,closeTarget.getId(),map.ID));
                         }
                     }
                 }
@@ -145,15 +150,15 @@ public abstract class Unit extends WarEntity {
      * @param basePosition the base position
      * @breif moves the unit to the next position and checks that is not the base
      */
-    public void displacement(Point basePosition) {
+    public boolean displacement(Point basePosition) {
         if (it.hasNext()) {
             Point end = it.next();
             if (!end.equals(basePosition)) {
                 super.setPosition(end);
+                return true;
             }
         }
-
-
+        return false;
     }
 
 

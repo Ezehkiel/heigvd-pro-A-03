@@ -5,9 +5,11 @@ import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.scenes.GameModeScene;
 import ch.heigvd.pro.a03.scenes.MatchMakingScene;
+import ch.heigvd.pro.a03.scenes.ScoreBoardScene;
 import ch.heigvd.pro.a03.scenes.SettingsScene;
 import ch.heigvd.pro.a03.utils.UI;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
 public class MainMenu extends Menu {
 
@@ -34,11 +36,19 @@ public class MainMenu extends Menu {
             }
         }));
 
+        TextButton scoresButton = new TextButton("Score board", skin, "default");
+        scoresButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
+            @Override
+            public void execute(Object... args) {
+                getReceiver().getSceneManager().add(new ScoreBoardScene());
+            }
+        }));
+
         TextButton settingsButton = new TextButton("Settings", skin, "default");
         settingsButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
             public void execute(Object... args) {
-                getReceiver().getSceneManager().add(new SettingsScene());
+                getReceiver().getSceneManager().set(new SettingsScene());
             }
         }));
 
@@ -55,6 +65,8 @@ public class MainMenu extends Menu {
         getMenu().add(onlineButton);
         getMenu().row();
         getMenu().add(offlineButton);
+        getMenu().row();
+        getMenu().add(scoresButton);
         getMenu().row();
         getMenu().add(settingsButton);
         getMenu().row();

@@ -6,8 +6,6 @@ import com.badlogic.gdx.Gdx;
 
 public class PlayState extends GameState {
 
-    private float timer;
-
     public PlayState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }
@@ -16,15 +14,19 @@ public class PlayState extends GameState {
     public void enter() {
         super.enter();
 
-        timer = 0f;
-
-        System.out.println("Turn started");
+        getGame().getScene().getGameMenu().showInfo("Your turn!");
+        getGame().clearPlayerEvents();
+        getGame().getScene().getGameMenu().updateMoney(getGame().getGameClient().getPlayer().getMoney());
+        getGame().getScene().getGameMenu().resetUnitSelectionMenu();
+        getGame().getScene().getGameMenu().getPlayingMenu().showTurretSelectionMenu();
+        getGame().getScene().getGameMenu().getPlayingMenu().showUnitsSelectionButton();
+        getGame().getScene().getGameMenu().getPlayingMenu().showEndTurnButton();
+        System.out.println("My turn");
     }
 
     @Override
     public void leave() {
         super.leave();
-
         System.out.println("Turn ended");
     }
 
@@ -32,11 +34,7 @@ public class PlayState extends GameState {
     public void update(float deltaTime) {
         super.update(deltaTime);
 
-        timer += deltaTime;
 
-        if (timer >= 5f) {
-            changeState(TowerDefense.GameStateType.WAIT);
-        }
     }
 
     @Override

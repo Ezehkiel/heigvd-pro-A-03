@@ -1,20 +1,53 @@
 package ch.heigvd.pro.a03.event.player;
 
-import ch.heigvd.pro.a03.event.Event;
-
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.util.LinkedList;
 
-public abstract class PlayerEvent extends Event implements Serializable {
-    int entityId;
+public class PlayerEvent implements Serializable {
 
-    public PlayerEvent(int entityId) {
-        this.entityId = entityId;
+    private LinkedList<TurretEvent> turretEvents;
+    private LinkedList<UnitEvent> unitEvents;
+
+    public PlayerEvent() {
+        this.turretEvents = new LinkedList<>();
+        this.unitEvents = new LinkedList<>();
     }
 
-    @Override
-    public String toString() {
-        return "PlayerEvent{" +
-                "entityId=" + entityId +
-                '}';
+    public void addTurretEvent(TurretEvent turretEvent){
+        turretEvents.add(turretEvent);
+    }
+
+    public void addUnitEvent(UnitEvent unitEvent){
+        unitEvents.add(unitEvent);
+    }
+
+    public static void sendPlayerEvent(PlayerEvent event, ObjectOutputStream out) {
+        try {
+            out.writeObject(event);
+            out.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static PlayerEvent getPlayerEvent(ObjectInputStream in) {
+        PlayerEvent event = null;
+        try {
+            event = (PlayerEvent) in.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return event;
+    }
+
+    public LinkedList<TurretEvent> getTurretEvents() {
+        return turretEvents;
+    }
+
+    public LinkedList<UnitEvent> getUnitEvents() {
+        return unitEvents;
     }
 }

@@ -5,18 +5,31 @@ import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.commands.scenes.MacroCommand;
 import ch.heigvd.pro.a03.menus.WindowMenu;
 import ch.heigvd.pro.a03.utils.UI;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
+import ch.heigvd.pro.a03.warentities.units.Unit;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.Align;
+
+import java.awt.*;
 
 public class UnitMenu extends WindowMenu {
 
     private int count;
     private Label countLabel;
+    private Label nameLabel;
+    public final WarEntityType.UnitType UNIT_TYPE;
+    public final int PRICE;
+    private VerticalGroup addRemoveButtons;
 
-    public UnitMenu(UnitSelectionMenu parent, String name, Skin skin) {
-        super("", skin);
+    public UnitMenu(UnitSelectionMenu parent, String name, WarEntityType.UnitType unitType, Skin skin) {
+        super(skin);
 
-        Label nameLabel = new Label(name, skin);
+        UNIT_TYPE = unitType;
+        PRICE = UNIT_TYPE.createUnit(new Point()).getPrice();
+
+        nameLabel = new Label(name + " " + PRICE + ".-", skin);
 
         Command<UnitSelectionMenu> updateParentCommand = new Command<UnitSelectionMenu>(parent) {
             @Override
@@ -44,26 +57,21 @@ public class UnitMenu extends WindowMenu {
                         getReceiver().removeUnit();
                     }
                 },
-                new Command<UnitSelectionMenu>(parent) {
-                    @Override
-                    public void execute(Object... args) {
-                        getReceiver().updatePrice();
-                    }
-                }
+                updateParentCommand
         )));
 
         count = 0;
         countLabel = new Label("0", skin);
         countLabel.setAlignment(Align.right);
 
-        VerticalGroup group = new VerticalGroup();
-        group.align(Align.center);
-        group.addActor(plusButton);
-        group.addActor(minusButton);
+        addRemoveButtons = new VerticalGroup();
+        addRemoveButtons.align(Align.center);
+        addRemoveButtons.addActor(plusButton);
+        addRemoveButtons.addActor(minusButton);
 
         getWindow().defaults().prefHeight(UI.BUTTON_HEIGHT);
         getWindow().add(nameLabel).prefWidth(UI.BUTTON_SMALL_WIDTH);
-        getWindow().add(group);
+        getWindow().add(addRemoveButtons);
         getWindow().add(countLabel).expandY().grow();
     }
 
@@ -88,5 +96,16 @@ public class UnitMenu extends WindowMenu {
 
     public int getCount() {
         return count;
+    }
+
+    public void disable() {
+
+        addRemoveButtons.setVisible(false);
+    }
+
+    public void reset() {
+        count = 0;
+        updateCountLabel();
+        addRemoveButtons.setVisible(true);
     }
 }

@@ -2,19 +2,21 @@ package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
+import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.event.simulation.SimEvent;
+import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.Waiter;
 
 import java.io.*;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
+import java.util.LinkedList;
 import java.util.logging.Logger;
 
 public class GameClient {
 
     public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
-
-    private final String HOST;
-    private final int PORT;
 
     private Socket socket;
     private BufferedWriter out;
@@ -22,14 +24,11 @@ public class GameClient {
     private ObjectOutputStream objectOut;
     private ObjectInputStream objectIn;
 
-    private int playerNumber = -1;
-
+    public final int PLAYERS_COUNT;
     private Player player = null;
 
-    public GameClient() {
-        HOST = "localhost";
-        PORT = 4567;
-
+    public GameClient(int playersCount) {
+        PLAYERS_COUNT = playersCount;
     }
 
     /**
@@ -39,7 +38,7 @@ public class GameClient {
     public boolean connect(Executable command) {
 
         try {
-            socket = new Socket(HOST, PORT);
+            socket = new Socket(Config.getServerIp(), Config.getServerPort());
 
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -87,15 +86,13 @@ public class GameClient {
                 objectIn = new ObjectInputStream(socket.getInputStream());
                 objectOut = new ObjectOutputStream(socket.getOutputStream());
 
-                Player player = Player.getPlayer(objectIn);
-                while (player != null) {
-
-                    showPlayer.execute(player);
-
-                    player = Player.getPlayer(objectIn);
+                String response = Protocole.receiveJson(in);
+                while (response != null && !response.equals("200-OK")) {
+                    showPlayer.execute(Player.fromJson(response));
+                    response = Protocole.receiveJson(in);
                 }
 
-                this.player = Player.getPlayer(objectIn);
+                this.player = Player.fromJson(Protocole.receiveJson(in));
 
                 System.out.println("I am player " + this.player.ID);
 
@@ -130,6 +127,152 @@ public class GameClient {
         }
     }
 
+    public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
+                           Executable roundEnd, Executable showMap,
+                           Waiter<PlayerEvent> waitForEvents) {
+
+        LOG.info("First Round starting.");
+
+        new Thread(() -> {
+            try {
+                Protocole.sendProtocol(out, 4, "START");
+
+                receiveMaps(showMap);
+
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+
+                    int id = Integer.parseInt(protocole.getData());
+
+                    LOG.info("Player " + id + "'s turn start.");
+                    playerTurnStart.execute(id);
+
+                    if (id == player.ID) {
+
+                        waitForEvents.waitData();
+
+                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
+
+                        Protocole.receive(in);
+                    }
+
+                    protocole = Protocole.receive(in);
+
+                    LOG.info("Player " + id + "'s turn end.");
+                    playerTurnEnd.execute(id);
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            roundEnd.execute();
+
+        }).start();
+    }
+
+    public void round(Executable playerTurnStart, Executable playerTurnEnd,
+                      Executable roundEnd, Executable showMap,
+                      Waiter<PlayerEvent> waitForEvents) {
+
+        LOG.info("Round starting.");
+
+        new Thread(() -> {
+
+            try {
+
+                Protocole.sendProtocol(out, 5, "START");
+
+                receiveMaps(showMap);
+
+                Protocole protocole = Protocole.receive(in);
+                while (!protocole.getData().equals("END")) {
+
+                    Protocole.sendProtocol(out, 5, "OK");
+
+                    int id = Integer.parseInt(protocole.getData());
+
+                    if (id == player.ID) {
+                        player = Player.fromJson(Protocole.receiveJson(in));
+                    }
+
+                    LOG.info("Player " + id + "'s turn start");
+                    playerTurnStart.execute(id);
+
+                    if (id == player.ID) {
+
+                        waitForEvents.waitData();
+
+                        PlayerEvent playerEvent = waitForEvents.receive();
+                        PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
+                    }
+
+                    receiveMaps(showMap);
+
+                    LOG.info("Player " + id + "'s turn end");
+                    playerTurnEnd.execute();
+
+                    protocole = Protocole.receive(in);
+                }
+
+                roundEnd.execute();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
+    public void startSimulation(Executable startSimulation) {
+        LOG.info("Waiting simulation");
+
+        new Thread(() -> {
+
+            Protocole.sendProtocol(out, 6, "START");
+
+            Object o = (LinkedList<SimEvent>) receiveObject();
+
+            LOG.info("Simulation received");
+
+            startSimulation.execute(o);
+
+        }).start();
+    }
+
+    public void endSimulation(Executable roundStart, Executable gameEnd) {
+
+        LOG.info("Simulation done.");
+        new Thread(() -> {
+
+            try {
+                Protocole.sendProtocol(out, 6, "OK");
+
+                Protocole protocole = Protocole.receive(in);
+
+                if (protocole.getId() == 600) {
+
+                    roundStart.execute();
+
+                } else if (protocole.getId() == 700) {
+
+                    gameEnd.execute(Player.fromJson(Protocole.receiveJson(in)));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }).start();
+    }
+
+    private void receiveMaps(Executable showMaps) {
+
+        String json = Protocole.receiveJson(in);
+        if (json == null) { return; }
+
+        showMaps.execute(json);
+    }
+
     /**
      * Tells the server that the player has left the game.
      */
@@ -144,7 +287,32 @@ public class GameClient {
         }
     }
 
-    public int getPlayerNumber() {
-        return playerNumber;
+    private Object receiveObject() {
+        try {
+            return objectIn.readObject();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public Player getPlayer() {
+        return player;
+    }
+
+    public int[] getOpponentsIds() {
+
+        int[] ids = new int[PLAYERS_COUNT - 1];
+        int index = 0;
+
+        for (int i = 0; i < PLAYERS_COUNT; ++i) {
+            if (i != player.ID) {
+                ids[index] = i;
+                index++;
+            }
+        }
+
+        return ids;
     }
 }

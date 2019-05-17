@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Object used to save all stream about the client and proivde usefull getters and setteers
+ */
 public class Client {
 
     Socket socket;

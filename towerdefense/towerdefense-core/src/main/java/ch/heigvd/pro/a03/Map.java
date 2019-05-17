@@ -3,35 +3,37 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
+import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.awt.*;
+import java.io.Serializable;
 import java.util.LinkedList;
 
-public class Map {
+public class Map implements Serializable {
 
-    private Dimension size;
     private Structure[][] structures;
     private LinkedList<Unit> units;
     private int row;
     private int col;
     private Base base;
+    private Point spawnPoint;
     private boolean endMatch;
     public final int ID;
 
-
-    public Map(int row, int col, Base base, int id) {
+    public Map(int row, int col, Base base,Point spawnPoint, int id) {
         this.row = row;
         this.col = col;
-        this.size = new Dimension(row, col);
         structures = new Structure[row][col];
         units = new LinkedList<>();
         this.base = base;
+        this.spawnPoint = spawnPoint;
         setStructureAt(base, base.getPosition().y, base.getPosition().x);
         ID = id;
-
     }
-
 
     public Base getBase() {
         return base;
@@ -92,17 +94,12 @@ public class Map {
                 if (structures[i][j] != null) {
                     structures[i][j].update(tickId, this);
                 }
-
             }
-
         }
 
         for (Unit u : units) {
-
             u.update(tickId, this);
-
         }
-
     }
 
     public boolean unitsAreDead(){
@@ -120,12 +117,7 @@ public class Map {
 
 
     public boolean isEndMatch() {
-
-        endMatch = true;
-        if (!base.isEntityDestroyed()) {
-            endMatch = false;
-        }
-
+        endMatch = base.isEntityDestroyed();
         return endMatch;
     }
 
@@ -159,5 +151,73 @@ public class Map {
         return toRet;
     }
 
+    public Point getSpawnPoint() {
+        return spawnPoint;
+    }
 
+    public String toJson() {
+        JSONObject map = new JSONObject();
+        map.put("id", ID);
+        map.put("width", col);
+        map.put("height", row);
+
+        JSONObject baseJson = new JSONObject();
+        baseJson.put("id", base.getId());
+        baseJson.put("health", base.getHealthPoint());
+        baseJson.put("position", positionToJson(base.getPosition()));
+
+        map.put("base", baseJson);
+        map.put("spawn", positionToJson(spawnPoint));
+
+        JSONArray turrets = new JSONArray();
+
+        for (Structure[] a : structures) {
+            for (Structure b : a) {
+                if (b instanceof Turret) {
+                    Turret turret = (Turret) b;
+                    JSONObject turretJson = new JSONObject();
+                    turretJson.put("id", turret.getId());
+                    turretJson.put("type", turret.TYPE.name());
+                    turretJson.put("position", positionToJson(turret.getPosition()));
+                    turretJson.put("destroyed", turret.isEntityDestroyed());
+
+                    turrets.put(turretJson);
+                }
+            }
+        }
+
+        map.put("turrets", turrets);
+
+        JSONArray units = new JSONArray();
+
+        for (WarEntityType.UnitType type : WarEntityType.UnitType.values()) {
+
+            int count = 0;
+            for (Unit unit : this.units) {
+                if (unit.TYPE == type) {
+                    count++;
+                }
+            }
+
+            if (count > 0) {
+                JSONObject unitJson = new JSONObject();
+                unitJson.put("type", type.name());
+                unitJson.put("quantity", count);
+                units.put(unitJson);
+            }
+        }
+
+        map.put("units", units);
+
+        return map.toString();
+    }
+
+    private JSONObject positionToJson(Point position) {
+
+        JSONObject p = new JSONObject();
+        p.put("x", position.x);
+        p.put("y", position.y);
+
+        return p;
+    }
 }

@@ -1,18 +1,24 @@
 package ch.heigvd.pro.a03.event.player;
 
-public class SendUnitEvent extends UnitEvent {
-    int playerIdDestination;
+import ch.heigvd.pro.a03.warentities.WarEntityType;
 
-    public SendUnitEvent(int entityId, int playerIdDestination) {
-        super(entityId,UnitEventType.SEND);
+public class SendUnitEvent extends UnitEvent {
+
+    private int playerIdDestination;
+    private int quantity;
+
+    public SendUnitEvent( int playerIdDestination, WarEntityType.UnitType unitType, int quantity) {
+        super(UnitEventType.SEND,unitType);
         this.playerIdDestination = playerIdDestination;
+        this.quantity = quantity;
     }
 
-    @Override
-    public String toString() {
-        return "SendUnitEvent{" +
-                "playerIdDestination=" + playerIdDestination +
-                '}';
+    public int getPlayerIdDestination() {
+        return playerIdDestination;
+    }
+
+    public int getQuantity() {
+        return quantity;
     }
 }
 

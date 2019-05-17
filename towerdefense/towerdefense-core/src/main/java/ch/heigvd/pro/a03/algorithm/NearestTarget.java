@@ -55,7 +55,7 @@ public class NearestTarget {
         Unit chosenOne = null;
         int chosenOneDistance = Integer.MAX_VALUE;
         for(Unit u: map.getUnits()){
-            if(warEntity.isInRange(u) && WarEntity.distance(warEntity, u) < chosenOneDistance){
+            if(!u.isEntityDestroyed() && warEntity.isInRange(u) && WarEntity.distance(warEntity, u) < chosenOneDistance){
                 chosenOne = u;
                 chosenOneDistance = WarEntity.distance(warEntity, u);
             }
@@ -88,8 +88,13 @@ public class NearestTarget {
         return l;
     }
 
-    private static Vec2 getATargetIn(List<Vec2> ps, Map map){
-        for(Vec2 p: ps) if(map.getStructureAt(p.getRow(),p.getCol()) != null) return p;
+    private static Vec2 getATargetIn(List<Vec2> ps, Map map) {
+        for(Vec2 p: ps) {
+            Structure target = map.getStructureAt(p.getRow(), p.getCol());
+            if(target != null && !target.isEntityDestroyed()) {
+                return p;
+            }
+        }
         return null;
     }
 

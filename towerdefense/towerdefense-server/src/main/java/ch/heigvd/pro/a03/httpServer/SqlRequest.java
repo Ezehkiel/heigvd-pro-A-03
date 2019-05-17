@@ -93,10 +93,9 @@ public class SqlRequest {
                     "public.towerdefense_user WHERE username = ?;");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                return new User(rs.getInt("id"), rs.getString("username"),
-                        rs.getString("password"));
+            if(rs.next()){
+                return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"),
+                        rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"), rs.getDate("lastLogin"));
             }
 
         } catch (SQLException e) {
@@ -174,7 +173,7 @@ public class SqlRequest {
             stmt = con.prepareStatement("UPDATE public.towerdefense_user SET" +
                     " lastLogin=now() WHERE id = ?;");
             stmt.setLong(1, id);
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
         } catch (SQLException e) {
             LOG.log(Level.SEVERE, "Error with the update of lastLogin");
@@ -195,10 +194,8 @@ public class SqlRequest {
                     " nbPartieGagne FROM public.towerdefense_user;");
             ResultSet rs = stmt.executeQuery();
 
-            while (rs.next()) {
-                scores.add(new Score(rs.getInt("id"),
-                        rs.getInt("nbPartieJoue"),
-                        rs.getInt("nbPartieGagne")));
+            while(rs.next()){
+                scores.add(new Score(rs.getInt("id"), rs.getString("username"), rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
             }
 
         } catch (SQLException e) {
@@ -264,8 +261,7 @@ public class SqlRequest {
     static public Score getUserScoreDB(long id) {
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("SELECT id, nbPartieJoue," +
-                    " nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
+            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 

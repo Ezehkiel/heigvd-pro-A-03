@@ -10,7 +10,7 @@ public class User {
     private int id;
     private String token;
     private int nbPartieJoue;
-    private int getNbPartieGagne;
+    private int nbPartieGagne;
     private Date lastLogin;
 
     public User(int id, String userName,String motDePasse){
@@ -19,10 +19,10 @@ public class User {
         this.password = motDePasse;
     }
 
-    public User (int id, String userName,String motDePasse, int nbPartieJoue, int getNbPartieGagne, Date lastLogin){
+    public User (int id, String userName,String motDePasse, int nbPartieJoue, int nbPartieGagne, Date lastLogin){
         this(id, userName, motDePasse);
         this.nbPartieJoue = nbPartieJoue;
-        this.getNbPartieGagne = getNbPartieGagne;
+        this.nbPartieGagne = nbPartieGagne;
         this.lastLogin = lastLogin;
     }
 
@@ -59,4 +59,13 @@ public class User {
     public void setToken(String token) {
         this.token = token;
     }
+
+    public int getGetNbPartieGagne() {
+        return nbPartieGagne;
+    }
+
+    public int getNbPartieJoue() {
+        return nbPartieJoue;
+    }
+
 }

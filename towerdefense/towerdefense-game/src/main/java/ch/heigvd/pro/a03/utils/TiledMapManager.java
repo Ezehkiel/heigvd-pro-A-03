@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.utils;
 
 import ch.heigvd.pro.a03.Map;
+import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.turrets.LaserGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
@@ -30,22 +31,28 @@ public class TiledMapManager {
     private TiledMapRenderer tiledMapRenderer;
 
     private Texture notFoundTexture;
+    private Texture baseTexture;
+    private Texture spawnTexture;
     private Texture machineGunTexture;
     private Texture mortarTexture;
-    private Texture slowerTexture;
+    private Texture laserGunTexture;
     private Texture tileTexture;
+    private final int PLAYER_ID;
 
-    public TiledMapManager(int width, int height, int mapCount) {
+    public TiledMapManager(int width, int height, int mapCount, int playerId) {
 
         notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
-        machineGunTexture = new Texture(Gdx.files.internal("assets/MachineGun.png"));
-        mortarTexture = new Texture(Gdx.files.internal("assets/Mortar.png"));
-        slowerTexture = new Texture(Gdx.files.internal("assets/Slower.png"));
+        baseTexture = new Texture(Gdx.files.internal("assets/Base.png"));
+        spawnTexture = new Texture(Gdx.files.internal("assets/Spawn.png"));
+        machineGunTexture = new Texture(Gdx.files.internal("assets/turrets/MachineGun.png"));
+        mortarTexture = new Texture(Gdx.files.internal("assets/turrets/Mortar.png"));
+        laserGunTexture = new Texture(Gdx.files.internal("assets/turrets/LaserGun.png"));
         tileTexture = new Texture(Gdx.files.internal("assets/Tile.png"));
 
         MAP_WIDTH = width;
         MAP_HEIGHT = height;
         MAP_COUNT = mapCount;
+        PLAYER_ID = playerId;
 
         FULL_WIDTH = MAP_WIDTH * mapCount + mapCount - 1;
         FULL_HEIGHT = MAP_HEIGHT;
@@ -86,7 +93,10 @@ public class TiledMapManager {
             for (int x = 0; x < MAP_WIDTH; ++x) {
                 for (int y = 0; y < MAP_HEIGHT; ++y) {
 
-                    TiledMapTileLayer.Cell cell = layer.getCell(x + offsetX, y);
+                    int displayX = x + offsetX;
+                    int displayY = i == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
+
+                    TiledMapTileLayer.Cell cell = layer.getCell(displayX, displayY);
                     Structure structure = maps[i].getStructureAt(y, x);
                     if (structure != null) {
 
@@ -99,16 +109,24 @@ public class TiledMapManager {
                             texture = mortarTexture;
 
                         } else if (structure instanceof LaserGunTurret) {
-                            texture = slowerTexture;
+                            texture = laserGunTexture;
+
+                        } else if (structure instanceof Base) {
+                            texture = baseTexture;
                         }
 
                         cell.setTile(new StaticTiledMapTile(new TextureRegion(texture)));
+
                     } else {
 
                         cell.setTile(null);
                     }
                 }
             }
+
+            int displayX = maps[i].getSpawnPoint().x + offsetX;
+            int displayY = i == PLAYER_ID ? maps[i].getSpawnPoint().y : MAP_HEIGHT - maps[i].getSpawnPoint().y - 1;
+            layer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(spawnTexture)));
         }
     }
 

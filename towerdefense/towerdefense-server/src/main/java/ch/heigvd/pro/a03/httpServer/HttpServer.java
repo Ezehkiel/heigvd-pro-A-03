@@ -19,15 +19,20 @@ import static spark.Spark.port;
 public class HttpServer implements Runnable {
 
     final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
-    private String token;
-    private int port;
 
-    /**
-     * Constructor of HttpServer
-     *
-     * @param port this is the port for the API
-     */
-    public HttpServer(int port) {
+    int port;
+    private String token;
+    private static HttpServer instance;
+
+
+    public static HttpServer getInstance() {
+        if(instance == null){
+            instance = new HttpServer(3945);
+        }
+        return instance;
+    }
+
+    private HttpServer(int port) {
         port(port);
         this.port = port;
 
@@ -54,6 +59,9 @@ public class HttpServer implements Runnable {
         LOG.info("Starting the http server on port :" + this.port);
 
         new UserController(new UserService());
+    }
+    public String getToken() {
+        return token;
     }
 }
 
