@@ -3,12 +3,15 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.scenes.MainMenuScene;
 import ch.heigvd.pro.a03.scenes.SceneManager;
 import ch.heigvd.pro.a03.users.User;
+import ch.heigvd.pro.a03.utils.Config;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
+import org.lwjgl.Sys;
+import sun.awt.ConstrainableGraphics;
 
 /**
  * The Game launcher starts the game and creates the scene manager.
@@ -20,6 +23,8 @@ public class GameLauncher implements ApplicationListener {
     static public final String TITLE = "Tower Defense";
     static public final int WIDTH = 1280;
     static public final int HEIGHT = 768;
+
+    private Music music;
 
     private User connectedPlayer;
 
@@ -79,12 +84,19 @@ public class GameLauncher implements ApplicationListener {
     @Override
     public void create () {
 
-        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("assets/Distant Tales .mp3"));
-        mp3Music.play();
-        mp3Music.setLooping(true);
+        music = Gdx.audio.newMusic(Gdx.files.internal("assets/Distant Tales .mp3"));
+        music.setLooping(true);
+        updateMusic();
 
         sceneManager.add(new MainMenuScene());
+    }
 
+    public void updateMusic() {
+        if (Boolean.valueOf(Config.getProperty("music-on"))) {
+            music.play();
+        } else {
+            music.stop();
+        }
     }
 
     @Override

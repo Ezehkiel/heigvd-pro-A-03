@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.server;
 
 import ch.heigvd.pro.a03.users.User;
+import ch.heigvd.pro.a03.utils.Config;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
@@ -21,8 +22,6 @@ public class HttpServerUtils {
     }
 
     private static String errorMessage;
-
-    private static final String url = "https://ezehkiel.ch:3945";
 
     public static User login(String username, String password) {
 
@@ -82,7 +81,9 @@ public class HttpServerUtils {
     private static HttpURLConnection postConnection(String path) {
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url + "/" + path).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL(
+                    Config.getHttpUrl() + "/" + path
+            ).openConnection();
 
             connection.setRequestMethod("POST");
             connection.setDoOutput(true);

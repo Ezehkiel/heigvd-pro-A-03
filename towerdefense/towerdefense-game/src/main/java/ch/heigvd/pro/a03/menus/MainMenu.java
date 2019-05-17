@@ -38,7 +38,7 @@ public class MainMenu extends Menu {
         settingsButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
             public void execute(Object... args) {
-                getReceiver().getSceneManager().add(new SettingsScene());
+                getReceiver().getSceneManager().set(new SettingsScene());
             }
         }));
 
