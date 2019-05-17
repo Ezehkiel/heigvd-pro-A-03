@@ -190,7 +190,7 @@ public class SqlRequest {
         List<Score> scores = new ArrayList<>();
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("SELECT id, nbPartieJoue," +
+            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue," +
                     " nbPartieGagne FROM public.towerdefense_user;");
             ResultSet rs = stmt.executeQuery();
 
