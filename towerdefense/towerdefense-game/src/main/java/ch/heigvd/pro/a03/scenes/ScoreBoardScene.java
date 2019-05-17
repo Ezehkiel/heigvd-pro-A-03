@@ -13,8 +13,14 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * This class is responsible to display all scores.
+ */
 public class ScoreBoardScene extends Scene {
 
+    /**
+     * Constructor
+     */
     public ScoreBoardScene() {
 
         Container<Table> tableContainer = new Container<Table>();
@@ -32,37 +38,46 @@ public class ScoreBoardScene extends Scene {
         Table table = new Table(getSkin());
 
 
-
+        /* Create 3 title */
         Label row1 = new Label("Username", getSkin());
-        Label row2 = new Label("Parties jouées", getSkin());
-        Label row3 = new Label("Partie gagnées", getSkin());
+        Label row2 = new Label("Games played", getSkin());
+        Label row3 = new Label("Game won", getSkin());
 
+        /* ad them to the table */
         table.add(row1).expandX().fillX();
         table.add(row2).expandX().fillX();
         table.add(row3).expandX().fillX();
-        table.row().expandX().fillX();;
+        table.row().expandX().fillX();
+        table.add().height(20);
+        table.row().expandX().fillX();
 
+        /* for each score, create 3 labels and add them to the table */
         for(Score score : HttpServerUtils.allScore()){
             Label username = new Label(score.getUsername(), getSkin());
             Label playedGame = new Label(Integer.toString(score.getNbPartieJoue()) , getSkin());
             Label wonGame = new Label(Integer.toString(score.getNbPartieGagne()), getSkin());
-            table.add(username).expandX().fillX();
-            table.add(playedGame).expandX().fillX();
-            table.add(wonGame).expandX().fillX();
-            table.row().expandX().fillX();;
+            table.add(username).center();
+            table.add(playedGame).center();
+            table.add(wonGame).center();
+            table.row().expandX().fillX().padBottom(5);
 
-            // table.add(scorePlayer).prefWidth(UI.BUTTON_WIDTH);
         }
+
+        table.row();
+
+        Table tablebutton = new Table(getSkin());
 
         TextButton backButton = new TextButton("Back", getSkin());
         backButton.align(Align.center);
         backButton.addListener(new ButtonCommand(new PopSceneCommand(GameLauncher.getInstance())));
 
-        table.add(backButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
-
+        table.add(tablebutton).colspan(3);
+        tablebutton.pad(16);
+        tablebutton.row().fillX().expandX();
+        tablebutton.add(backButton).width(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
+        
         tableContainer.setActor(table);
         getStage().addActor(tableContainer);
-
 
     }
 }
