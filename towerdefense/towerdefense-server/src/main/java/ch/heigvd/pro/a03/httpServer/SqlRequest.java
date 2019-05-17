@@ -17,7 +17,7 @@ import java.util.logging.Logger;
  */
 public class SqlRequest {
 
-    final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
+    private final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
     private static Connection con = ConnectionDB.getInstance().getConnection();
 
     /**
