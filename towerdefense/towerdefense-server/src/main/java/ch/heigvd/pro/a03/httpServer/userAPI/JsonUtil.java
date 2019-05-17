@@ -6,6 +6,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
+/**
+ * This class is used to format response with a JSON format
+ */
 public class JsonUtil {
 
     public static String toJson(Object object) {

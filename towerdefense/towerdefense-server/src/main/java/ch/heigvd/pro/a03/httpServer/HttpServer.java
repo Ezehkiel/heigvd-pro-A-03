@@ -32,6 +32,11 @@ public class HttpServer implements Runnable {
         return instance;
     }
 
+    /**
+     * Constructor
+     *
+     * @param port the port to listen on
+     */
     private HttpServer(int port) {
         port(port);
         this.port = port;
@@ -43,15 +48,6 @@ public class HttpServer implements Runnable {
     }
 
     /**
-     * get token of the server
-     *
-     * @return the token
-     */
-    public String getToken() {
-        return token;
-    }
-
-    /**
      * When the server start, the controller for endpoint is created
      */
     @Override
@@ -60,9 +56,16 @@ public class HttpServer implements Runnable {
 
         new UserController(new UserService());
     }
+
+    /**
+     * get token of the server
+     *
+     * @return the token
+     */
     public String getToken() {
         return token;
     }
+
 }
 
 

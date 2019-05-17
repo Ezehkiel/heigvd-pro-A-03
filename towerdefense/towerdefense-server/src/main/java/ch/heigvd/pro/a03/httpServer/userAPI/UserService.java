@@ -13,7 +13,6 @@ import com.google.common.hash.Hashing;
 import com.google.gson.Gson;
 import org.json.simple.JSONObject;
 import spark.Request;
-import spark.Response;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
@@ -29,7 +28,7 @@ public class UserService {
     /**
      * List all user that are registered in the DB
      *
-     * @return List<User> list with all user in it
+     * @return list with all user in it
      */
     public List<User> getAllUsers() {
         LOG.log(Level.INFO, "Request: list all users");
@@ -39,7 +38,7 @@ public class UserService {
     /**
      * List all score that are registered in the DB
      *
-     * @return List<Score> list with all score in it
+     * @return list with all score in it
      */
     public List<Score> getAllScores() {
         LOG.log(Level.INFO, "Request: list all scores");
@@ -50,8 +49,8 @@ public class UserService {
     /**
      * This function return a User that we found with his username
      *
-     * @param req Request This is the request that we received from the client
-     * @return User the user that we found or null if the user doesn't exist
+     * @param req this is the request that we received from the client
+     * @return the user that we found or null if the user doesn't exist
      */
 
     public User getUser(Request req) {
@@ -66,8 +65,9 @@ public class UserService {
     /**
      * We create a user with information that we received
      *
-     * @param req Request This is the request that we received from the client
-     * @return we return a JSONObject with a JWT token and the user as data
+     * @param req this is the request that we received from the client
+     * @return return a JSONObject with a JWT token and the user as data
+     * field
      */
     public JSONObject createUser(Request req) {
 
@@ -140,14 +140,15 @@ public class UserService {
     }
 
     /**
-     * This
+     * This method is used when a client ask for a login authentication
      *
-     * @param req Request This is the request that we received from the client
+     * @param req this is the request that we received from the client
      * @return a JSONObect with the token and the user
      */
     public JSONObject loginUser(Request req) throws UserException {
 
         LOG.log(Level.INFO, "Request: check that an user can login");
+        /* Get the username and password from the JSON */
         String password = this.gson.fromJson(req.body(), User.class).
                 getPassword();
         String username = this.gson.fromJson(req.body(), User.class).
@@ -165,7 +166,7 @@ public class UserService {
                     .toString());
 
             /* We check that the user in the database is the same that the one
-            * we received
+             * we received
              */
             if (userInDataBase != null && userInDataBase.equals(userLoginHttp)) {
 
@@ -195,13 +196,14 @@ public class UserService {
     /**
      * This method is user to create a response with a token and the user's
      * information in it
+     *
      * @param user to put in the data field of the JSON
      * @return JSONObject with all the field needed (token, data, error)
      */
     private JSONObject createResponse(User user) {
         JSONObject jo = new JSONObject();
 
-        Algorithm algorithm = Algorithm.HMAC256("secret");
+        Algorithm algorithm = Algorithm.HMAC256("pro2019heig");
         String token = JWT.create().withClaim("username", user.getUsername())
                 .withClaim("id", user.getId()).sign(algorithm);
 
@@ -211,7 +213,14 @@ public class UserService {
         return jo;
     }
 
-    public JSONObject setScore(Request req, Response res) {
+    /**
+     * This method is used by the server. When a game is finised the server
+     * send both IDs of players and we update the database with "gamePlayed"
+     * and "gameWon" field
+     * @param req this is the request that we received from the server
+     * @return JSONObject with all the field needed (token, error)
+     */
+    public JSONObject setScore(Request req) {
 
         org.json.JSONObject jo = new org.json.JSONObject(req.body());
         String serverToken = jo.getString("token");
@@ -225,13 +234,19 @@ public class UserService {
             long idWinner = jo.getLong("idWinner");
             long idLoser = jo.getLong("idLoser");
 
-            SqlRequest.incrementPlayedGameUserDB(idWinner);
-            SqlRequest.incrementPlayedGameUserDB(idLoser);
+            /* If one of the update doesn't work we inform the server */
+            if (SqlRequest.incrementPlayedGameUserDB(idWinner) &&
+                    SqlRequest.incrementPlayedGameUserDB(idLoser) &&
+                    SqlRequest.incrementWinGameUserDB(idWinner)) {
+                tokenResponse.put("error", false);
+                tokenResponse.put("message", "Score updated");
 
-            SqlRequest.incrementWinGameUserDB(idWinner);
 
-            tokenResponse.put("error", false);
-            tokenResponse.put("message", "Score updated");
+            }else{
+                tokenResponse.put("error", true);
+                tokenResponse.put("message", "Problem with incrementation of " +
+                        "scores in the database");
+            }
             return tokenResponse;
 
         } catch (JWTVerificationException exception) {
@@ -243,14 +258,20 @@ public class UserService {
 
     }
 
-    public JSONObject getUserScore(Request req, Response res) {
+    /**
+     * This method is used to get the score of one player in particular.
+     * We check that the is correct by verifying the token signature.
+     * @param req this is the request that we received from the client
+     * @return JSONObject with all the field needed (token, error)
+     */
+    public JSONObject getUserScore(Request req) {
 
         org.json.JSONObject jo = new org.json.JSONObject(req.body());
         org.json.JSONObject data = (org.json.JSONObject) jo.get("data");
         String userToken = jo.getString("token");
         JSONObject tokenResponse = new JSONObject();
         try {
-            Algorithm algorithm = Algorithm.HMAC256("secret");
+            Algorithm algorithm = Algorithm.HMAC256("pro2019heig");
             JWTVerifier verifier = JWT.require(algorithm).withClaim("username", (String) data.get("username"))
                     .withClaim("id", (int) data.get("id"))
                     .build(); //Reusable verifier instance

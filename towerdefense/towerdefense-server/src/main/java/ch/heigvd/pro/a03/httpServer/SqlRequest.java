@@ -21,11 +21,11 @@ public class SqlRequest {
     private static Connection con = ConnectionDB.getInstance().getConnection();
 
     /**
-     * In this methode we create a new user and we return it
+     * In this method we create a new user and we return it
      *
      * @param username the username of the user
      * @param password the password of the user (hashed)
-     * @return User the user newly created
+     * @return the user newly created
      */
     static public User createUserDB(String username, String password) {
         try {
@@ -55,7 +55,7 @@ public class SqlRequest {
      * In this method we select all info about a user with his id
      *
      * @param id the id of the user that we want to find
-     * @return User a new user
+     * @return a new user
      */
     static public User getUserDBWithId(long id) {
 
@@ -184,7 +184,7 @@ public class SqlRequest {
     /**
      * This method give all the scores that are in the database
      *
-     * @return List<Score> a list with all the scores
+     * @return a list with all scores
      */
     static public List<Score> getAllScoreDB() {
         List<Score> scores = new ArrayList<>();
@@ -195,7 +195,8 @@ public class SqlRequest {
             ResultSet rs = stmt.executeQuery();
 
             while(rs.next()){
-                scores.add(new Score(rs.getInt("id"), rs.getString("username"), rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
+                scores.add(new Score(rs.getInt("id"), rs.getString("username"),
+                        rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne")));
             }
 
         } catch (SQLException e) {
@@ -218,7 +219,7 @@ public class SqlRequest {
             stmt = con.prepareStatement("UPDATE public.towerdefense_user SET" +
                     " nbpartiejoue = nbpartiejoue + 1 WHERE id = ?;");
             stmt.setLong(1, id);
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
             return true;
 
@@ -241,7 +242,7 @@ public class SqlRequest {
             stmt = con.prepareStatement("UPDATE public.towerdefense_user SET" +
                     " nbpartiegagne= nbpartiegagne + 1 WHERE id=?;");
             stmt.setLong(1, id);
-            stmt.executeQuery();
+            stmt.executeUpdate();
 
             return true;
 
@@ -256,7 +257,7 @@ public class SqlRequest {
      * This method return the score for a particular user
      *
      * @param id of the user that we want to have score
-     * @return Score of the user
+     * @return score of the user
      */
     static public Score getUserScoreDB(long id) {
         try {
@@ -266,7 +267,7 @@ public class SqlRequest {
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                return new Score(rs.getInt("id"), rs.getInt("nbPartieJoue"),
+                return new Score(rs.getInt("id"),rs.getString("username"), rs.getInt("nbPartieJoue"),
                         rs.getInt("nbPartieGagne"));
             }
 
