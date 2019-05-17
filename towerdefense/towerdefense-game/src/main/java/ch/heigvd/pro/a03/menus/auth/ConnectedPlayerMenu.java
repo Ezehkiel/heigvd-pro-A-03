@@ -14,8 +14,8 @@ public class ConnectedPlayerMenu extends Menu {
     public ConnectedPlayerMenu(User player, AuthMenu authMenu, Skin skin) {
 
         Label usernameLabel = new Label(player.getUsername(), skin);
-        Label winGameLabel = new Label("Nombre de parties gagnées: " + player.getGetNbPartieGagne(), skin);
-        Label playedGameLabel = new Label("Nombre de partie jouées: " + player.getNbPartieJoue(), skin);
+        Label winGameLabel = new Label("Games won: " + player.getGetNbPartieGagne(), skin);
+        Label playedGameLabel = new Label("Games played: " + player.getNbPartieJoue(), skin);
 
         TextButton logoutButton = new TextButton("Log out", skin);
         logoutButton.addListener(new ButtonCommand(new LogoutCommand(authMenu)));

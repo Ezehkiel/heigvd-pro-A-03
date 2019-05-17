@@ -10,6 +10,32 @@ public class UI {
 
     private static FreeTypeFontGenerator fontGenerator = null;
 
+    public enum Theme {
+
+        ORANGE("orange"),
+        GREEN("green"),
+        BLUE("blue");
+
+        public final String NAME;
+
+        Theme(String name) {
+            this.NAME = name;
+        }
+
+        public static Theme fromName(String name) {
+            for (Theme theme : values()) {
+                if (name.equals(theme.NAME)) {
+                    return theme;
+                }
+            }
+            return ORANGE;
+        }
+
+        public Theme next() {
+            return values()[(ordinal() + 1) % values().length];
+        }
+    }
+
     /* LibGDX Scene2D Skin */
     public static Skin createSkin() {
 
@@ -31,7 +57,7 @@ public class UI {
         skin.add("font-big", bigFont, BitmapFont.class);
 
         skin.addRegions(new TextureAtlas(Gdx.files.internal("ui/skin.atlas")));
-        skin.load(Gdx.files.internal("ui/skin.json"));
+        skin.load(Gdx.files.internal("ui/skin-" + Config.getTheme() + ".json"));
 
         return skin;
     }
