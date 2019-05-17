@@ -6,13 +6,16 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
+/**
+ * This class is used to format response with a JSON format
+ */
 public class JsonUtil {
 
     public static String toJson(Object object) {
 
         /* Is used to avoid password to be serialized in the response
-        * https://www.baeldung.com/gson-exclude-fields-serialization
-        */
+         * https://www.baeldung.com/gson-exclude-fields-serialization
+         */
         ExclusionStrategy strategy = new ExclusionStrategy() {
 
             @Override
@@ -29,6 +32,7 @@ public class JsonUtil {
         Gson gson = new GsonBuilder().addSerializationExclusionStrategy(strategy).create();
         return gson.toJson(object);
     }
+
     public static ResponseTransformer json() {
         return JsonUtil::toJson;
     }
