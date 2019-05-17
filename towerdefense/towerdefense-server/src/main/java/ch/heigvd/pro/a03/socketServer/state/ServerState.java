@@ -2,6 +2,9 @@ package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.socketServer.GameServer;
 
+/**
+ * Clas that defined how a state is structured
+ */
 public abstract class ServerState {
 
     private int id;

@@ -16,6 +16,9 @@ import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
+/**
+ * The first round state ask the client his units
+ */
 public class FirstRoundState extends ServerState{
 
     public FirstRoundState(int id, GameServer gameServer) {
