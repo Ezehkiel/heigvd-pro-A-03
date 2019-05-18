@@ -7,6 +7,7 @@ import ch.heigvd.pro.a03.scenes.GameScene;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import org.json.JSONArray;
 
 
 public class GameMenu extends Menu {
@@ -17,6 +18,7 @@ public class GameMenu extends Menu {
     private GamePlayingMenu playingMenu;
     private GamePauseMenu pauseMenu;
     private UnitSelectionMenu unitSelectionMenu;
+    private IncomingUnitsMenu incomingUnitsMenu;
 
     public GameMenu(Skin skin, GameScene scene) {
 
@@ -28,6 +30,7 @@ public class GameMenu extends Menu {
         playingMenu = new GamePlayingMenu(this, scene, skin);
         pauseMenu = new GamePauseMenu(this, scene, skin);
         unitSelectionMenu = new UnitSelectionMenu(this, skin);
+        incomingUnitsMenu = new IncomingUnitsMenu(this, skin);
 
         showPlayingMenu();
     }
@@ -51,6 +54,17 @@ public class GameMenu extends Menu {
         getMenu().clear();
 
         getMenu().add(unitSelectionMenu.getMenu());
+    }
+
+    public void showIncomingUnitsMenu() {
+
+        getMenu().clear();
+
+        getMenu().add(incomingUnitsMenu.getMenu());
+    }
+
+    public void updateIncomingUnitsMenu(JSONArray units) {
+        incomingUnitsMenu.update(units);
     }
 
     public void resetUnitSelectionMenu() {

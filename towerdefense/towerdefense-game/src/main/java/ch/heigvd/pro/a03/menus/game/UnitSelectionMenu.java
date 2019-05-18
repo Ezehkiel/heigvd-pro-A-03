@@ -23,11 +23,8 @@ public class UnitSelectionMenu extends Menu {
     private Label moneyLabel;
     private UnitMenu[] unitMenus;
     private TextButton sendButton;
-    private IncomingUnitsMenu incomingUnitsMenu;
 
     public UnitSelectionMenu(GameMenu gameMenu, Skin skin) {
-
-        this.incomingUnitsMenu = new IncomingUnitsMenu(skin);
 
         totalPrice = 0;
         totalPriceLabel = new Label("0", skin);

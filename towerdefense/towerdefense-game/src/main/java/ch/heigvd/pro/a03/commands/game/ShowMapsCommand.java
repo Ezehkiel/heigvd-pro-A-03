@@ -21,8 +21,14 @@ public class ShowMapsCommand extends TowerDefenseCommand {
 
         JSONArray maps = new JSONArray((String) args[0]);
         for (int i = 0; i < maps.length(); ++i) {
-            System.out.println(maps.getJSONObject(i));
-            getReceiver().setMap(i, mapFromJson(maps.getJSONObject(i)));
+            JSONObject map = maps.getJSONObject(i);
+            if (i == getReceiver().getGameClient().getPlayer().ID) {
+                JSONArray units = map.getJSONArray("units");
+                System.out.println(units);
+                getReceiver().getScene().getGameMenu().updateIncomingUnitsMenu(units);
+            }
+            System.out.println();
+            getReceiver().setMap(i, mapFromJson(map));
         }
 
         getReceiver().getScene().updateMaps();
