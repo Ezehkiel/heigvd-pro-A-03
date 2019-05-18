@@ -16,7 +16,7 @@ public class Base extends Structure {
     }
 
     public Base(Point position){
-        this("Base",position,15000,900, 100);
+        this("Base",position,1,900, 100);
     }
 
     private Base(int id, Point position, int health) {
