@@ -1,6 +1,5 @@
 package ch.heigvd.pro.a03.httpServer;
 
-import ch.heigvd.pro.a03.ConnectionDB;
 import ch.heigvd.pro.a03.users.Score;
 import ch.heigvd.pro.a03.users.User;
 

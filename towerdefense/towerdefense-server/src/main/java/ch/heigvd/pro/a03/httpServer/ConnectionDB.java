@@ -1,6 +1,4 @@
-package ch.heigvd.pro.a03;
-
-import ch.heigvd.pro.a03.httpServer.HttpServer;
+package ch.heigvd.pro.a03.httpServer;
 
 import java.sql.*;
 import java.util.logging.Level;
