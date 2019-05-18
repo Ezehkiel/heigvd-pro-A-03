@@ -3,6 +3,8 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.httpServer.HttpServer;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
 
+import static spark.Spark.secure;
+
 /**
  * This class will create the two main threads for the socker and for HTTP
  * server. This is the entrance for the module towerdefense-server
@@ -15,6 +17,7 @@ public class Server {
 
     public static void main(String[] args) {
 
+
         HAS_HTTP = args.length == 1 && args[0].equals("--http");
 
         // Change Logger format
@@ -25,7 +28,7 @@ public class Server {
 
             String keyStoreLocation = "towerdefense-server/deploy/keystore.jks";
             String keyStorePassword = "pro2019heig";
-            //secure(keyStoreLocation, keyStorePassword, null, null);
+            secure(keyStoreLocation, keyStorePassword, null, null);
 
 
             // Run HTTP on other thread;
