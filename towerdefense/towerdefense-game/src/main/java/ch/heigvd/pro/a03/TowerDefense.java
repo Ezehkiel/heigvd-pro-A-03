@@ -104,7 +104,7 @@ public class TowerDefense {
     public void endSimulation() {
         changeState(GameStateType.WAIT);
         gameClient.endSimulation(roundStart,
-                args -> getScene().getGameMenu().showEndMenu(gameClient.getPlayer().ID, (Player) args[0]));ga
+                args -> getScene().getGameMenu().showEndMenu(gameClient.getPlayer().ID, (Player) args[0]));
     }
 
     public void setupSimulators() {
