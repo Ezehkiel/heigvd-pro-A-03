@@ -6,7 +6,9 @@ import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.RandomPlayer;
 import ch.heigvd.pro.a03.utils.Waiter;
+import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
@@ -25,10 +27,12 @@ public class GameClient {
     private ObjectInputStream objectIn;
 
     public final int PLAYERS_COUNT;
+    public final boolean ONLINE;
     private Player player = null;
 
-    public GameClient(int playersCount) {
+    public GameClient(int playersCount, boolean online) {
         PLAYERS_COUNT = playersCount;
+        ONLINE = online;
     }
 
     /**
@@ -37,8 +41,11 @@ public class GameClient {
      */
     public boolean connect(Executable command) {
 
+        LOG.info("Connecting to " + (ONLINE ? "online" : "offline") + " server.");
+
         try {
-            socket = new Socket(Config.getServerIp(), Config.getServerPort());
+            socket = ONLINE ? new Socket(Config.getServerIp(), Config.getServerPort())
+                    : new Socket(Config.getOfflineIp(), Config.getOfflinePort());
 
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -49,7 +56,10 @@ public class GameClient {
                     Protocole.sendProtocol(out, 1, "START");
                     Protocole.receive(in);
 
-                    Protocole.sendProtocol(out, 1, GameLauncher.getInstance().getConnectedPlayer().getUsername());
+                    Protocole.sendProtocol(out, 1,
+                            ONLINE ? GameLauncher.getInstance().getConnectedPlayer().getUsername()
+                                    : RandomPlayer.USER.getUsername()
+                    );
                     Protocole.receive(in);
 
                     Protocole.sendProtocol(out, 1, "2");
