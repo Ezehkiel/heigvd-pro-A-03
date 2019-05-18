@@ -71,6 +71,7 @@ public class GameMenu extends Menu {
 
     public void updateMoney(int money) {
         playingMenu.updateMoney(money);
+        unitSelectionMenu.updateMoney(money);
     }
 
     public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {

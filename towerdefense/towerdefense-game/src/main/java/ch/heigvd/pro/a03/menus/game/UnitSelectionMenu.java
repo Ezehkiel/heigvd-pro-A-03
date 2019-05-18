@@ -20,14 +20,21 @@ public class UnitSelectionMenu extends Menu {
 
     private int totalPrice;
     private Label totalPriceLabel;
+    private Label moneyLabel;
     private UnitMenu[] unitMenus;
     private TextButton sendButton;
+    private IncomingUnitsMenu incomingUnitsMenu;
 
     public UnitSelectionMenu(GameMenu gameMenu, Skin skin) {
+
+        this.incomingUnitsMenu = new IncomingUnitsMenu(skin);
 
         totalPrice = 0;
         totalPriceLabel = new Label("0", skin);
         totalPriceLabel.setAlignment(Align.right);
+
+        moneyLabel = new Label("0", skin);
+        moneyLabel.setAlignment(Align.right);
 
         unitMenus = new UnitMenu[] {
                 new UnitMenu(this, "Soldier", WarEntityType.UnitType.SOLIDER, skin),
@@ -75,7 +82,10 @@ public class UnitSelectionMenu extends Menu {
         }));
 
         priceWindow.defaults().prefHeight(UI.BUTTON_HEIGHT);
-        priceWindow.add(new Label("Total price", skin)).prefWidth(UI.BUTTON_SMALL_WIDTH);
+        priceWindow.add(new Label("Money :", skin)).prefWidth(UI.BUTTON_SMALL_WIDTH);
+        priceWindow.add(moneyLabel).expandX().grow();
+        priceWindow.row();
+        priceWindow.add(new Label("Total price :", skin)).prefWidth(UI.BUTTON_SMALL_WIDTH);
         priceWindow.add(totalPriceLabel).expandX().grow();
 
         getMenu().defaults().spaceBottom(UI.SPACING).prefWidth(UI.BUTTON_WIDTH);
@@ -99,6 +109,10 @@ public class UnitSelectionMenu extends Menu {
         }
 
         totalPriceLabel.setText(totalPrice);
+    }
+
+    public void updateMoney(int money) {
+        moneyLabel.setText(money);
     }
 
     public void reset() {
