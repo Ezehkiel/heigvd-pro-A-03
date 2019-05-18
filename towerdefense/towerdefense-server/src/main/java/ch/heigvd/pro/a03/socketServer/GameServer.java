@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
+import static ch.heigvd.pro.a03.utils.Protocole.sendJson;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 /**
@@ -149,7 +150,8 @@ public class GameServer implements Runnable {
      * @param json
      */
     public void broadCastJson(String json) {
-        broadCastMessage(json);
+        for (Client client : clients)
+            sendJson(json, client.getOut());
     }
     /**
      * Send a given Object to all player in game throug ObjectOutputStream

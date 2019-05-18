@@ -28,8 +28,6 @@ public class HttpServerUtils {
 
     private static String errorMessage;
 
-    private static final String url = "https://ezehkiel.ch:3945";
-
     /**
      * This method take the password and the username of the user and will
      * create a JSON string to send it to the server on the endpoint
@@ -189,7 +187,9 @@ public class HttpServerUtils {
     private static HttpURLConnection getConnection(String path) {
 
         try {
-            HttpURLConnection connection = (HttpURLConnection) new URL(url + "/" + path).openConnection();
+            HttpURLConnection connection = (HttpURLConnection) new URL(
+                    Config.getHttpUrl() + "/" + path
+            ).openConnection();
 
             connection.setRequestMethod("GET");
             connection.setDoOutput(true);

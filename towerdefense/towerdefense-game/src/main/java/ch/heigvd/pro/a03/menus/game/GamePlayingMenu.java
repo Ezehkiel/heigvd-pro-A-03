@@ -18,6 +18,7 @@ public class GamePlayingMenu extends Menu {
     private Label moneyLabel;
     private TextButton endTurnButton;
     private TextButton selectUnitButton;
+    private TextButton incomingUnitsButton;
     private Table turretSelectionMenu;
 
     public GamePlayingMenu(GameMenu menu, GameScene scene, Skin skin) {
@@ -47,6 +48,14 @@ public class GamePlayingMenu extends Menu {
             }
         }));
 
+        incomingUnitsButton = new TextButton("Incoming", skin);
+        incomingUnitsButton.addListener(new ButtonCommand(new Command<GameMenu>(menu) {
+            @Override
+            public void execute(Object... args) {
+                getReceiver().showIncomingUnitsMenu();
+            }
+        }));
+
         TextButton pauseButton = new TextButton("Pause", skin);
         pauseButton.addListener(new ButtonCommand(new Command<GameMenu>(menu) {
             @Override
@@ -72,6 +81,10 @@ public class GamePlayingMenu extends Menu {
 
         // Bottom menu
         getMenu().add(selectUnitButton)
+                .prefWidth(UI.BUTTON_SMALL_WIDTH)
+                .prefHeight(UI.BUTTON_HEIGHT);
+
+        getMenu().add(incomingUnitsButton)
                 .prefWidth(UI.BUTTON_SMALL_WIDTH)
                 .prefHeight(UI.BUTTON_HEIGHT);
 
@@ -122,9 +135,11 @@ public class GamePlayingMenu extends Menu {
 
     public void showTurretSelectionMenu() {
         turretSelectionMenu.setVisible(true);
+        incomingUnitsButton.setVisible(true);
     }
 
     public void hideTurretSelectionMenu() {
         turretSelectionMenu.setVisible(false);
+        incomingUnitsButton.setVisible(false);
     }
 }

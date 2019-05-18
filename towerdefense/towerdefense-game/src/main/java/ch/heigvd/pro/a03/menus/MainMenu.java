@@ -23,7 +23,7 @@ public class MainMenu extends Menu {
             public void execute(Object... args) {
 
                 if (getReceiver().getConnectedPlayer() != null) {
-                    getReceiver().getSceneManager().add(new MatchMakingScene());
+                    getReceiver().getSceneManager().add(new MatchMakingScene(true));
                 }
             }
         }));
@@ -32,7 +32,8 @@ public class MainMenu extends Menu {
         offlineButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
             public void execute(Object... args) {
-                GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
+                //GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
+                getReceiver().getSceneManager().add(new MatchMakingScene(false));
             }
         }));
 

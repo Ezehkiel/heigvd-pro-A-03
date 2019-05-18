@@ -12,16 +12,30 @@ import static spark.Spark.secure;
  * @author Didier Page, Rémi Poulard
  */
 public class Server {
+
+    public static boolean HAS_HTTP;
+
     public static void main(String[] args) {
 
-        String keyStoreLocation = "towerdefense-server/deploy/keystore.jks";
-        String keyStorePassword = "pro2019heig";
-        secure(keyStoreLocation, keyStorePassword, null, null);
+
+        HAS_HTTP = args.length == 1 && args[0].equals("--http");
+
         // Change Logger format
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
-        // Run HTTP on other thread;
-        new Thread(HttpServer.getInstance()).start();
 
+        if (HAS_HTTP) {
+            System.out.println("Launching HTTP server ...");
+
+            String keyStoreLocation = "towerdefense-server/deploy/keystore.jks";
+            String keyStorePassword = "pro2019heig";
+            secure(keyStoreLocation, keyStorePassword, null, null);
+
+
+            // Run HTTP on other thread;
+            new Thread(HttpServer.getInstance()).start();
+        }
+
+        System.out.println("Launching game server ...");
         new Thread(SocketServer.getInstance()).start();
     }
 }
