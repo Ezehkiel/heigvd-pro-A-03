@@ -104,7 +104,7 @@ public class TowerDefense {
     public void endSimulation() {
         changeState(GameStateType.WAIT);
         gameClient.endSimulation(roundStart,
-                args -> System.out.println("Game Ended. Loser: " + ((Player) args[0]).toJson()));
+                args -> getScene().getGameMenu().showEndMenu(gameClient.getPlayer().ID, (Player) args[0]));ga
     }
 
     public void setupSimulators() {

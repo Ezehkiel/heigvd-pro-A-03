@@ -1,12 +1,18 @@
 package ch.heigvd.pro.a03.menus.game;
 
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.TowerDefense;
+import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.utils.UI;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import org.json.JSONArray;
 
 
@@ -94,5 +100,19 @@ public class GameMenu extends Menu {
 
     public GamePlayingMenu getPlayingMenu() {
         return playingMenu;
+    }
+
+    public void showEndMenu(int id, Player player) {
+
+        String text = id == player.ID ? "You lost!" : "You won!";
+
+        TextButton closeButton = new TextButton("Leave game", skin);
+        closeButton.addListener(new ButtonCommand(args -> GameLauncher.getInstance().getSceneManager().pop()));
+
+        getMenu().clear();
+
+        getMenu().add(new Label(text, skin, "title")).spaceBottom(50);
+        getMenu().row();
+        getMenu().add(closeButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
     }
 }
