@@ -1,12 +1,19 @@
 package ch.heigvd.pro.a03.menus.game;
 
+import ch.heigvd.pro.a03.GameLauncher;
+import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.TowerDefense;
+import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.scenes.GameScene;
+import ch.heigvd.pro.a03.utils.UI;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import org.json.JSONArray;
 
 
 public class GameMenu extends Menu {
@@ -17,6 +24,7 @@ public class GameMenu extends Menu {
     private GamePlayingMenu playingMenu;
     private GamePauseMenu pauseMenu;
     private UnitSelectionMenu unitSelectionMenu;
+    private IncomingUnitsMenu incomingUnitsMenu;
 
     public GameMenu(Skin skin, GameScene scene) {
 
@@ -28,6 +36,7 @@ public class GameMenu extends Menu {
         playingMenu = new GamePlayingMenu(this, scene, skin);
         pauseMenu = new GamePauseMenu(this, scene, skin);
         unitSelectionMenu = new UnitSelectionMenu(this, skin);
+        incomingUnitsMenu = new IncomingUnitsMenu(this, skin);
 
         showPlayingMenu();
     }
@@ -53,6 +62,17 @@ public class GameMenu extends Menu {
         getMenu().add(unitSelectionMenu.getMenu());
     }
 
+    public void showIncomingUnitsMenu() {
+
+        getMenu().clear();
+
+        getMenu().add(incomingUnitsMenu.getMenu());
+    }
+
+    public void updateIncomingUnitsMenu(JSONArray units) {
+        incomingUnitsMenu.update(units);
+    }
+
     public void resetUnitSelectionMenu() {
         unitSelectionMenu.reset();
     }
@@ -71,6 +91,7 @@ public class GameMenu extends Menu {
 
     public void updateMoney(int money) {
         playingMenu.updateMoney(money);
+        unitSelectionMenu.updateMoney(money);
     }
 
     public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {
@@ -79,5 +100,19 @@ public class GameMenu extends Menu {
 
     public GamePlayingMenu getPlayingMenu() {
         return playingMenu;
+    }
+
+    public void showEndMenu(int id, Player player) {
+
+        String text = id == player.ID ? "You lost!" : "You won!";
+
+        TextButton closeButton = new TextButton("Leave game", skin);
+        closeButton.addListener(new ButtonCommand(args -> GameLauncher.getInstance().getSceneManager().pop()));
+
+        getMenu().clear();
+
+        getMenu().add(new Label(text, skin, "title")).spaceBottom(50);
+        getMenu().row();
+        getMenu().add(closeButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
     }
 }
