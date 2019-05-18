@@ -25,10 +25,12 @@ public class GameClient {
     private ObjectInputStream objectIn;
 
     public final int PLAYERS_COUNT;
+    public final boolean ONLINE;
     private Player player = null;
 
-    public GameClient(int playersCount) {
+    public GameClient(int playersCount, boolean online) {
         PLAYERS_COUNT = playersCount;
+        ONLINE = online;
     }
 
     /**
@@ -37,8 +39,11 @@ public class GameClient {
      */
     public boolean connect(Executable command) {
 
+        LOG.info("Connecting to " + (ONLINE ? "online" : "offline") + " server.");
+
         try {
-            socket = new Socket(Config.getServerIp(), Config.getServerPort());
+            socket = ONLINE ? new Socket(Config.getServerIp(), Config.getServerPort())
+                    : new Socket(Config.getOfflineIp(), Config.getOfflinePort());
 
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));

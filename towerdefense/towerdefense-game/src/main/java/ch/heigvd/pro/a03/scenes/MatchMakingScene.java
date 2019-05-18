@@ -9,12 +9,11 @@ import ch.heigvd.pro.a03.server.GameClient;
 public class MatchMakingScene extends Scene {
 
     private PlayerMenu playerMenu;
-
     private GameClient gameClient;
 
-    public MatchMakingScene() {
+    public MatchMakingScene(boolean online) {
 
-        gameClient = new GameClient(2);
+        gameClient = new GameClient(2, online);
         gameClient.connect(new Command<MatchMakingScene>(this) {
             @Override
             public void execute(Object... args) {
