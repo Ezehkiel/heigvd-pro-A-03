@@ -5,6 +5,7 @@ import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.menus.matchmaking.PlayerMenu;
 import ch.heigvd.pro.a03.server.GameClient;
+import ch.heigvd.pro.a03.utils.RandomPlayer;
 
 public class MatchMakingScene extends Scene {
 
@@ -24,7 +25,10 @@ public class MatchMakingScene extends Scene {
 
     public void showPlayerMenu() {
 
-        playerMenu = new PlayerMenu(GameLauncher.getInstance().getConnectedPlayer(), this, gameClient, getSkin());
+        playerMenu = new PlayerMenu(
+                gameClient.ONLINE ? GameLauncher.getInstance().getConnectedPlayer()
+                        : RandomPlayer.USER,
+                this, gameClient, getSkin());
         playerMenu.getMenu().setFillParent(true);
 
         getStage().addActor(playerMenu.getMenu());

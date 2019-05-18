@@ -6,7 +6,9 @@ import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.RandomPlayer;
 import ch.heigvd.pro.a03.utils.Waiter;
+import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
@@ -54,7 +56,10 @@ public class GameClient {
                     Protocole.sendProtocol(out, 1, "START");
                     Protocole.receive(in);
 
-                    Protocole.sendProtocol(out, 1, GameLauncher.getInstance().getConnectedPlayer().getUsername());
+                    Protocole.sendProtocol(out, 1,
+                            ONLINE ? GameLauncher.getInstance().getConnectedPlayer().getUsername()
+                                    : RandomPlayer.USER.getUsername()
+                    );
                     Protocole.receive(in);
 
                     Protocole.sendProtocol(out, 1, "2");
