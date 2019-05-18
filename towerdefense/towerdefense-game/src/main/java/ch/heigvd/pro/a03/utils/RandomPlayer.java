@@ -9,7 +9,7 @@ public class RandomPlayer {
 
     static {
         Random random = new Random();
-        int id = random.nextInt();
+        int id = Math.abs(random.nextInt());
 
         USER = new User(id, "Player" + id, null);
     }
