@@ -1,11 +1,11 @@
 package ch.heigvd.pro.a03.event.player;
 
-import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class TurretEvent extends Event {
+public class TurretEvent implements Serializable {
 
     TurretEventType turretEventType;
     Point turretPosition;
