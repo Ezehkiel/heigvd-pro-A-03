@@ -21,7 +21,7 @@ public class Animator {
 
     public void update(float deltaTime) {
 
-        if (position.dst(destination) <= DEAD_ZONE) {
+        if (position.dst(destination) <= speed * deltaTime) {
             return;
         }
 
