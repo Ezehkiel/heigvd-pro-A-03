@@ -1,20 +1,24 @@
 package ch.heigvd.pro.a03.algorithm;
 
+
 import ch.heigvd.pro.a03.Map;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.units.Unit;
-
-import java.awt.*;
 import java.util.LinkedList;
 import java.util.List;
 
+
+/***
+ * Class able to determine the nearest target.
+ * @author Nicodeme Stalder
+ */
 public class NearestTarget {
 
     static boolean[][] isMarked;
 
     /**
-     * @param warEntity
+     * @param warEntity The entity
      * @return the location of the nearest Structure in given range of the given unit
      * if their is none, null is returned
      */
@@ -30,7 +34,6 @@ public class NearestTarget {
         int range = (int) warEntity.getRange();
 
 
-        //Vec2 root = startingPosition;
         LinkedList<Vec2> queue = new LinkedList<>();
         queue.add(startingPosition);
         queue.add(null);
@@ -50,6 +53,12 @@ public class NearestTarget {
         return null;
     }
 
+    /***
+     *
+     * @param warEntity the entity from where we try to get the nearest unit.
+     * @param map the grid
+     * @return the nearest Unit that is in range otherwise returns null.
+     */
     public static Unit getNearestInRangeUnit(WarEntity warEntity, Map map){
         //find the chosen one if any (the chosenOne is the nearest unit in range of the warEntity)
         Unit chosenOne = null;
@@ -63,6 +72,12 @@ public class NearestTarget {
         return chosenOne;
     }
 
+    /***
+     *
+     * @param p the position
+     * @param map the gird
+     * @return a list of Vec2 containing al the neighbours of the given position.
+     */
     private static List<Vec2> getNeighboursOf(Vec2 p, Map map){
         List<Vec2> l = new LinkedList<>();
         int row = p.getRow();
@@ -88,6 +103,12 @@ public class NearestTarget {
         return l;
     }
 
+    /***
+     *
+     * @param ps  the list of positions
+     * @param map the grid
+     * @return returns the position of the closest target if it's still alive
+     */
     private static Vec2 getATargetIn(List<Vec2> ps, Map map) {
         for(Vec2 p: ps) {
             Structure target = map.getStructureAt(p.getRow(), p.getCol());
@@ -97,6 +118,7 @@ public class NearestTarget {
         }
         return null;
     }
+
 
     private static void cleanIsMarked(){
         for(int i = 0; i < isMarked.length; ++i)
