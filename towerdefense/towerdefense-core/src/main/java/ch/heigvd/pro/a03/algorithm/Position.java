@@ -1,10 +1,12 @@
 package ch.heigvd.pro.a03.algorithm;
 
-/**
-* Represents the position of a current object, Implemented in a Astar algorithm. Tracks the current cost of a position
-* and compares it's old value in order to fin a "cheapest" position.
-*/
 
+/***
+ * Represents the position of a current object, Implemented in a Astar algorithm. Tracks the current cost of a position
+ * and compares it's old value in order to fin a "cheapest" position.
+ *
+ * @author Andres Moreno
+ */
 public class Position {
 
     private int heuristic; //estimated value
@@ -17,7 +19,8 @@ public class Position {
 
 
     /**
-     * @brief Sets the position of the object at the grid.
+     * Constructor of the class
+     * Sets the position of the object at the grid.
      * @param row coordinate y of the grid
      * @param col coordinate x of the grid
      */
@@ -28,16 +31,7 @@ public class Position {
 
 
     /**
-     * @brief Estimates the total cost of the trajectory.
-     * @param finalPosition the target
-     */
-    public void calculateHeuristic(Position finalPosition) {
-        heuristic = Math.abs(finalPosition.getRow() - getRow()) + Math.abs(finalPosition.getCol() - getCol());
-    }
-
-
-    /**
-     * @brief Sets the new cost to the position
+     * Sets the new cost to the position
      * @param current current position
      * @param cost the movement cost
      */
@@ -46,31 +40,6 @@ public class Position {
         setParent(current);
         this.cost=tmpCost;
         calculateFinalCost();
-    }
-
-
-    /**
-     * @brief check's for a better path (cheapest).
-     * @param current the current position
-     * @param cost the movement cost
-     * @return false is there is not a better path
-     */
-    public boolean checkBetterPath(Position current, int cost) {
-        int tmpCost = current.cost + cost;
-        if (tmpCost < this.cost) {
-            setPositionData(current, cost);
-            return true;
-        }
-        return false;
-    }
-
-
-    /**
-     * @brief calculates the final cost (considers the heuristic)
-     */
-    private void calculateFinalCost() {
-        int finalCost = this.cost + this.heuristic;
-        this.setFinalCost(finalCost);
     }
 
     @Override
@@ -123,4 +92,38 @@ public class Position {
     public void setCol(int col) {
         this.col = col;
     }
+
+
+    /**
+     * Estimates the total cost of the trajectory.
+     * @param finalPosition the target
+     */
+    public void calculateHeuristic(Position finalPosition) {
+        heuristic = Math.abs(finalPosition.getRow() - getRow()) + Math.abs(finalPosition.getCol() - getCol());
+    }
+
+    /**
+     * Check's for a better path (cheapest).
+     * @param current the current position
+     * @param cost the movement cost
+     * @return false is there is not a better path
+     */
+    public boolean checkBetterPath(Position current, int cost) {
+        int tmpCost = current.cost + cost;
+        if (tmpCost < this.cost) {
+            setPositionData(current, cost);
+            return true;
+        }
+        return false;
+    }
+
+
+    /**
+     * Calculates the final cost (considers the heuristic)
+     */
+    private void calculateFinalCost() {
+        int finalCost = this.cost + this.heuristic;
+        this.setFinalCost(finalCost);
+    }
+
 }
