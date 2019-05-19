@@ -27,6 +27,11 @@ public class MachineGunTurret extends Turret {
                 range, price, WarEntityType.TurretType.MACHINE_GUN);
     }
 
+    /***
+     * Constructor
+     * @param position the position at the grid
+     */
+
     public MachineGunTurret(Point position){
         this("MachineGun",position,500,1500,10,200,10,200);
     }
