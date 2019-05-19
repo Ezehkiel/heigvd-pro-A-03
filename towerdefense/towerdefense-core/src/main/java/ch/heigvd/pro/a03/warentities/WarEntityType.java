@@ -13,37 +13,38 @@ import java.awt.*;
 
 public interface WarEntityType {
     enum UnitType implements WarEntityType {
-        SCOOT{
+        SCOOT {
             @Override
             public Unit createUnit(Point p) {
                 return new Scoot(p);
             }
-        },SOLIDER {
+        }, SOLIDER {
             @Override
             public Unit createUnit(Point p) {
                 return new Soldier(p);
             }
-        },TANK{
+        }, TANK {
             @Override
             public Unit createUnit(Point p) {
                 return new Tank(p);
             }
         };
 
-        public  abstract Unit createUnit(Point p);
+        public abstract Unit createUnit(Point p);
     }
+
     enum TurretType implements WarEntityType {
-        MACHINE_GUN{
+        MACHINE_GUN {
             @Override
             public Turret createTurret(Point p) {
                 return new MachineGunTurret(p);
             }
-        },MORTAR{
+        }, MORTAR {
             @Override
             public Turret createTurret(Point p) {
                 return new MortarTurret(p);
             }
-        },LASER_GUN{
+        }, LASER_GUN {
             @Override
             public Turret createTurret(Point p) {
                 return new LaserGunTurret(p);
