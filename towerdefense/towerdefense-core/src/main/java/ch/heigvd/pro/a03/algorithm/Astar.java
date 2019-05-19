@@ -1,12 +1,15 @@
-package ch.heigvd.pro.a03.algorithm;
-
 /**
+ *
  * inspired form:
  * https://security-consulting.icu/blog/2012/01/a-star-java/
  * https://github.com/marcelo-s/A-Star-Java-Implementation
  * https://dzenanhamzic.com/2016/12/16/a-star-a-algorithm-implementation-in-java/
  * https://codereview.stackexchange.com/questions/100716/lets-path-find-a-star
+ *
  * */
+
+package ch.heigvd.pro.a03.algorithm;
+
 import java.awt.*;
 import java.util.*;
 import java.util.List;
