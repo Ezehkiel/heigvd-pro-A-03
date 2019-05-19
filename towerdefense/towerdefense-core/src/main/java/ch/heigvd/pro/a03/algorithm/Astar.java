@@ -1,74 +1,43 @@
 package ch.heigvd.pro.a03.algorithm;
 
+/**
+ * inspired form:
+ * https://security-consulting.icu/blog/2012/01/a-star-java/
+ * https://github.com/marcelo-s/A-Star-Java-Implementation
+ * https://dzenanhamzic.com/2016/12/16/a-star-a-algorithm-implementation-in-java/
+ * https://codereview.stackexchange.com/questions/100716/lets-path-find-a-star
+ * */
 import java.awt.*;
 import java.util.*;
 import java.util.List;
 
-/***
- *
- *         Position initialPosition = new Position(2, 1);
- *         Position finalPosition = new Position(2, 5);
- *         int rows = 6;
- *         int cols = 7;
- *         Astar aStar = new Astar(rows, cols, initialPosition, finalPosition);
- *         int[][] blocksArray = new int[][]{{1, 3}, {2, 3}, {3, 3}};
- *         aStar.setBlocks(blocksArray);
- *         List<Point> path = aStar.findPath();
- *         for (Point p : path) {
- *             System.out.println(p);
- *         }
- *
- *         //Search Area
- *         //      0   1   2   3   4   5   6
- *         // 0    -   -   -   -   -   -   -
- *         // 1    -   -   -   B   -   -   -
- *         // 2    -   I   -   B   -   F   -
- *         // 3    -   -   -   B   -   -   -
- *         // 4    -   -   -   -   -   -   -
- *         // 5    -   -   -   -   -   -   -
- *
- *         //Expected output
- *         //position [row=2, col=1]
- *         //position [row=2, col=2]
- *         //position [row=1, col=2]
- *         //position [row=0, col=2]
- *         //position [row=0, col=3]
- *         //position [row=0, col=4]
- *         //position [row=1, col=4]
- *         //position [row=2, col=4]
- *         //position [row=2, col=5]
- *
- *         //Search Path
- *  *         //      0   1   2   3   4   5   6
- *  *         // 0    -   -   *   *   *   -   -
- *  *         // 1    -   -   *   B   *   -   -
- *  *         // 2    -   I*  *   B   *  *F   -
- *  *         // 3    -   -   -   B   -   -   -
- *  *         // 4    -   -   -   -   -   -   -
- *  *         // 5    -   -   -   -   -   -   -
- *
- *
- *
- *
- */
 
 /**
- * A* algorithm for path finding
+ * class that performs a A* algorithm for path finding
+ * @author Andres Moreno
  */
 
 public class Astar {
 
     private static int DEFAULT_HV_COST = 10; //  movement cost by default
-    private int horiVertiCost; //normal movement cost that can be set (not currently used)
+    private int horiVertiCost;
     private Position[][] searchArea;
     private PriorityQueue<Position> openList;
     private Set<Position> closedSet;
     private Position initialPosition;
     private Position finalPosition;
 
-
-    public Astar(int rows, int cols, Position initialPosition, Position finalPosition, int hvCost) {
-        this.horiVertiCost = hvCost;
+    /**
+     * Constructor with a default value of movement of 10.
+     *
+     * @param rows            number of rows of the gird
+     * @param cols            number of columns of the gird
+     * @param initialPosition initial position
+     * @param finalPosition   target position
+     *
+     */
+    public Astar(int rows, int cols, Position initialPosition, Position finalPosition) {
+        this.horiVertiCost = DEFAULT_HV_COST;
         this.initialPosition = initialPosition;
         this.finalPosition = finalPosition;
         this.searchArea = new Position[rows][cols];
@@ -84,7 +53,7 @@ public class Astar {
 
 
     /**
-     * fills the search area with positions.
+     * Fills the search area with positions.
      */
     private void setPosition() {
         for (int i = 0; i < searchArea.length; i++) {
@@ -96,20 +65,11 @@ public class Astar {
         }
     }
 
-    /**
-     * @param rows            number of rows of the gird
-     * @param cols            number of columns of the gird
-     * @param initialPosition initial position
-     * @param finalPosition   target position
-     * @brief Constructor with a default value of movement of 10
-     */
-    public Astar(int rows, int cols, Position initialPosition, Position finalPosition) {
-        this(rows, cols, initialPosition, finalPosition, DEFAULT_HV_COST);
-    }
-
 
     /**
+     * Sets the blocks that will be avoided.
      * @param blocksArray array containing the blocked squares coordinates.
+     *
      */
     public void setBlocks(int[][] blocksArray) {//will add the blockage in the map
         for (int i = 0; i < blocksArray.length; i++) {
@@ -119,12 +79,69 @@ public class Astar {
         }
     }
 
+    /***
+     *
+     * Blocks a single position.
+     *
+     * @param row  y coordinate of the blocked position
+     * @param col  x coordinate of the blocked position
+     *
+     */
     public void setBlockPos(int row, int col) {//will add the blockage in the map
         setBlock(row, col);
     }
 
+    /**
+     *
+     * Add's the blocked positions to the search area.
+     * @param row coordinate y of the grid
+     * @param col coordinate x of the grid
+     *
+     */
+    private void setBlock(int row, int col) {
+        this.searchArea[row][col].setBlock(true);
+    }
 
     /**
+     *
+     * Retrieves the path from the current position
+     * @param current the current position
+     * @return A list containing the path to the current position
+     *
+     */
+    private List<Position> getPath(Position current) {
+        List<Position> path = new ArrayList<Position>();
+        path.add(current);
+        Position parent;
+        while ((parent = current.getParent()) != null) {
+            path.add(0, parent);
+            current = parent;
+        }
+        return path;
+    }
+
+    /***
+     *
+     * @param openList the priorityQueue containing the positions.
+     * @return true if the PriorityQueue is empty
+     */
+    private boolean isEmpty(PriorityQueue<Position> openList) {
+        return openList.size() == 0;
+    }
+
+    /***
+     *
+     * @param current the current position
+     * @return true is the current position is the destination position
+     */
+    private boolean isFinalPosition(Position current) {
+        return current.equals(finalPosition);
+    }
+
+
+
+    /**
+     *
      * @return the path to the target or an empty arraylist if there is none.
      */
     public List<Point> findPath() {
@@ -149,37 +166,34 @@ public class Astar {
         return new ArrayList<Point>();
     }
 
-    /**
-     * @param current the current position
-     * @return A list containing the path to the current position
-     * @breif retrieves the path
-     */
-    private List<Position> getPath(Position current) {
-        List<Position> path = new ArrayList<Position>();
-        path.add(current);
-        Position parent;
-        while ((parent = current.getParent()) != null) {
-            path.add(0, parent);
-            current = parent;
-        }
-        return path;
-    }
 
+    /***
+     * Add's all the adjacent positions, need to take into account that the [0][0] is on the top left
+     * @param current the current position
+     */
     private void addAdjacent(Position current) {
         addAdjacentUpperRow(current);
         addAdjacentMiddleRow(current);
         addAdjacentLowerRow(current);
     }
 
+    /***
+     * Add's the position located on top of the current position
+     * @param current the current position
+     */
     private void addAdjacentLowerRow(Position current) {
         int row = current.getRow();
         int col = current.getCol();
-        int lowerRow = row + 1; //the [0][0] is on the top left
+        int lowerRow = row + 1;
         if (lowerRow < searchArea.length) {
             checkPosition(current, col, lowerRow, horiVertiCost);
         }
     }
 
+    /***
+     * Add's the position located on the right and on the left of the current position
+     * @param current the current position
+     */
     private void addAdjacentMiddleRow(Position current) {
         int row = current.getRow();
         int col = current.getCol();
@@ -192,6 +206,10 @@ public class Astar {
         }
     }
 
+    /***
+     *  Add's the position located down of the current position
+     * @param current the current position
+     */
     private void addAdjacentUpperRow(Position current) {
         int row = current.getRow();
         int col = current.getCol();
@@ -201,6 +219,15 @@ public class Astar {
         }
     }
 
+    /***
+     * Checks if the adjacent position is not blocked, already added in the PriorityQueue or if there is a better path.
+     * then it will be added to the queue.
+     *
+     * @param current the current position
+     * @param col     coordinate x of the grid
+     * @param row     coordinate y of the grid
+     * @param cost    the cost of the movement
+     */
     private void checkPosition(Position current, int col, int row, int cost) {
         Position adjacentPosition = searchArea[row][col];
         if (!adjacentPosition.isBlock() && !closedSet.contains(adjacentPosition)) {
@@ -210,8 +237,6 @@ public class Astar {
             } else {
                 boolean changed = adjacentPosition.checkBetterPath(current, cost);
                 if (changed) {
-                    // Remove and Add the changed position, so that the PriorityQueue can sort again its
-                    // contents with the modified "finalCost" value of the modified position
                     openList.remove(adjacentPosition);
                     openList.add(adjacentPosition);
                 }
@@ -220,22 +245,7 @@ public class Astar {
     }
 
 
-    /**
-     * @param row coordinate y of the grid
-     * @param col coordinate x of the grid
-     * @brief add's the blocked positions to the search area.
-     */
-    private void setBlock(int row, int col) {
-        this.searchArea[row][col].setBlock(true);
-    }
 
-    private boolean isEmpty(PriorityQueue<Position> openList) {
-        return openList.size() == 0;
-    }
-
-    private boolean isFinalPosition(Position current) {
-        return current.equals(finalPosition);
-    }
 
 
 }
