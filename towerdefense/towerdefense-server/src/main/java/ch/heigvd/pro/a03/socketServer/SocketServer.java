@@ -72,5 +72,10 @@ public class SocketServer implements Runnable{
                 Logger.getLogger(SocketServer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
+
+    }
+
+    public ArrayList<GameServer> getGameServers() {
+        return gameServers;
     }
 }
