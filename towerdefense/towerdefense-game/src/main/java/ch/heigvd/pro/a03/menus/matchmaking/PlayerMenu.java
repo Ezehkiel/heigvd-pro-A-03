@@ -13,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * Menu player for the match making
+ */
 public class PlayerMenu extends Menu {
 
     private User user;
@@ -20,6 +23,13 @@ public class PlayerMenu extends Menu {
     private TextButton readyButton;
     private TextButton cancelButton;
 
+    /**
+     * Creates the menu
+     * @param user user connecting
+     * @param scene match maing scene
+     * @param gameClient game client
+     * @param skin skin used
+     */
     public PlayerMenu(User user, MatchMakingScene scene, GameClient gameClient, Skin skin) {
 
         this.user = user;
@@ -41,17 +51,13 @@ public class PlayerMenu extends Menu {
             }
         }));
 
-        cancelButton = new TextButton("Cancel", skin);
-        cancelButton.addListener(new ButtonCommand(new GameClientCommand(gameClient) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().quit();
-            }
-        }));
-
         updateMenu(false);
     }
 
+    /**
+     * Updates the menu
+     * @param withReadyButton true will show the ready button
+     */
     public void updateMenu(boolean withReadyButton) {
 
         getMenu().clear();
@@ -65,8 +71,5 @@ public class PlayerMenu extends Menu {
             getMenu().row();
             getMenu().add(readyButton).prefHeight(UI.BUTTON_HEIGHT);
         }
-
-        //getMenu().row();
-        //getMenu().add(cancelButton).prefHeight(UI.BUTTON_HEIGHT);
     }
 }

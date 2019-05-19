@@ -4,8 +4,16 @@ import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.states.StateMachine;
 import com.badlogic.gdx.Gdx;
 
+/**
+ * State when the player is player
+ */
 public class PlayState extends GameState {
 
+    /**
+     * Creates the state
+     * @param stateMachine state machine
+     * @param game tower defense game
+     */
     public PlayState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }

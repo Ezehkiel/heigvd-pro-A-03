@@ -16,6 +16,9 @@ import com.badlogic.gdx.utils.Align;
 
 import java.util.LinkedList;
 
+/**
+ * unit selection menu
+ */
 public class UnitSelectionMenu extends Menu {
 
     private int totalPrice;
@@ -24,6 +27,11 @@ public class UnitSelectionMenu extends Menu {
     private UnitMenu[] unitMenus;
     private TextButton sendButton;
 
+    /**
+     * Create the menu
+     * @param gameMenu game menu
+     * @param skin skin used
+     */
     public UnitSelectionMenu(GameMenu gameMenu, Skin skin) {
 
         totalPrice = 0;
@@ -33,11 +41,10 @@ public class UnitSelectionMenu extends Menu {
         moneyLabel = new Label("0", skin);
         moneyLabel.setAlignment(Align.right);
 
-        unitMenus = new UnitMenu[] {
-                new UnitMenu(this, "Soldier", WarEntityType.UnitType.SOLIDER, skin),
-                new UnitMenu(this, "Tank", WarEntityType.UnitType.TANK, skin),
-                new UnitMenu(this, "Scout", WarEntityType.UnitType.SCOOT, skin)
-        };
+        unitMenus = new UnitMenu[WarEntityType.UnitType.values().length];
+        for (WarEntityType.UnitType type : WarEntityType.UnitType.values()) {
+            unitMenus[type.ordinal()] = new UnitMenu(this, type, skin);
+        }
 
         Window priceWindow = new WindowMenu(skin).getWindow();
 
@@ -98,6 +105,9 @@ public class UnitSelectionMenu extends Menu {
         getMenu().add(closeButton).prefHeight(UI.BUTTON_HEIGHT);
     }
 
+    /**
+     * Update the total price
+     */
     public void updatePrice() {
 
         totalPrice = 0;
@@ -108,10 +118,17 @@ public class UnitSelectionMenu extends Menu {
         totalPriceLabel.setText(totalPrice);
     }
 
+    /**
+     * Update the player money label
+     * @param money money
+     */
     public void updateMoney(int money) {
         moneyLabel.setText(money);
     }
 
+    /**
+     * Resets the menu
+     */
     public void reset() {
         for (UnitMenu unitMenu : unitMenus) {
             unitMenu.reset();

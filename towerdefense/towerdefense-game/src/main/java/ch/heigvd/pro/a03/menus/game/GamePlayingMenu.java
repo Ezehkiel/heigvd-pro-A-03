@@ -12,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * The game playing menu
+ */
 public class GamePlayingMenu extends Menu {
 
     private Label infoLabel;
@@ -21,6 +24,12 @@ public class GamePlayingMenu extends Menu {
     private TextButton incomingUnitsButton;
     private Table turretSelectionMenu;
 
+    /**
+     * Creates the menu
+     * @param menu game menu
+     * @param scene game scene
+     * @param skin skin used
+     */
     public GamePlayingMenu(GameMenu menu, GameScene scene, Skin skin) {
 
         infoLabel = new Label("Please Wait", skin);
@@ -109,35 +118,61 @@ public class GamePlayingMenu extends Menu {
         });
     }
 
+    /**
+     * Updates the message info
+     * @param text message
+     */
     public void updateInfo(String text) {
         infoLabel.setText(text);
     }
 
+    /**
+     * Update the money label
+     * @param money money
+     */
     public void updateMoney(int money) {
         moneyLabel.setText(money);
     }
 
+    /**
+     * show the end turn button
+     */
     public void showEndTurnButton() {
         endTurnButton.setVisible(true);
     }
 
+    /**
+     * Hide the end turn button
+     */
     public void hideEndTurnButton() {
         endTurnButton.setVisible(false);
     }
 
+    /**
+     * Show the unit selection button
+     */
     public void showUnitsSelectionButton() {
         selectUnitButton.setVisible(true);
     }
 
+    /**
+     * Hide the unit selection button
+     */
     public void hideUnitsSelectionButton() {
         selectUnitButton.setVisible(false);
     }
 
+    /**
+     * Show the turret selection and incoming units buttons
+     */
     public void showTurretSelectionMenu() {
         turretSelectionMenu.setVisible(true);
         incomingUnitsButton.setVisible(true);
     }
 
+    /**
+     * Hide the turret selection and incoming units buttons
+     */
     public void hideTurretSelectionMenu() {
         turretSelectionMenu.setVisible(false);
         incomingUnitsButton.setVisible(false);

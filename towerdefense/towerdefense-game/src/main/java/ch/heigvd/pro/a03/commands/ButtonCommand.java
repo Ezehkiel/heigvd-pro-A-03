@@ -10,6 +10,10 @@ public class ButtonCommand extends ClickListener {
 
     private Executable command;
 
+    /**
+     * Creates a new button command.
+     * @param command the executable
+     */
     public ButtonCommand(Executable command) {
         this.command = command;
     }
@@ -21,10 +25,17 @@ public class ButtonCommand extends ClickListener {
         executeCommand();
     }
 
+    /**
+     * Executes the command called whene a button is clicked
+     */
     public void executeCommand() {
         command.execute();
     }
 
+    /**
+     * Gets the executable.
+     * @return exeutable
+     */
     public Executable getCommand() {
         return command;
     }

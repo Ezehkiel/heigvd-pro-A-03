@@ -8,7 +8,6 @@ import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.RandomPlayer;
 import ch.heigvd.pro.a03.utils.Waiter;
-import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
@@ -16,6 +15,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
+/**
+ * Manages the communication protocol with the server
+ */
 public class GameClient {
 
     public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
@@ -30,6 +32,11 @@ public class GameClient {
     public final boolean ONLINE;
     private Player player = null;
 
+    /**
+     * Creates a new client
+     * @param playersCount players count
+     * @param online true if connecting to online server
+     */
     public GameClient(int playersCount, boolean online) {
         PLAYERS_COUNT = playersCount;
         ONLINE = online;
@@ -137,6 +144,14 @@ public class GameClient {
         }
     }
 
+    /**
+     * Operates the first round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
                            Executable roundEnd, Executable showMap,
                            Waiter<PlayerEvent> waitForEvents) {
@@ -180,6 +195,14 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates a round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void round(Executable playerTurnStart, Executable playerTurnEnd,
                       Executable roundEnd, Executable showMap,
                       Waiter<PlayerEvent> waitForEvents) {
@@ -233,6 +256,10 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operate the start of the simulation
+     * @param startSimulation starts the simulation
+     */
     public void startSimulation(Executable startSimulation) {
         LOG.info("Waiting simulation");
 
@@ -249,6 +276,11 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates the end of the simulation
+     * @param roundStart a round starts
+     * @param gameEnd the game ended
+     */
     public void endSimulation(Executable roundStart, Executable gameEnd) {
 
         LOG.info("Simulation done.");
@@ -275,6 +307,10 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Gets the maps from the socket and shows them
+     * @param showMaps shows the maps
+     */
     private void receiveMaps(Executable showMaps) {
 
         String json = Protocole.receiveJson(in);
@@ -284,19 +320,9 @@ public class GameClient {
     }
 
     /**
-     * Tells the server that the player has left the game.
+     * Receives an object from the socket
+     * @return reveived object
      */
-    public void quit() {
-
-        try {
-            socket.close();
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();;
-        }
-    }
-
     private Object receiveObject() {
         try {
             return objectIn.readObject();
@@ -307,10 +333,18 @@ public class GameClient {
         return null;
     }
 
+    /**
+     * Gets the player
+     * @return the player
+     */
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Gets an array containt the id's of the opponents
+     * @return opponents id's
+     */
     public int[] getOpponentsIds() {
 
         int[] ids = new int[PLAYERS_COUNT - 1];
