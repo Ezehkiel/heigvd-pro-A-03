@@ -13,6 +13,10 @@ import java.awt.*;
 import java.io.Serializable;
 import java.util.LinkedList;
 
+/***
+ * Class that represents the gird of the game
+ * @author Andres Moreno, Nicodeme Stalder
+ */
 public class Map implements Serializable {
 
     private Structure[][] structures;
@@ -20,10 +24,18 @@ public class Map implements Serializable {
     private int row;
     private int col;
     private Base base;
-    private Point spawnPoint;
+    private Point spawnPoint; //position where the units will be generated
     private boolean endMatch;
     public final int ID;
 
+    /***
+     * Constructor of the class
+     * @param row number of rows of the gird
+     * @param col number of columns of the grid
+     * @param base the player base
+     * @param spawnPoint the position where the enemy units will spawn
+     * @param id  the map id
+     */
     public Map(int row, int col, Base base,Point spawnPoint, int id) {
         this.row = row;
         this.col = col;
@@ -47,6 +59,12 @@ public class Map implements Serializable {
         return col;
     }
 
+    /***
+     * Get's the structure from a given position.
+     * @param row the y coordinate
+     * @param col the x coordinate
+     * @return the structure at the given position if there is one, otherwise null.
+     */
     public Structure getStructureAt(int row, int col) {
 
         if (!inMap(row, col)) {
@@ -56,6 +74,12 @@ public class Map implements Serializable {
         return structures[row][col];
     }
 
+    /**
+     *
+     * @param structure the structure to be set (can be a base or a turret)
+     * @param row the y coordinate
+     * @param col the x coordinate
+     */
     public void setStructureAt(Structure structure, int row, int col) {
 
         if (!inMap(row, col)) {
@@ -66,6 +90,10 @@ public class Map implements Serializable {
 
     }
 
+    /**
+     * Add's a unit to the map
+     * @param u the unit
+     */
     public void addUnit(Unit u) {
         units.add(u);
     }
@@ -73,6 +101,10 @@ public class Map implements Serializable {
 
     public Structure[][] getStructures() {
         return structures;
+    }
+
+    public Point getSpawnPoint() {
+        return spawnPoint;
     }
 
     public void setUnits(LinkedList<Unit> units) {
@@ -83,10 +115,20 @@ public class Map implements Serializable {
         return units;
     }
 
+    /***
+     *
+     * @param row the y coordinate
+     * @param col the x coordinate
+     * @return true if the position is inside the map bounds
+     */
     public boolean inMap(int row, int col) {
         return (row >= 0 && row < this.row && col >= 0 && col < this.col);
     }
 
+    /***
+     * Updates the structures and units of the map (health, position, etc.)
+     * @param tickId number of ticks of the match
+     */
     public void update(int tickId) {
 
         for (int i = 0; i < row; ++i) {
@@ -102,6 +144,10 @@ public class Map implements Serializable {
         }
     }
 
+    /***
+     *
+     * @return true if there is no more units alive.
+     */
     public boolean unitsAreDead(){
 
         boolean everyOneIsDead=true;
@@ -116,6 +162,10 @@ public class Map implements Serializable {
     }
 
 
+    /**
+     *
+     * @return true if the base is destroyed.
+     */
     public boolean isEndMatch() {
         endMatch = base.isEntityDestroyed();
         return endMatch;
@@ -151,10 +201,11 @@ public class Map implements Serializable {
         return toRet;
     }
 
-    public Point getSpawnPoint() {
-        return spawnPoint;
-    }
 
+    /***
+     * Generates a Json containing the map information.
+     * @return a string containing the current state
+     */
     public String toJson() {
         JSONObject map = new JSONObject();
         map.put("id", ID);
@@ -211,6 +262,7 @@ public class Map implements Serializable {
 
         return map.toString();
     }
+
 
     private JSONObject positionToJson(Point position) {
 
