@@ -2,6 +2,8 @@ package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.socketServer.GameServer;
 
+import java.net.SocketException;
+
 /**
  * Clas that defined how a state is structured
  */
@@ -20,5 +22,5 @@ public abstract class ServerState {
         return id;
     }
 
-    public abstract void run();
+    public abstract void run() throws SocketException;
 }

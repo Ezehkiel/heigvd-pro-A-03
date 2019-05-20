@@ -3,18 +3,18 @@ import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
-import ch.heigvd.pro.a03.event.simulation.SimEvent;
 import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.RandomPlayer;
 import ch.heigvd.pro.a03.utils.Waiter;
-import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 import java.util.logging.Logger;
+
+import static ch.heigvd.pro.a03.utils.Protocole.sendObject;
 
 public class GameClient {
 
@@ -161,7 +161,8 @@ public class GameClient {
 
                         waitForEvents.waitData();
 
-                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
+                        sendObject(objectOut,waitForEvents.receive());
+                       // PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
 
                         Protocole.receive(in);
                     }
@@ -212,8 +213,9 @@ public class GameClient {
 
                         waitForEvents.waitData();
 
-                        PlayerEvent playerEvent = waitForEvents.receive();
-                        PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
+                        sendObject(objectOut,waitForEvents.receive());
+
+                        //PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
                     }
 
                     receiveMaps(showMap);
@@ -238,9 +240,20 @@ public class GameClient {
 
         new Thread(() -> {
 
-            Protocole.sendProtocol(out, 6, "START");
+            try {
+                Protocole.sendProtocol(out, 6, "START");
+            } catch (SocketException e) {
+                e.printStackTrace();
+            }
 
-            Object o = (LinkedList<SimEvent>) receiveObject();
+            Object o = null;
+            try {
+                o = Protocole.readObject(objectIn);
+            } catch (SocketException e) {
+                //TODO close client
+                e.printStackTrace();
+
+            }
 
             LOG.info("Simulation received");
 
@@ -277,7 +290,13 @@ public class GameClient {
 
     private void receiveMaps(Executable showMaps) {
 
-        String json = Protocole.receiveJson(in);
+        String json =null;
+        try {
+             json = Protocole.receiveJson(in);
+        } catch (SocketException e) {
+            //TODO close client
+            e.printStackTrace();
+        }
         if (json == null) { return; }
 
         showMaps.execute(json);
@@ -293,18 +312,8 @@ public class GameClient {
             out.close();
             in.close();
         } catch (IOException e) {
-            e.printStackTrace();;
-        }
-    }
-
-    private Object receiveObject() {
-        try {
-            return objectIn.readObject();
-        } catch (Exception e) {
             e.printStackTrace();
         }
-
-        return null;
     }
 
     public Player getPlayer() {

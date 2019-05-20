@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.SocketException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
@@ -29,7 +30,7 @@ public class SimulationState extends ServerState {
     }
 
     @Override
-    public void run() {
+    public void run() throws SocketException {
         GameLogic gameLogic = this.gameServer.getGameLogic();
 
         GameServer.LOG.info("Simulating ...");

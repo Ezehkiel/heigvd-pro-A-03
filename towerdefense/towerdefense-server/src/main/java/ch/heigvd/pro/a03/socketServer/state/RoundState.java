@@ -9,15 +9,15 @@ import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
 import ch.heigvd.pro.a03.utils.Protocole;
-import ch.heigvd.pro.a03.warentities.WarEntity;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
-import com.google.gson.Gson;
 
 import java.awt.*;
-import java.util.LinkedList;
+import java.net.SocketException;
 
-import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
+import static ch.heigvd.pro.a03.utils.Protocole.readObject;
+
+//import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
 
 /**
  * The normal round state, it ask the unit and the turrent to all client
@@ -29,7 +29,7 @@ public class RoundState extends ServerState{
     }
 
     @Override
-    public void run() {
+    public void run() throws SocketException {
 
         GameLogic gameLogic = gameServer.getGameLogic();
 
@@ -53,7 +53,7 @@ public class RoundState extends ServerState{
             GameServer.LOG.info("Player " + client.getPlayer().ID + "'s turn.");
 
             // Broadcast who's playing
-            gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
+            gameServer.broadCastProtocol(String.valueOf(client.getPlayer().ID));
 
             gameServer.waitForPlayers("500-OK");
 
@@ -61,7 +61,7 @@ public class RoundState extends ServerState{
             Protocole.sendJson(client.getPlayer().toJson(), client.getOut());
 
             // wait for player events
-            PlayerEvent playerEvent = getPlayerEvent(client.getOis());
+            PlayerEvent playerEvent = (PlayerEvent) readObject(client.getOis());
 
             for(TurretEvent turretEvent : playerEvent.getTurretEvents()) {
 

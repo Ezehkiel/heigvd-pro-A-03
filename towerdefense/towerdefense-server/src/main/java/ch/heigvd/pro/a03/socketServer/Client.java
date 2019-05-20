@@ -62,4 +62,16 @@ public class Client {
     public Socket getSocket() {
         return socket;
     }
+
+    public void closeStreams() {
+        try{
+            in.close();
+            out.close();
+            ous.close();
+            ois.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
+    }
 }

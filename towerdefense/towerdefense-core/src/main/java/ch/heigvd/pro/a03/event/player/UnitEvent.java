@@ -1,9 +1,10 @@
 package ch.heigvd.pro.a03.event.player;
 
-import ch.heigvd.pro.a03.event.Event;
 import ch.heigvd.pro.a03.warentities.WarEntityType;
 
-public class UnitEvent extends Event {
+import java.io.Serializable;
+
+public class UnitEvent implements Serializable {
     UnitEventType unitEventType;
     WarEntityType.UnitType unitType;
 

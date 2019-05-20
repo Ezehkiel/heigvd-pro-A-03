@@ -1,9 +1,8 @@
 package ch.heigvd.pro.a03.event.simulation;
 
-import ch.heigvd.pro.a03.event.Event;
 import java.io.Serializable;
 
-public class SimEvent extends Event implements Serializable {
+public class SimEvent implements Serializable {
 
     public final SimEventType TYPE;
     public final int TICK_ID;
