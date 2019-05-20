@@ -2,6 +2,8 @@ package ch.heigvd.pro.a03.socketServer.state;
 
 import ch.heigvd.pro.a03.socketServer.GameServer;
 
+import java.net.SocketException;
+
 
 /**
  * The last state of the game that send goodbye to client
@@ -13,9 +15,9 @@ public class EndState extends ServerState{
     }
 
     @Override
-    public void run() {
+    public void run() throws SocketException {
         // Save the score to database
-        gameServer.broadCastMessage("BYE");
+        gameServer.broadCastProtocol("BYE");
 
     }
 }

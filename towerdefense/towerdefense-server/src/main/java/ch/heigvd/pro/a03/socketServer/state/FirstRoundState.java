@@ -6,13 +6,14 @@ import ch.heigvd.pro.a03.event.player.SendUnitEvent;
 import ch.heigvd.pro.a03.event.player.UnitEvent;
 import ch.heigvd.pro.a03.socketServer.GameServer;
 import ch.heigvd.pro.a03.socketServer.Client;
+import ch.heigvd.pro.a03.socketServer.SocketServer;
 import ch.heigvd.pro.a03.warentities.WarEntity;
-import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
-import java.util.LinkedList;
+import java.net.SocketException;
 
-import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
+//import static ch.heigvd.pro.a03.event.player.PlayerEvent.getPlayerEvent;
+import static ch.heigvd.pro.a03.utils.Protocole.readObject;
 import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 
 
@@ -22,15 +23,16 @@ import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
 public class FirstRoundState extends ServerState{
 
     public FirstRoundState(int id, GameServer gameServer) {
-
         super(id, gameServer);
     }
 
 
 
     @Override
-    public void run() {
+    public void run() throws SocketException {
         GameLogic gameLogic = gameServer.getGameLogic();
+
+        System.out.println(SocketServer.getInstance().getGameServers().size());
 
         // Broadcast the maps
         gameServer.broadCastJson(gameLogic.getMapsJson());
@@ -40,10 +42,10 @@ public class FirstRoundState extends ServerState{
             GameServer.LOG.info("Player " + client.getPlayer().ID + "'s first turn.");
 
             // Tell everyone who's turn it is
-            gameServer.broadCastMessage(String.valueOf(client.getPlayer().ID));
+            gameServer.broadCastProtocol(String.valueOf(client.getPlayer().ID));
 
             // Wait for the player's events
-            PlayerEvent playerEvent = getPlayerEvent(client.getOis());
+            PlayerEvent playerEvent = (PlayerEvent) readObject(client.getOis());
             for(UnitEvent unitEvent : playerEvent.getUnitEvents()) {
                 SendUnitEvent sendUnitEvent = (SendUnitEvent) unitEvent;
                 for (int i = 0; i < sendUnitEvent.getQuantity(); ++i) {
