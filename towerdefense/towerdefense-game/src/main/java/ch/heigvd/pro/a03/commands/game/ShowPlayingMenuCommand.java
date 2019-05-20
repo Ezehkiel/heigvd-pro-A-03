@@ -3,6 +3,9 @@ package ch.heigvd.pro.a03.commands.game;
 import ch.heigvd.pro.a03.commands.Command;
 import ch.heigvd.pro.a03.menus.game.GameMenu;
 
+/**
+ * A command that shows the game playing menu
+ */
 public class ShowPlayingMenuCommand extends Command<GameMenu> {
 
     public ShowPlayingMenuCommand(GameMenu receiver) {

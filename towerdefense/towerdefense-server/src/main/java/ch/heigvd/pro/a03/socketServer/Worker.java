@@ -59,6 +59,8 @@ public class Worker implements Runnable{
      */
     @Override
     public void run() {
+
+        GameServer server = null;
         try {
             //Waiting client start the communication
             if(in.readLine().equals("100-START")){
@@ -76,8 +78,6 @@ public class Worker implements Runnable{
                 //Start the matchmaking system
                 while (!in.readLine().equals("200-START"));
                 Client p = new Client(socket);
-
-                GameServer server = null;
                 //Search in the queue for a sever with a place for the new client
                 for (GameServer s : servers.get(gameMode)) {
                     if (s.getClientsCount() < gameMode) {
@@ -99,6 +99,7 @@ public class Worker implements Runnable{
             }
         } catch (IOException e) {
             e.printStackTrace();
+            // TODO Stop game server
         }
     }
 }

@@ -3,7 +3,6 @@ package ch.heigvd.pro.a03.menus;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.Command;
-import ch.heigvd.pro.a03.scenes.GameModeScene;
 import ch.heigvd.pro.a03.scenes.MatchMakingScene;
 import ch.heigvd.pro.a03.scenes.ScoreBoardScene;
 import ch.heigvd.pro.a03.scenes.SettingsScene;
@@ -11,8 +10,15 @@ import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+/**
+ * The main menu.
+ */
 public class MainMenu extends Menu {
 
+    /**
+     * Creates the menu
+     * @param skin skin used for the ui elements
+     */
     public MainMenu(Skin skin) {
         super();
 

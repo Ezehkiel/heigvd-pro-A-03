@@ -24,6 +24,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import java.awt.*;
 import java.util.LinkedList;
 
+/**
+ * Manages the game and everything needed to display and interact with it.
+ */
 public class TowerDefense {
 
     private GameScene scene;
@@ -50,10 +53,18 @@ public class TowerDefense {
 
     private Simulator[] simulators;
 
+    /**
+     * Types of possible game states
+     */
     public enum GameStateType {
         FIRST_PLAY, PLAY, OPPONENT_PLAY, SIMULATION, WAIT
     }
 
+    /**
+     * Creates a new tower defense game manager.
+     * @param scene game scene
+     * @param gameClient game client
+     */
     public TowerDefense(GameScene scene, GameClient gameClient) {
 
         this.scene = scene;
@@ -95,18 +106,25 @@ public class TowerDefense {
 
         showMaps = new ShowMapsCommand(this);
 
+        gameClient.setGame(this);
         gameClient.firstRound(args -> changeState(
             gameClient.getPlayer().ID == (Integer) args[0] ?
                     GameStateType.FIRST_PLAY : GameStateType.OPPONENT_PLAY
         ), playerTurnEnd, roundStart, showMaps, playerEventWaiter);
     }
 
+    /**
+     * Manages the end of the simulation
+     */
     public void endSimulation() {
         changeState(GameStateType.WAIT);
         gameClient.endSimulation(roundStart,
                 args -> getScene().getGameMenu().showEndMenu(gameClient.getPlayer().ID, (Player) args[0]));
     }
 
+    /**
+     * Setup the simulators
+     */
     public void setupSimulators() {
         simulators = new Simulator[gameClient.PLAYERS_COUNT];
         for (Map map : maps) {
@@ -114,6 +132,10 @@ public class TowerDefense {
         }
     }
 
+    /**
+     * Updates the simulators of the simulation.
+     * @param deltaTime delta time since last updates
+     */
     public void updateSimulation(float deltaTime) {
         if (stateMachine.getState() instanceof SimulationState) {
             for (Simulator simulator : simulators) {
@@ -122,6 +144,11 @@ public class TowerDefense {
         }
     }
 
+    /**
+     * Draws the simulators
+     * @param spriteBatch sprite batch
+     * @param shapeRenderer shape renderer
+     */
     public void drawSimulation(SpriteBatch spriteBatch, ShapeRenderer shapeRenderer) {
 
         if (stateMachine.getState() instanceof SimulationState) {
@@ -140,6 +167,10 @@ public class TowerDefense {
         }
     }
 
+    /**
+     * Processes the sim event and send send to the corresponding simulator
+     * @param event simulation event
+     */
     public void processSimEvent(SimEvent event) {
 
         GameClient.LOG.info(event.toString());
@@ -160,12 +191,24 @@ public class TowerDefense {
         }
     }
 
-    /* ----- Turret Management -----*/
-
+    /**
+     * Check if a cell is occupied with a strucure
+     * @param mapId map id
+     * @param x x-axis coordinate
+     * @param y y-axis coordinate
+     * @return true if cell is occupied
+     */
     public boolean isCellOccupied(int mapId, int x, int y) {
         return maps[mapId].getStructureAt(y, x) != null;
     }
 
+    /**
+     * Gets a turret at a given position in the selected map
+     * @param mapId map id
+     * @param x x-axis coordinate
+     * @param y y-axis coordinate
+     * @return the turret or null
+     */
     public Turret getTurretAt(int mapId, int x, int y) {
 
         Structure structure = maps[mapId].getStructureAt(y, x);
@@ -176,6 +219,12 @@ public class TowerDefense {
         return null;
     }
 
+    /**
+     * Places a turret iat the given position in the selected map
+     * @param mapId map id
+     * @param turret turret to playe
+     * @return true is the turret has been placed
+     */
     public boolean placeTurret(int mapId, Turret turret) {
 
         if (!iAmMapOwner(mapId) || !isInState(GameStateType.PLAY) ||
@@ -240,23 +289,12 @@ public class TowerDefense {
         return true;
     }
 
-    public boolean repairTurret(Turret turret) {
-
-        if (!turret.isEntityDestroyed() || gameClient.getPlayer().getMoney() < turret.getPrice() / 2) {
-            return false;
-        }
-
-        playerEvent.addTurretEvent(new TurretEvent(
-                TurretEventType.REPAIR, turret.getPosition(), turret.TYPE
-        ));
-
-        turret.heal(turret.getTotalHealth());
-        gameClient.getPlayer().removeMoney(turret.getPrice() / 2);
-        scene.getGameMenu().updateMoney(gameClient.getPlayer().getMoney());
-
-        return true;
-    }
-
+    /**
+     * Destroys a turret
+     * @param mapId map id
+     * @param turret turret
+     * @return true if destroyed
+     */
     public boolean destroyTurret(int mapId, Turret turret) {
 
         if (!iAmMapOwner(mapId) || !isInState(GameStateType.PLAY) ||
@@ -282,42 +320,86 @@ public class TowerDefense {
         return true;
     }
 
+    /**
+     * Check is the selected map is the player's map
+     * @param mapId map id
+     * @return true if player's map
+     */
     public boolean iAmMapOwner(int mapId) {
         return mapId == gameClient.getPlayer().ID;
     }
 
+    /**
+     * Get all the maps
+     * @return array of maps
+     */
     public Map[] getMaps() {
         return maps;
     }
 
+    /**
+     * Check if the game is in a state of the given type
+     * @param stateType state type
+     * @return true if in state type
+     */
     private boolean isInState(GameStateType stateType) {
         return stateMachine.getState() == getState(stateType);
     }
 
+    /**
+     * Gets the state machine
+     * @return state machine
+     */
     public StateMachine getStateMachine() {
         return stateMachine;
     }
 
+    /**
+     * Get the state of the given type
+     * @param stateType state type
+     * @return state of type
+     */
     public GameState getState(GameStateType stateType) {
         return states[stateType.ordinal()];
     }
 
+    /**
+     * Gets the game scene
+     * @return game scene
+     */
     public GameScene getScene() {
         return scene;
     }
 
+    /**
+     * Changes the current state to the state of the given type
+     * @param stateType type of the next state
+     * @return true is the change occurred
+     */
     public boolean changeState(GameStateType stateType) {
         return stateMachine.changeState(getState(stateType));
     }
 
+    /**
+     * Send the player events to the game client
+     */
     public void sendEvents() {
         playerEventWaiter.send(playerEvent);
     }
 
+    /**
+     * Clear the player eents
+     */
     public void clearPlayerEvents() {
         playerEvent = new PlayerEvent();
     }
 
+    /**
+     * Send the unit to the player event
+     * @param types types of the units
+     * @param quantities quantities
+     * @return true if the units were sent
+     */
     public boolean sendUnits(WarEntityType.UnitType[] types, int[] quantities) {
 
         if (types.length != quantities.length) {
@@ -351,11 +433,24 @@ public class TowerDefense {
         return true;
     }
 
+    /**
+     * Gets the game client
+     * @return game client
+     */
     public GameClient getGameClient() {
         return gameClient;
     }
 
+    /**
+     * Sets the map of the given id
+     * @param i map id
+     * @param map map
+     */
     public void setMap(int i, Map map) {
         maps[i] = map;
+    }
+
+    public void quit() {
+        scene.getGameMenu().showEndMenu(0, null);
     }
 }

@@ -4,6 +4,9 @@ import ch.heigvd.pro.a03.menus.auth.AuthMenu;
 import ch.heigvd.pro.a03.menus.auth.RegistrationMenu;
 import ch.heigvd.pro.a03.server.HttpServerUtils;
 
+/**
+ * Registers a player
+ */
 public class RegisterCommand extends AuthCommand {
 
     private RegistrationMenu menu;

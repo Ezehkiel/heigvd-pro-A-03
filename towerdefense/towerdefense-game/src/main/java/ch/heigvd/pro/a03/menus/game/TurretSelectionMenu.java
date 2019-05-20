@@ -11,46 +11,33 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.awt.*;
+
+/**
+ * Turret selection menu
+ */
 public class TurretSelectionMenu extends Menu {
 
+    /**
+     * Create the menu
+     * @param skin skin used
+     * @param scene game scene
+     */
     public TurretSelectionMenu(Skin skin, GameScene scene) {
 
-        TextButton clearSelectionButton = new TextButton("X", skin);
-        clearSelectionButton.addListener(new ButtonCommand(new GameSceneCommand(scene) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().clearSelectedTurret();
-            }
-        }));
-
-        TextButton machineGun = new TextButton("MG", skin);
-        machineGun.addListener(new ButtonCommand(new GameSceneCommand(scene) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().selectTurret(WarEntityType.TurretType.MACHINE_GUN);
-            }
-        }));
-
-        TextButton mortar = new TextButton("M", skin);
-        mortar.addListener(new ButtonCommand(new GameSceneCommand(scene) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().selectTurret(WarEntityType.TurretType.MORTAR);
-            }
-        }));
-
-        TextButton slower = new TextButton("S", skin);
-        slower.addListener(new ButtonCommand(new GameSceneCommand(scene) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().selectTurret(WarEntityType.TurretType.LASER_GUN);
-            }
-        }));
-
         getMenu().defaults().prefWidth(64).prefHeight(64).spaceLeft(16);
-        getMenu().add(clearSelectionButton);
-        getMenu().add(machineGun);
-        getMenu().add(mortar);
-        getMenu().add(slower);
+
+        for (WarEntityType.TurretType type : WarEntityType.TurretType.values()) {
+
+            TextButton button = new TextButton(type.getName(), skin);
+            button.addListener(new ButtonCommand(new GameSceneCommand(scene) {
+                @Override
+                public void execute(Object... args) {
+                    getReceiver().selectTurret(type);
+                }
+            }));
+
+            getMenu().add(button);
+        }
     }
 }

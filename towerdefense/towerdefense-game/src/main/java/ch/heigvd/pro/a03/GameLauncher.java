@@ -10,8 +10,6 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL20;
-import org.lwjgl.Sys;
-import sun.awt.ConstrainableGraphics;
 
 /**
  * The Game launcher starts the game and creates the scene manager.
@@ -91,6 +89,9 @@ public class GameLauncher implements ApplicationListener {
         sceneManager.add(new MainMenuScene());
     }
 
+    /**
+     * Starts or stop the music depend of the configs.
+     */
     public void updateMusic() {
         if (Boolean.valueOf(Config.getProperty("music-on"))) {
             music.play();
@@ -137,6 +138,9 @@ public class GameLauncher implements ApplicationListener {
 
     }
 
+    /**
+     * Closes every scenes and exits the application
+     */
     public void exit() {
 
         while (sceneManager.hasScene()) {

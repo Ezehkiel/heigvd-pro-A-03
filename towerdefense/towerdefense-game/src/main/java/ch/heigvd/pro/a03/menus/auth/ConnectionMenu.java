@@ -6,12 +6,20 @@ import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
+/**
+ * Menu fo connection with existing account
+ */
 public class ConnectionMenu extends Menu {
 
     private AuthMenu parent;
     private TextField usernameField;
     private TextField passwordField;
 
+    /**
+     * Creates the menu
+     * @param authMenu authentication menu
+     * @param skin skin used
+     */
     public ConnectionMenu(AuthMenu authMenu, Skin skin) {
 
         this.parent = authMenu;

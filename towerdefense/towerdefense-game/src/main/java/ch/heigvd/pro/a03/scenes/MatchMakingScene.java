@@ -1,55 +1,65 @@
 package ch.heigvd.pro.a03.scenes;
 
 import ch.heigvd.pro.a03.GameLauncher;
-import ch.heigvd.pro.a03.Player;
-import ch.heigvd.pro.a03.commands.Command;
-import ch.heigvd.pro.a03.menus.matchmaking.PlayerMenu;
+import ch.heigvd.pro.a03.menus.matchmaking.MatchMakingMenu;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.RandomPlayer;
 
+/**
+ * Match making scene
+ */
 public class MatchMakingScene extends Scene {
 
-    private PlayerMenu playerMenu;
+    private MatchMakingMenu menu;
     private GameClient gameClient;
 
+    /**
+     * Creates the scene
+     * @param online true if connect to online server
+     */
     public MatchMakingScene(boolean online) {
 
         gameClient = new GameClient(2, online);
-        gameClient.connect(new Command<MatchMakingScene>(this) {
-            @Override
-            public void execute(Object... args) {
-                getReceiver().showPlayerMenu();
-            }
-        });
+
+        menu = new MatchMakingMenu(
+                gameClient.ONLINE ? GameLauncher.getInstance().getConnectedPlayer() : RandomPlayer.USER,
+                gameClient, this, getSkin()
+        );
+
+        getStage().addActor(menu.getMenu());
+
+        gameClient.setMatchMakingScene(this);
+        gameClient.connect(args -> connected());
+
     }
 
-    public void showPlayerMenu() {
-
-        playerMenu = new PlayerMenu(
-                gameClient.ONLINE ? GameLauncher.getInstance().getConnectedPlayer()
-                        : RandomPlayer.USER,
-                this, gameClient, getSkin());
-        playerMenu.getMenu().setFillParent(true);
-
-        getStage().addActor(playerMenu.getMenu());
-
+    private void connected() {
+        menu.setTitle("Waiting for players");
         gameClient.getPlayers(
-                new Command<MatchMakingScene>(this) {
-                    @Override
-                    public void execute(Object... args) {
-                        System.out.println(((Player) args[0]).getName() + " has arrived.");
-                    }
-                },
-                new Command<MatchMakingScene>(this) {
-                    @Override
-                    public void execute(Object... args) {
-                        getReceiver().playerMenu.updateMenu(true);
-                    }
-                }
+                args -> System.out.println("Player has arrived"),
+                args -> ready()
         );
     }
 
+    private void ready() {
+        menu.setTitle("Are your ready?");
+        menu.showReadyButton();
+    }
+
+    /**
+     * Starts the game
+     */
     public void startGame() {
         GameLauncher.getInstance().getSceneManager().set(new GameScene(gameClient));
+    }
+
+    public void failed() {
+        menu.setTitle("Connection failed!");
+        menu.hideReadyButton();
+    }
+
+    public void quit() {
+        gameClient.close();
+        GameLauncher.getInstance().getSceneManager().pop();
     }
 }

@@ -1,7 +1,6 @@
 package ch.heigvd.pro.a03.menus.game;
 
 import ch.heigvd.pro.a03.commands.ButtonCommand;
-import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.menus.WindowMenu;
 import ch.heigvd.pro.a03.utils.UI;
@@ -12,11 +11,19 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+/**
+ * Incoming units menu
+ */
 public class IncomingUnitsMenu extends Menu {
 
     private Skin skin;
     private TextButton closeButton;
 
+    /**
+     * Create the menu
+     * @param gameMenu game menu
+     * @param skin skin used
+     */
     public IncomingUnitsMenu(GameMenu gameMenu ,Skin skin) {
         this.skin = skin;
 
@@ -24,6 +31,10 @@ public class IncomingUnitsMenu extends Menu {
         closeButton.addListener(new ButtonCommand(args -> gameMenu.showPlayingMenu()));
     }
 
+    /**
+     * Updates the menu.
+     * @param units json representing the incoming units
+     */
     public void update(JSONArray units) {
 
         getMenu().clear();
