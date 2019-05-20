@@ -9,8 +9,17 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+/**
+ * Menu for connected user.
+ */
 public class ConnectedPlayerMenu extends Menu {
 
+    /**
+     * Creates the menu
+     * @param player the connected player
+     * @param authMenu authentication menu
+     * @param skin skin used
+     */
     public ConnectedPlayerMenu(User player, AuthMenu authMenu, Skin skin) {
 
         Label usernameLabel = new Label(player.getUsername(), skin);

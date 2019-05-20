@@ -12,6 +12,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * Authentication menu
+ */
 public class AuthMenu extends Menu {
 
     private TextButton cancelButton;
@@ -23,6 +26,10 @@ public class AuthMenu extends Menu {
 
     private Skin skin;
 
+    /**
+     * Creates the auth menu.
+     * @param skin skin used
+     */
     public AuthMenu(Skin skin) {
 
         this.skin = skin;
@@ -45,6 +52,9 @@ public class AuthMenu extends Menu {
         showAuthSelectionMenu();
     }
 
+    /**
+     * Show the menu for connection
+     */
     public void showConnectionMenu() {
 
         getMenu().clear();
@@ -55,6 +65,9 @@ public class AuthMenu extends Menu {
         addCancelButton();
     }
 
+    /**
+     * Show the menu for registration
+     */
     public void showRegistrationMenu() {
 
         getMenu().clear();
@@ -65,6 +78,9 @@ public class AuthMenu extends Menu {
         addCancelButton();
     }
 
+    /**
+     * Show the menu to select the authentication method
+     */
     public void showAuthSelectionMenu() {
 
         getMenu().clear();
@@ -74,6 +90,9 @@ public class AuthMenu extends Menu {
         getMenu().add(authSelectionMenu.getMenu());
     }
 
+    /**
+     * Show the menu for connected players
+     */
     public void showConnectedPlayerMenu() {
 
         User player = GameLauncher.getInstance().getConnectedPlayer();
@@ -88,11 +107,17 @@ public class AuthMenu extends Menu {
         getMenu().add(new ConnectedPlayerMenu(player, this, skin).getMenu()).expandY();
     }
 
+    /**
+     * Add the cancel button to the menu
+     */
     private void addCancelButton() {
         getMenu().row();
         getMenu().add(cancelButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
     }
 
+    /**
+     * Adds the error label
+     */
     private void addErrorLabel() {
 
         clearError();
@@ -100,10 +125,17 @@ public class AuthMenu extends Menu {
         getMenu().row();
     }
 
+    /**
+     * Shows the error
+     * @param message
+     */
     public void showError(String message) {
         errorLabel.setText(message);
     }
 
+    /**
+     * clears the error
+     */
     public void clearError() {
         errorLabel.setText("");
     }

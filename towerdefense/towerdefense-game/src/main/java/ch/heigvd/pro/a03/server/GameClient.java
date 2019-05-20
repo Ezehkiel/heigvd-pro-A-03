@@ -1,6 +1,7 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Player;
+import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
 import ch.heigvd.pro.a03.utils.Config;
@@ -16,6 +17,9 @@ import java.util.logging.Logger;
 
 import static ch.heigvd.pro.a03.utils.Protocole.sendObject;
 
+/**
+ * Manages the communication protocol with the server
+ */
 public class GameClient {
 
     public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
@@ -29,7 +33,13 @@ public class GameClient {
     public final int PLAYERS_COUNT;
     public final boolean ONLINE;
     private Player player = null;
+    private TowerDefense game = null;
 
+    /**
+     * Creates a new client
+     * @param playersCount players count
+     * @param online true if connecting to online server
+     */
     public GameClient(int playersCount, boolean online) {
         PLAYERS_COUNT = playersCount;
         ONLINE = online;
@@ -78,7 +88,7 @@ public class GameClient {
             return true;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //TODO: close matchmaking scene
         }
 
         return false;
@@ -116,7 +126,7 @@ public class GameClient {
                 showReadyButton.execute();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                //TODO: close matchmaking scene
             }
         }).start();
     }
@@ -133,10 +143,18 @@ public class GameClient {
             startGame.execute();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            //TODO: close matchmaking scene
         }
     }
 
+    /**
+     * Operates the first round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
                            Executable roundEnd, Executable showMap,
                            Waiter<PlayerEvent> waitForEvents) {
@@ -173,7 +191,7 @@ public class GameClient {
                     playerTurnEnd.execute(id);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
             roundEnd.execute();
@@ -181,6 +199,14 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates a round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void round(Executable playerTurnStart, Executable playerTurnEnd,
                       Executable roundEnd, Executable showMap,
                       Waiter<PlayerEvent> waitForEvents) {
@@ -229,30 +255,28 @@ public class GameClient {
                 roundEnd.execute();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
         }).start();
     }
 
+    /**
+     * Operate the start of the simulation
+     * @param startSimulation starts the simulation
+     */
     public void startSimulation(Executable startSimulation) {
         LOG.info("Waiting simulation");
 
         new Thread(() -> {
 
-            try {
-                Protocole.sendProtocol(out, 6, "START");
-            } catch (SocketException e) {
-                e.printStackTrace();
-            }
-
             Object o = null;
             try {
+                Protocole.sendProtocol(out, 6, "START");
                 o = Protocole.readObject(objectIn);
-            } catch (SocketException e) {
-                //TODO close client
-                e.printStackTrace();
 
+            } catch (SocketException e) {
+                quitGame();
             }
 
             LOG.info("Simulation received");
@@ -262,6 +286,11 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates the end of the simulation
+     * @param roundStart a round starts
+     * @param gameEnd the game ended
+     */
     public void endSimulation(Executable roundStart, Executable gameEnd) {
 
         LOG.info("Simulation done.");
@@ -282,20 +311,23 @@ public class GameClient {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
         }).start();
     }
 
+    /**
+     * Gets the maps from the socket and shows them
+     * @param showMaps shows the maps
+     */
     private void receiveMaps(Executable showMaps) {
 
         String json =null;
         try {
              json = Protocole.receiveJson(in);
         } catch (SocketException e) {
-            //TODO close client
-            e.printStackTrace();
+            quitGame();
         }
         if (json == null) { return; }
 
@@ -303,23 +335,17 @@ public class GameClient {
     }
 
     /**
-     * Tells the server that the player has left the game.
+     * Gets the player
+     * @return the player
      */
-    public void quit() {
-
-        try {
-            socket.close();
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Gets an array containt the id's of the opponents
+     * @return opponents id's
+     */
     public int[] getOpponentsIds() {
 
         int[] ids = new int[PLAYERS_COUNT - 1];
@@ -333,5 +359,37 @@ public class GameClient {
         }
 
         return ids;
+    }
+
+    /**
+     * Closes the connection
+     */
+    public void quitGame() {
+        System.out.println("Leaving the game");
+        close();
+        if (game != null) {
+            game.quit();
+        }
+    }
+
+    /**
+     * Closes the connection
+     */
+    public void close() {
+        try {
+            if (!socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sets the game
+     * @param game
+     */
+    public void setGame(TowerDefense game) {
+        this.game = game;
     }
 }

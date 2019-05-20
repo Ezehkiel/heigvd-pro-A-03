@@ -9,6 +9,9 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
+/**
+ * menu to create a new account
+ */
 public class RegistrationMenu extends Menu {
 
     private AuthMenu parent;
@@ -16,6 +19,11 @@ public class RegistrationMenu extends Menu {
     private TextField passwordField;
     private TextField confirmPasswordField;
 
+    /**
+     * Creates the menu
+     * @param authMenu authentication menu
+     * @param skin skin used
+     */
     public RegistrationMenu(AuthMenu authMenu, Skin skin) {
 
         this.parent = authMenu;
@@ -53,18 +61,26 @@ public class RegistrationMenu extends Menu {
         getMenu().add(registrationButton).prefHeight(UI.BUTTON_HEIGHT);
     }
 
-    public AuthMenu getParent() {
-        return parent;
-    }
-
+    /**
+     * Gets the usename
+     * @return string
+     */
     public String getUsername() {
         return usernameField.getText();
     }
 
+    /**
+     * Gets the password
+     * @return strign
+     */
     public String getPassword() {
         return passwordField.getText();
     }
 
+    /**
+     * Checks if the password matches the confirmation password
+     * @return true if its a match
+     */
     public boolean passwordsMatch() {
         return passwordField.getText().equals(confirmPasswordField.getText());
     }

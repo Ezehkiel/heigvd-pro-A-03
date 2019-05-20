@@ -7,11 +7,18 @@ import ch.heigvd.pro.a03.menus.matchmaking.PlayerMenu;
 import ch.heigvd.pro.a03.server.GameClient;
 import ch.heigvd.pro.a03.utils.RandomPlayer;
 
+/**
+ * Match making scene
+ */
 public class MatchMakingScene extends Scene {
 
     private PlayerMenu playerMenu;
     private GameClient gameClient;
 
+    /**
+     * Creates the scene
+     * @param online true if connect to online server
+     */
     public MatchMakingScene(boolean online) {
 
         gameClient = new GameClient(2, online);
@@ -23,6 +30,9 @@ public class MatchMakingScene extends Scene {
         });
     }
 
+    /**
+     * Show the player menu
+     */
     public void showPlayerMenu() {
 
         playerMenu = new PlayerMenu(
@@ -49,6 +59,9 @@ public class MatchMakingScene extends Scene {
         );
     }
 
+    /**
+     * Starts the game
+     */
     public void startGame() {
         GameLauncher.getInstance().getSceneManager().set(new GameScene(gameClient));
     }

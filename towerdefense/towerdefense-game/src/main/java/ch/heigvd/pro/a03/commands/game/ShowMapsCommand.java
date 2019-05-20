@@ -10,6 +10,9 @@ import org.json.JSONObject;
 
 import java.awt.*;
 
+/**
+ * Parses json to show maps.
+ */
 public class ShowMapsCommand extends TowerDefenseCommand {
 
     public ShowMapsCommand(TowerDefense receiver) {
@@ -33,6 +36,11 @@ public class ShowMapsCommand extends TowerDefenseCommand {
         getReceiver().getScene().updateMaps();
     }
 
+    /**
+     * Parses a json object to a map.
+     * @param json json  of a map
+     * @return a Map
+     */
     private Map mapFromJson(JSONObject json) {
 
         Map map = new Map(json.getInt("height"), json.getInt("width"),
@@ -63,6 +71,11 @@ public class ShowMapsCommand extends TowerDefenseCommand {
         return map;
     }
 
+    /**
+     * Parses a json to a point
+     * @param json json of a point
+     * @return a point
+     */
     private Point pointFromJson(String json) {
         JSONObject point = new JSONObject(json);
         return new Point(point.getInt("x"), point.getInt("y"));

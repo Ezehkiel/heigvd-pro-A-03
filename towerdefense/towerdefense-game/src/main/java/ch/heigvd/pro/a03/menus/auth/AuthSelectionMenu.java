@@ -7,8 +7,16 @@ import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+/**
+ * Menu tho select the autentication method
+ */
 public class AuthSelectionMenu extends Menu {
 
+    /**
+     * Creates the menu.
+     * @param authMenu authentication menu
+     * @param skin skin used
+     */
     public AuthSelectionMenu(AuthMenu authMenu, Skin skin) {
 
         TextButton connectionButton = new TextButton("Log in", skin);

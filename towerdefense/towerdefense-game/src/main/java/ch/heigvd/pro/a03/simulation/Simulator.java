@@ -22,6 +22,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+/**
+ * Manages the simulation an its events on a map.
+ */
 public class Simulator {
 
     private static final int UNIT_SIZE = 32;
@@ -33,6 +36,11 @@ public class Simulator {
     private HashMap<Integer, Animator> animators;
     private ArrayList<Bullet> bullets;
 
+    /**
+     * Creates a new simulation
+     * @param map map
+     * @param playerId player id
+     */
     public Simulator(Map map, int playerId) {
 
         this.map = map;
@@ -51,6 +59,10 @@ public class Simulator {
         }
     }
 
+    /**
+     * Operates a spawn event.
+     * @param event event
+     */
     public void spawn(SpawnEvent event) {
 
         if (entities.containsKey(event.ENTITY_ID)) {
@@ -69,6 +81,10 @@ public class Simulator {
         ));
     }
 
+    /**
+     * Operates a move event.
+     * @param event event
+     */
     public void move(MoveEvent event) {
 
         WarEntity entity = entities.get(event.ENTITY_ID);
@@ -79,6 +95,10 @@ public class Simulator {
         }
     }
 
+    /**
+     * Operates an attack event.
+     * @param event event
+     */
     public void attack(AttackEvent event) {
 
         WarEntity entity = entities.get(event.ENTITY_ID);
@@ -97,12 +117,20 @@ public class Simulator {
         }
     }
 
+    /**
+     * Operates a death event.
+     * @param event event
+     */
     public void death(DeathEvent event) {
 
         WarEntity entity = entities.get(event.ENTITY_ID);
         entity.kill();
     }
 
+    /**
+     * Updates the animators
+     * @param deltaTime delta time since last update
+     */
     public void update(float deltaTime) {
 
         for (Animator animator : animators.values()) {
@@ -114,6 +142,10 @@ public class Simulator {
         }
     }
 
+    /**
+     * Draws sprites in the batch
+     * @param spriteBatch sprite batch
+     */
     public void drawSprites(SpriteBatch spriteBatch) {
         for (WarEntity entity : entities.values()) {
             if (entity instanceof Unit && !entity.isEntityDestroyed()) {
@@ -131,12 +163,21 @@ public class Simulator {
         }
     }
 
+    /**
+     * Draws shapes in the renderer
+     * @param shapeRenderer shape renderer
+     */
     public void drawShapes(ShapeRenderer shapeRenderer) {
         for (Bullet bullet : bullets) {
             bullet.draw(shapeRenderer);
         }
     }
 
+    /**
+     * Gets an offseted position. Spreads the units in the same tile
+     * @param entity entity
+     * @return the offseted point
+     */
     private Point offsetedPosition(WarEntity entity) {
 
         Point position = entity.getPosition();
@@ -161,10 +202,19 @@ public class Simulator {
         );
     }
 
+    /**
+     * Generates a random offset
+     * @return offset
+     */
     private int randomOffset() {
         return random.nextInt(32);
     }
 
+    /**
+     * Creates a Vector2 fro a Point
+     * @param point point
+     * @return Vector2
+     */
     private Vector2 pointVec(Point point) {
         return new Vector2(point.x, point.y);
     }
