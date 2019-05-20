@@ -6,12 +6,18 @@ import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 
+/**
+ * The settings scene
+ */
 public class SettingsScene extends Scene {
 
     private TextField offlineIpField;
     private TextField offlinePortField;
     private UI.Theme theme;
 
+    /**
+     * Creates the scene
+     */
     public SettingsScene() {
 
         Table table = new Table();
@@ -89,6 +95,10 @@ public class SettingsScene extends Scene {
         GameLauncher.getInstance().updateMusic();
     }
 
+    /**
+     * Saves and stores the settings
+     * @return true if saved
+     */
     private boolean saveSettings() {
         try {
             Config.setProperty(Config.OFFLINE_IP_PATH, offlineIpField.getText());

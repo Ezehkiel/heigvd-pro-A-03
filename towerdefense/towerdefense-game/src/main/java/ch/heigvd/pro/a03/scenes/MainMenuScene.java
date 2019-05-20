@@ -6,8 +6,14 @@ import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.utils.Align;
 
+/**
+ * The main scene
+ */
 public class MainMenuScene extends Scene {
 
+    /**
+     * Creates the scene
+     */
     public MainMenuScene() {
 
         // Title

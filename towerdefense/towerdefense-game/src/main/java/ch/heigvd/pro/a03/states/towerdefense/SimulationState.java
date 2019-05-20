@@ -3,8 +3,16 @@ package ch.heigvd.pro.a03.states.towerdefense;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.states.StateMachine;
 
+/**
+ * State when the simulation is being displayed
+ */
 public class SimulationState extends GameState {
 
+    /**
+     * Creates the state
+     * @param stateMachine state machine
+     * @param game tower defense game
+     */
     public SimulationState(StateMachine stateMachine, TowerDefense game) {
         super(stateMachine, game);
     }

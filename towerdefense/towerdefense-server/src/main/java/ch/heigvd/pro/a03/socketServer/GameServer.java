@@ -241,6 +241,7 @@ public class GameServer implements Runnable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return;
                 }
             }
 
