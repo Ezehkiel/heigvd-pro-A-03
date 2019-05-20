@@ -4,6 +4,7 @@ import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
+import ch.heigvd.pro.a03.scenes.MatchMakingScene;
 import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
 import ch.heigvd.pro.a03.utils.RandomPlayer;
@@ -34,6 +35,7 @@ public class GameClient {
     public final boolean ONLINE;
     private Player player = null;
     private TowerDefense game = null;
+    private MatchMakingScene matchMakingScene = null;
 
     /**
      * Creates a new client
@@ -81,14 +83,14 @@ public class GameClient {
                     command.execute();
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    quitMatchmaking();
                 }
             }).start();
 
             return true;
 
         } catch (IOException e) {
-            //TODO: close matchmaking scene
+            quitMatchmaking();
         }
 
         return false;
@@ -126,7 +128,7 @@ public class GameClient {
                 showReadyButton.execute();
 
             } catch (IOException e) {
-                //TODO: close matchmaking scene
+                quitMatchmaking();
             }
         }).start();
     }
@@ -143,7 +145,7 @@ public class GameClient {
             startGame.execute();
 
         } catch (IOException e) {
-            //TODO: close matchmaking scene
+            quitMatchmaking();
         }
     }
 
@@ -362,13 +364,24 @@ public class GameClient {
     }
 
     /**
-     * Closes the connection
+     * Stops the game
      */
     public void quitGame() {
         System.out.println("Leaving the game");
         close();
         if (game != null) {
             game.quit();
+        }
+    }
+
+    /**
+     * Stops the match making
+     */
+    public void quitMatchmaking() {
+        System.out.println("Leaving the game");
+        close();
+        if (matchMakingScene != null) {
+            matchMakingScene.failed();
         }
     }
 
@@ -391,5 +404,13 @@ public class GameClient {
      */
     public void setGame(TowerDefense game) {
         this.game = game;
+    }
+
+    /**
+     * Sets the match making scene
+     * @param matchMakingScene match making scene
+     */
+    public void setMatchMakingScene(MatchMakingScene matchMakingScene) {
+        this.matchMakingScene = matchMakingScene;
     }
 }

@@ -24,6 +24,10 @@ public class Protocole {
     public static Protocole receive(BufferedReader in) throws IOException {
         String response = in.readLine();
 
+        if (response == null) {
+            throw new SocketException("Client disconnected");
+        }
+
         String[]responseArray = response.split("-");
 
         Protocole p = new Protocole(Integer.parseInt(responseArray[0]),responseArray[1]);
@@ -38,9 +42,8 @@ public class Protocole {
         try {
             return in.readLine();
         } catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new SocketException("Client disconnected");
-
         }
     }
 
