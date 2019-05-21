@@ -57,7 +57,7 @@ public class SimulationState extends ServerState {
                         HttpURLConnection connection = null;
                         try {
 
-                            connection = (HttpURLConnection) new URL("https://127.0.0.1:3945/users/scores").openConnection();
+                            connection = (HttpURLConnection) new URL("http://127.0.0.1:3945/users/scores").openConnection();
                             connection.setRequestMethod("POST");
                             connection.setDoOutput(true);
                             OutputStream os = connection.getOutputStream();
