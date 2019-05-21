@@ -32,7 +32,7 @@ public class Server {
             /* Get properties from the config file of the server */
             Properties defaults = new Properties();
             try {
-                defaults.load(new FileReader("./deploy/config.properties"));
+                defaults.load(new FileReader("towerdefense-server/deploy/config.properties"));
             } catch (IOException e) {
                 e.printStackTrace();
             }
