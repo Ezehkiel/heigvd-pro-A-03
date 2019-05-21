@@ -15,7 +15,10 @@ import java.awt.*;
 import java.util.Iterator;
 import java.util.List;
 
-
+/***
+ * Class representing a unit of the game
+ * @Author Andres Moreno
+ */
 public abstract class Unit extends WarEntity {
 
     private Astar pathFinding;
@@ -27,6 +30,18 @@ public abstract class Unit extends WarEntity {
 
     public final WarEntityType.UnitType TYPE;
 
+    /***
+     * Constructor
+     * @param name the unit name
+     * @param position the position at the grid
+     * @param totalHealth total health points
+     * @param defPoint defense points
+     * @param attackCoolDown attack cool down
+     * @param attackPoints attack points
+     * @param range
+     * @param price the cost in order to buy it
+     * @param type the turret type
+     */
     public Unit(String name, Point position, int totalHealth,
                 int defPoint, int attackCoolDown, int speed,
                 int attackPoints, int range, int price, WarEntityType.UnitType type) {
@@ -40,6 +55,14 @@ public abstract class Unit extends WarEntity {
         attackTicks = 0;
 
         TYPE = type;
+    }
+
+    public void setEndSimulation() {
+        hasPath = false;
+    }
+
+    public List<Point> getPath() {
+        return path;
     }
 
 
@@ -112,8 +135,9 @@ public abstract class Unit extends WarEntity {
     }
 
     /**
+     * This method will find a path to the target if there is non already defined.
      * @param map the map of the current game
-     * @brief this method will find a path to the target if there is non already defined.
+     *
      */
     public void pathUnit(Map map) {
 
@@ -147,8 +171,9 @@ public abstract class Unit extends WarEntity {
     }
 
     /**
+     * Moves the unit to the next position and checks that is not the base
      * @param basePosition the base position
-     * @breif moves the unit to the next position and checks that is not the base
+     *
      */
     public boolean displacement(Point basePosition) {
         if (it.hasNext()) {
@@ -162,11 +187,4 @@ public abstract class Unit extends WarEntity {
     }
 
 
-    public void setEndSimulation() {
-        hasPath = false;
-    }
-
-    public List<Point> getPath() {
-        return path;
-    }
 }

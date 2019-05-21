@@ -1,24 +1,29 @@
 package ch.heigvd.pro.a03.server;
 import ch.heigvd.pro.a03.GameLauncher;
 import ch.heigvd.pro.a03.Player;
+import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.commands.Executable;
 import ch.heigvd.pro.a03.event.player.PlayerEvent;
-import ch.heigvd.pro.a03.event.simulation.SimEvent;
+import ch.heigvd.pro.a03.scenes.MatchMakingScene;
+import ch.heigvd.pro.a03.utils.Config;
 import ch.heigvd.pro.a03.utils.Protocole;
+import ch.heigvd.pro.a03.utils.RandomPlayer;
 import ch.heigvd.pro.a03.utils.Waiter;
 
 import java.io.*;
 import java.net.Socket;
+import java.net.SocketException;
 import java.nio.charset.StandardCharsets;
-import java.util.LinkedList;
 import java.util.logging.Logger;
 
+import static ch.heigvd.pro.a03.utils.Protocole.sendObject;
+
+/**
+ * Manages the communication protocol with the server
+ */
 public class GameClient {
 
     public static final Logger LOG = Logger.getLogger(GameClient.class.getSimpleName());
-
-    private final String HOST;
-    private final int PORT;
 
     private Socket socket;
     private BufferedWriter out;
@@ -27,12 +32,19 @@ public class GameClient {
     private ObjectInputStream objectIn;
 
     public final int PLAYERS_COUNT;
+    public final boolean ONLINE;
     private Player player = null;
+    private TowerDefense game = null;
+    private MatchMakingScene matchMakingScene = null;
 
-    public GameClient(int playersCount) {
-        HOST = "ezehkiel.ch";
-        PORT = 4567;
+    /**
+     * Creates a new client
+     * @param playersCount players count
+     * @param online true if connecting to online server
+     */
+    public GameClient(int playersCount, boolean online) {
         PLAYERS_COUNT = playersCount;
+        ONLINE = online;
     }
 
     /**
@@ -41,8 +53,11 @@ public class GameClient {
      */
     public boolean connect(Executable command) {
 
+        LOG.info("Connecting to " + (ONLINE ? "online" : "offline") + " server.");
+
         try {
-            socket = new Socket(HOST, PORT);
+            socket = ONLINE ? new Socket(Config.getServerIp(), Config.getServerPort())
+                    : new Socket(Config.getOfflineIp(), Config.getOfflinePort());
 
             out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), StandardCharsets.UTF_8));
             in = new BufferedReader(new InputStreamReader(socket.getInputStream(), StandardCharsets.UTF_8));
@@ -53,7 +68,10 @@ public class GameClient {
                     Protocole.sendProtocol(out, 1, "START");
                     Protocole.receive(in);
 
-                    Protocole.sendProtocol(out, 1, GameLauncher.getInstance().getConnectedPlayer().getUsername());
+                    Protocole.sendProtocol(out, 1,
+                            ONLINE ? GameLauncher.getInstance().getConnectedPlayer().getUsername()
+                                    : RandomPlayer.USER.getUsername()
+                    );
                     Protocole.receive(in);
 
                     Protocole.sendProtocol(out, 1, "2");
@@ -65,14 +83,14 @@ public class GameClient {
                     command.execute();
 
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    quitMatchmaking();
                 }
             }).start();
 
             return true;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            quitMatchmaking();
         }
 
         return false;
@@ -110,7 +128,7 @@ public class GameClient {
                 showReadyButton.execute();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                quitMatchmaking();
             }
         }).start();
     }
@@ -127,10 +145,18 @@ public class GameClient {
             startGame.execute();
 
         } catch (IOException e) {
-            e.printStackTrace();
+            quitMatchmaking();
         }
     }
 
+    /**
+     * Operates the first round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void firstRound(Executable playerTurnStart, Executable playerTurnEnd,
                            Executable roundEnd, Executable showMap,
                            Waiter<PlayerEvent> waitForEvents) {
@@ -155,7 +181,8 @@ public class GameClient {
 
                         waitForEvents.waitData();
 
-                        PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
+                        sendObject(objectOut,waitForEvents.receive());
+                       // PlayerEvent.sendPlayerEvent(waitForEvents.receive(), objectOut);
 
                         Protocole.receive(in);
                     }
@@ -166,7 +193,7 @@ public class GameClient {
                     playerTurnEnd.execute(id);
                 }
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
             roundEnd.execute();
@@ -174,6 +201,14 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates a round
+     * @param playerTurnStart a player starts his turn
+     * @param playerTurnEnd a player ends hist turn
+     * @param roundEnd the round ended
+     * @param showMap show the maps
+     * @param waitForEvents wait for player events
+     */
     public void round(Executable playerTurnStart, Executable playerTurnEnd,
                       Executable roundEnd, Executable showMap,
                       Waiter<PlayerEvent> waitForEvents) {
@@ -206,8 +241,9 @@ public class GameClient {
 
                         waitForEvents.waitData();
 
-                        PlayerEvent playerEvent = waitForEvents.receive();
-                        PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
+                        sendObject(objectOut,waitForEvents.receive());
+
+                        //PlayerEvent.sendPlayerEvent(playerEvent, objectOut);
                     }
 
                     receiveMaps(showMap);
@@ -221,20 +257,29 @@ public class GameClient {
                 roundEnd.execute();
 
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
         }).start();
     }
 
+    /**
+     * Operate the start of the simulation
+     * @param startSimulation starts the simulation
+     */
     public void startSimulation(Executable startSimulation) {
         LOG.info("Waiting simulation");
 
         new Thread(() -> {
 
-            Protocole.sendProtocol(out, 6, "START");
+            Object o = null;
+            try {
+                Protocole.sendProtocol(out, 6, "START");
+                o = Protocole.readObject(objectIn);
 
-            Object o = (LinkedList<SimEvent>) receiveObject();
+            } catch (SocketException e) {
+                quitGame();
+            }
 
             LOG.info("Simulation received");
 
@@ -243,6 +288,11 @@ public class GameClient {
         }).start();
     }
 
+    /**
+     * Operates the end of the simulation
+     * @param roundStart a round starts
+     * @param gameEnd the game ended
+     */
     public void endSimulation(Executable roundStart, Executable gameEnd) {
 
         LOG.info("Simulation done.");
@@ -263,48 +313,41 @@ public class GameClient {
                 }
 
             } catch (IOException e) {
-                e.printStackTrace();
+                quitGame();
             }
 
         }).start();
     }
 
+    /**
+     * Gets the maps from the socket and shows them
+     * @param showMaps shows the maps
+     */
     private void receiveMaps(Executable showMaps) {
 
-        String json = Protocole.receiveJson(in);
+        String json =null;
+        try {
+             json = Protocole.receiveJson(in);
+        } catch (SocketException e) {
+            quitGame();
+        }
         if (json == null) { return; }
 
         showMaps.execute(json);
     }
 
     /**
-     * Tells the server that the player has left the game.
+     * Gets the player
+     * @return the player
      */
-    public void quit() {
-
-        try {
-            socket.close();
-            out.close();
-            in.close();
-        } catch (IOException e) {
-            e.printStackTrace();;
-        }
-    }
-
-    private Object receiveObject() {
-        try {
-            return objectIn.readObject();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
-    }
-
     public Player getPlayer() {
         return player;
     }
 
+    /**
+     * Gets an array containt the id's of the opponents
+     * @return opponents id's
+     */
     public int[] getOpponentsIds() {
 
         int[] ids = new int[PLAYERS_COUNT - 1];
@@ -318,5 +361,56 @@ public class GameClient {
         }
 
         return ids;
+    }
+
+    /**
+     * Stops the game
+     */
+    public void quitGame() {
+        System.out.println("Leaving the game");
+        close();
+        if (game != null) {
+            game.quit();
+        }
+    }
+
+    /**
+     * Stops the match making
+     */
+    public void quitMatchmaking() {
+        System.out.println("Leaving the game");
+        close();
+        if (matchMakingScene != null) {
+            matchMakingScene.failed();
+        }
+    }
+
+    /**
+     * Closes the connection
+     */
+    public void close() {
+        try {
+            if (!socket.isClosed()) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Sets the game
+     * @param game
+     */
+    public void setGame(TowerDefense game) {
+        this.game = game;
+    }
+
+    /**
+     * Sets the match making scene
+     * @param matchMakingScene match making scene
+     */
+    public void setMatchMakingScene(MatchMakingScene matchMakingScene) {
+        this.matchMakingScene = matchMakingScene;
     }
 }

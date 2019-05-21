@@ -1,37 +1,34 @@
 package ch.heigvd.pro.a03.httpServer.userAPI;
 
-import com.google.gson.Gson;
-
-import java.util.logging.Logger;
-
 import static ch.heigvd.pro.a03.httpServer.userAPI.JsonUtil.json;
 import static spark.Spark.*;
 
+/**
+ * This class regroup all endpoint that we have. When a request arrive
+ * the class look if there are an endpoint corresponding. If the endpoint
+ * exist it will execute the method associated
+ */
 public class UserController {
 
-    final static Logger LOG = Logger.getLogger(UserController.class.getName());
+    public UserController(final UserService userService) {
 
-    Gson gson = new Gson();
+        get("/users/scores", (req, res) -> userService.getAllScores(), json());
 
+        post("/users/scores", (req, res) -> userService.setScore(req), json());
 
-    public UserController(final UserService userService){
+        get("/users/scores/:id", (req, res) -> userService.getUserScore(req), json());
 
-            get("/users/scores", (req, res) -> userService.getAllScores(),json());
+        get("/users", (req, res) -> userService.getAllUsers(), json());
 
-            post("/users/scores", (req, res) -> userService.setScore(req, res), json());
+        post("/users/register", (req, res) -> userService.createUser(req), json());
 
-            get("/users/scores/:id", (req, res) -> userService.getUserScore(req, res), json());
+        post("/users/login", (req, res) -> userService.loginUser(req), json());
 
-            get("/users", (req, res) -> userService.getAllUsers(),json());
+        /* All our communication are formated with JSON */
+        after((req, res) -> {
 
-            post("/users/register", (req, res) -> userService.createUser(req), json());
-
-            post("/users/login", (req, res) -> userService.loginUser(req), json());
-
-            after((req, res) -> {
-                
-                res.type("application/json");
-            });
+            res.type("application/json");
+        });
 
     }
 

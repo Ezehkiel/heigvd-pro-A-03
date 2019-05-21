@@ -4,21 +4,23 @@ import ch.heigvd.pro.a03.GameLogic;
 import ch.heigvd.pro.a03.Player;
 import ch.heigvd.pro.a03.socketServer.state.*;
 import ch.heigvd.pro.a03.utils.Protocole;
-import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import ch.heigvd.pro.a03.warentities.units.Unit;
 
 import java.io.IOException;
-import java.io.ObjectOutputStream;
+import java.net.SocketException;
 import java.util.LinkedList;
 import java.util.logging.Logger;
 
-import static ch.heigvd.pro.a03.utils.Protocole.sendProtocol;
+import static ch.heigvd.pro.a03.utils.Protocole.*;
 
-
+/**
+ * Main class of the server part of the game
+ */
 public class GameServer implements Runnable {
 
     public static Logger LOG = Logger.getLogger(GameServer.class.getSimpleName());
 
+    // list of all stats
     public ServerState ValidationState;
     public ServerState FirstRoundState;
     public ServerState RoundState;
@@ -33,6 +35,10 @@ public class GameServer implements Runnable {
 
     private GameLogic gameLogic;
 
+    /**
+     * As explain in the documentation, the unit are sent ton the client only the next round
+     * So we have a list to track the player's units
+     */
     public LinkedList<LinkedList<Unit>> nextRoundUnit;
 
     public GameServer(int gameMode) {
@@ -56,7 +62,35 @@ public class GameServer implements Runnable {
         initNextRoundList();
     }
 
-    public void playerJoin(Client client, String name) {
+
+    public int getClientsCount() {
+        return arrivedPlayersCount;
+    }
+
+    public Client[] getClients() {
+        return clients;
+    }
+
+    public GameLogic getGameLogic() {
+        return gameLogic;
+    }
+
+    /**
+     * initilise the list
+     */
+    public void initNextRoundList() {
+        for(int i=0; i < PLAYER_COUNT;i++){
+            nextRoundUnit.add(new LinkedList<>());
+        }
+    }
+
+    /**
+     * Fonction is there to say to the connected clients that a new player join
+     * And the information to new client about the connected clients
+     * @param client
+     * @param name
+     */
+    public void playerJoin(Client client, String name) throws SocketException {
 
         LOG.info("A client joined a game server!");
 
@@ -65,8 +99,13 @@ public class GameServer implements Runnable {
 
         for (int i = 0; i < arrivedPlayersCount; ++i) {
 
-            // send newcomer to other players
-            Protocole.sendJson(player.toJson(), clients[i].getOut());
+            if(clients[i].socket.isClosed()){
+                clients[i] = null;
+            }else {
+                // send newcomer to other players
+                Protocole.sendJson(player.toJson(), clients[i].getOut());
+            }
+
 
             // send already present player to newcomer
             Protocole.sendJson(clients[i].getPlayer().toJson(), client.getOut());
@@ -92,21 +131,38 @@ public class GameServer implements Runnable {
             gameLogic = new GameLogic(players);
 
             new Thread(this).start();
+
+            SocketServer.getInstance().gameServers.add(this);
         }
     }
 
     @Override
     public void run() {
-        this.setCurrentState(ValidationState);
+        try {
+            this.setCurrentState(ValidationState);
+        } catch (SocketException e) {
+            System.out.println("broadcast End game");
+            try {
+                broadCastProtocol("CLIENTDISCONNECTED");
+            } catch (SocketException ex) {
+                ex.printStackTrace();
+            }
+            for (Client p : this.getClients()){
+                p.closeStreams();
+            }
+        }
+        int  index = SocketServer.getInstance().gameServers.indexOf(this);
+
+        SocketServer.getInstance().gameServers.remove(index);
         LOG.info("Game ended");
     }
 
-    public ServerState getCurrentState() {
-        return currentState;
-    }
-
-    public void setCurrentState(ServerState newState) {
-        broadCastMessage("END");
+    /**
+     * It syncronise the changment sate between the client and the sever based on the protocol
+     * @param newState
+     */
+    public void setCurrentState(ServerState newState) throws SocketException {
+        broadCastProtocol("END");
 
         // HACKS
         LOG.info("Wait for clients to change state from " + currentState.getId() + " to " + newState.getId());
@@ -119,30 +175,46 @@ public class GameServer implements Runnable {
         currentState.run();
     }
 
-    public void broadCastMessage(String message) {
+    /**
+     * Send a given message to all player in game
+     * @param message
+     */
+    public void broadCastProtocol(String message) throws SocketException {
         for (Client client : clients)
             sendProtocol(client.getOut(), currentState.getId(), message);
     }
-
-    public void broadCastJson(String json) {
-        for (Client client : clients) {
-            Protocole.sendJson(json, client.getOut());
-        }
+    /**
+     * Send a given json to all player in game
+     * @param json
+     */
+    public void broadCastJson(String json) throws SocketException {
+        for (Client client : clients)
+            sendJson(json, client.getOut());
     }
-
-    public void broadCastObject(Object object) {
+    /**
+     * Send a given Object to all player in game throug ObjectOutputStream
+     * @param object
+     */
+    public void broadCastObject(Object object) throws SocketException {
         for (Client client : clients) {
             sendObject(client.getOus(), object);
         }
     }
 
+    /**
+     * This fonciton is used to wait that all client response the given messge
+     * It use the Waiter object
+     * @param message
+     */
     public void waitForPlayers(String message) {
         Thread t[] = new Thread[PLAYER_COUNT];
+        //We cretae a new thread for he player
         for (Client client : clients) {
             t[client.getPlayer().ID] = new Thread(new waiter(client, message));
             t[client.getPlayer().ID].start();
         }
 
+        // Wait that all thrad finished
         for (Client client : clients) {
             try {
                 t[client.getPlayer().ID].join();
@@ -152,16 +224,9 @@ public class GameServer implements Runnable {
         }
     }
 
-    public void sendObject(ObjectOutputStream ous, Object object) {
-        try {
-            ous.writeObject(object);
-            ous.flush();
-//            ous.reset();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
+    /**
+     * The waiter object is a runnble object that launch a function on a thread to wait a message
+     */
     private class waiter implements Runnable {
         String response;
         Client client;
@@ -181,28 +246,11 @@ public class GameServer implements Runnable {
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
+                    return;
                 }
             }
 
             GameServer.LOG.info(String.format("Player %d is ready.", client.getPlayer().ID));
-        }
-    }
-
-    public int getClientsCount() {
-        return arrivedPlayersCount;
-    }
-
-    public Client[] getClients() {
-        return clients;
-    }
-
-    public GameLogic getGameLogic() {
-        return gameLogic;
-    }
-
-    public void initNextRoundList() {
-        for(int i=0; i < PLAYER_COUNT;i++){
-            nextRoundUnit.add(new LinkedList<>());
         }
     }
 }

@@ -3,16 +3,13 @@ package ch.heigvd.pro.a03.menus.game;
 import ch.heigvd.pro.a03.TowerDefense;
 import ch.heigvd.pro.a03.commands.ButtonCommand;
 import ch.heigvd.pro.a03.commands.Command;
-import ch.heigvd.pro.a03.commands.game.GameSceneCommand;
 import ch.heigvd.pro.a03.commands.game.ShowPlayingMenuCommand;
-import ch.heigvd.pro.a03.commands.scenes.MacroCommand;
+import ch.heigvd.pro.a03.commands.MacroCommand;
 import ch.heigvd.pro.a03.menus.Menu;
 import ch.heigvd.pro.a03.utils.UI;
 import ch.heigvd.pro.a03.warentities.turrets.Turret;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-
-import java.awt.*;
 
 public class TurretMenu extends Menu {
 

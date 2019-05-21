@@ -9,8 +9,17 @@ import ch.heigvd.pro.a03.utils.UI;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
+/**
+ * The game pause menu
+ */
 public class GamePauseMenu extends Menu {
 
+    /**
+     * Create the menu
+     * @param menu game menu
+     * @param scene game scene
+     * @param skin skin used
+     */
     public GamePauseMenu(GameMenu menu, GameScene scene, Skin skin) {
 
         TextButton continueButton = new TextButton("Continue", skin);

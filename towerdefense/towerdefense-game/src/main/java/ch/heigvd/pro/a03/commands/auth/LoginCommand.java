@@ -5,6 +5,9 @@ import ch.heigvd.pro.a03.menus.auth.ConnectionMenu;
 import ch.heigvd.pro.a03.users.User;
 import ch.heigvd.pro.a03.server.HttpServerUtils;
 
+/**
+ * Logs in a player
+ */
 public class LoginCommand extends AuthCommand {
 
     private ConnectionMenu menu;

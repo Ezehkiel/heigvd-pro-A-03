@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.scenes.MainMenuScene;
 import ch.heigvd.pro.a03.scenes.SceneManager;
 import ch.heigvd.pro.a03.users.User;
+import ch.heigvd.pro.a03.utils.Config;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
@@ -20,6 +21,8 @@ public class GameLauncher implements ApplicationListener {
     static public final String TITLE = "Tower Defense";
     static public final int WIDTH = 1280;
     static public final int HEIGHT = 768;
+
+    private Music music;
 
     private User connectedPlayer;
 
@@ -79,12 +82,22 @@ public class GameLauncher implements ApplicationListener {
     @Override
     public void create () {
 
-        mp3Music = Gdx.audio.newMusic(Gdx.files.internal("/Users/andresmoreno/Documents/HEIG-VD/Second Year/Second Semester/PRO/heigvd-pro-A-03/towerdefense/towerdefense-game/src/main/resources/assets/Distant Tales .mp3"));
-        mp3Music.play();
-        mp3Music.setLooping(true);
+        music = Gdx.audio.newMusic(Gdx.files.internal("assets/Distant Tales .mp3"));
+        music.setLooping(true);
+        updateMusic();
 
         sceneManager.add(new MainMenuScene());
+    }
 
+    /**
+     * Starts or stop the music depend of the configs.
+     */
+    public void updateMusic() {
+        if (Boolean.valueOf(Config.getProperty("music-on"))) {
+            music.play();
+        } else {
+            music.stop();
+        }
     }
 
     @Override
@@ -125,6 +138,9 @@ public class GameLauncher implements ApplicationListener {
 
     }
 
+    /**
+     * Closes every scenes and exits the application
+     */
     public void exit() {
 
         while (sceneManager.hasScene()) {

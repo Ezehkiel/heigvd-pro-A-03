@@ -27,6 +27,9 @@ import org.lwjgl.Sys;
 
 import java.awt.*;
 
+/**
+ * Game scene
+ */
 public class GameScene extends Scene {
 
     private static final float CAMERA_SPEED = 5f;
@@ -44,6 +47,10 @@ public class GameScene extends Scene {
     private SpriteBatch spriteBatch;
     private ShapeRenderer shapeRenderer;
 
+    /**
+     * Create the scene.
+     * @param gameClient game client
+     */
     public GameScene(GameClient gameClient) {
 
         spriteBatch = new SpriteBatch();
@@ -65,6 +72,13 @@ public class GameScene extends Scene {
         );
 
         game = new TowerDefense(this, gameClient);
+    }
+
+    @Override
+    public void leave() {
+        super.leave();
+
+        game.getGameClient().close();
     }
 
     @Override
@@ -102,6 +116,9 @@ public class GameScene extends Scene {
         tiledMapManager.dispose();
     }
 
+    /**
+     * Moves the camera with use inputs
+     */
     public void updateCamera() {
 
         if (Gdx.input.isKeyPressed(Input.Keys.W)) {
@@ -129,6 +146,11 @@ public class GameScene extends Scene {
         gameCamera.update();
     }
 
+    /**
+     * Process a click on the map
+     * @param mouseX x-axis mouse coordinate
+     * @param mouseY y-axis mouse coordinate
+     */
     public void clickMap(float mouseX, float mouseY) {
 
         Vector3 mousePosition = new Vector3(mouseX, mouseY, 0);
@@ -175,22 +197,33 @@ public class GameScene extends Scene {
         }
     }
 
+    /**
+     * Update the tiled ma manager
+     */
     public void updateMaps() {
         tiledMapManager.update(game.getMaps());
     }
 
+    /**
+     * Selects a turret to place
+     * @param turretType turret type
+     */
     public void selectTurret(WarEntityType.TurretType turretType) {
         selectedTurretType = turretType;
     }
 
-    public void clearSelectedTurret() {
-        selectedTurretType = null;
-    }
-
+    /**
+     * Gets the game menu
+     * @return game menu
+     */
     public GameMenu getGameMenu() {
         return gameMenu;
     }
 
+    /**
+     * Gets the tower defense game
+     * @return tower defense game
+     */
     public TowerDefense getGame() {
         return game;
     }

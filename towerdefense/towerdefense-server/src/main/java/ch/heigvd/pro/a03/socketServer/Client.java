@@ -8,6 +8,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * Object used to save all stream about the client and proivde usefull getters and setteers
+ */
 public class Client {
 
     Socket socket;
@@ -58,5 +61,19 @@ public class Client {
 
     public Socket getSocket() {
         return socket;
+    }
+
+    public void closeStreams() {
+        try{
+            in.close();
+            out.close();
+            ous.close();
+            ois.close();
+
+            socket.close();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+
     }
 }
