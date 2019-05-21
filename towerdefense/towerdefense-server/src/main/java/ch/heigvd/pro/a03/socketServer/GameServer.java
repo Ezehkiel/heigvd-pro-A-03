@@ -99,8 +99,13 @@ public class GameServer implements Runnable {
 
         for (int i = 0; i < arrivedPlayersCount; ++i) {
 
-            // send newcomer to other players
-            Protocole.sendJson(player.toJson(), clients[i].getOut());
+            if(clients[i].socket.isClosed()){
+                clients[i] = null;
+            }else {
+                // send newcomer to other players
+                Protocole.sendJson(player.toJson(), clients[i].getOut());
+            }
+
 
             // send already present player to newcomer
             Protocole.sendJson(clients[i].getPlayer().toJson(), client.getOut());
