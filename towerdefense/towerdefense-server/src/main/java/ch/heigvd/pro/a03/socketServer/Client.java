@@ -69,6 +69,8 @@ public class Client {
             out.close();
             ous.close();
             ois.close();
+
+            socket.close();
         }catch (IOException e){
             e.printStackTrace();
         }
