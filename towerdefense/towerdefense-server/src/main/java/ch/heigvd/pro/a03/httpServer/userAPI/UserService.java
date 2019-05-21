@@ -126,7 +126,7 @@ public class UserService {
      * @param req Request This is the request that we received from the client
      * @return
      */
-    public User updateUser(Request req) throws UserException {
+    public User updateUser(Request req) {
         LOG.log(Level.INFO, "Request: update an user");
 
         String password = this.gson.fromJson(req.body(), User.class).
@@ -145,7 +145,7 @@ public class UserService {
      * @param req this is the request that we received from the client
      * @return a JSONObect with the token and the user
      */
-    public JSONObject loginUser(Request req) throws UserException {
+    public JSONObject loginUser(Request req) {
 
         LOG.log(Level.INFO, "Request: check that an user can login");
         /* Get the username and password from the JSON */

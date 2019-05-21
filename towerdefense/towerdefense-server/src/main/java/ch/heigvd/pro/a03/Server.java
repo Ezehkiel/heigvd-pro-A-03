@@ -3,6 +3,10 @@ package ch.heigvd.pro.a03;
 import ch.heigvd.pro.a03.httpServer.HttpServer;
 import ch.heigvd.pro.a03.socketServer.SocketServer;
 
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.Properties;
+
 import static spark.Spark.secure;
 
 /**
@@ -24,11 +28,25 @@ public class Server {
         System.setProperty("java.util.logging.SimpleFormatter.format", "%4$s: %5$s%6$s%n");
 
         if (HAS_HTTP) {
-            System.out.println("Launching HTTP server ...");
 
-            String keyStoreLocation = "towerdefense-server/deploy/keystore.jks";
-            String keyStorePassword = "pro2019heig";
-            secure(keyStoreLocation, keyStorePassword, null, null);
+            /* Get properties from the config file of the server */
+            Properties defaults = new Properties();
+            try {
+                defaults.load(new FileReader("./deploy/config.properties"));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            boolean https = Boolean.parseBoolean(defaults.getProperty("https"));
+
+            if(https){
+
+                System.out.println("HTTPS is enabled");
+                String password = defaults.getProperty("keystorePassword");
+                String keyStoreLocation = "towerdefense-server/deploy/keystore.jks";
+                secure(keyStoreLocation, password, null, null);
+            }
+            System.out.println("Launching HTTP server ...");
 
 
             // Run HTTP on other thread;
