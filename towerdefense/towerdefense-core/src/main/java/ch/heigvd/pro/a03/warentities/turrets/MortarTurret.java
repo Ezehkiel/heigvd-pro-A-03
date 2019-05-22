@@ -19,7 +19,7 @@ public class MortarTurret extends Turret {
      * @param defPoint defense points
      * @param attackCoolDown attack cool down
      * @param attackPoints attack points
-     * @param range
+     * @param range range of attack
      * @param price the cost of the turret
      */
     public MortarTurret(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int attackPoints,
@@ -35,8 +35,8 @@ public class MortarTurret extends Turret {
      * @param position the position at the grid
      */
     public MortarTurret(Point position){
-        this("Mortar",position,500,1500,10,
-                100,10,200);
+        this("Mortar",position,500,500,10,
+                200,5,200);
     }
 
     @Override

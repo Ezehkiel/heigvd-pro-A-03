@@ -18,7 +18,7 @@ public class MachineGunTurret extends Turret {
      * @param defPoint defense points
      * @param attackCoolDown attack cool down
      * @param attackPoints attack points
-     * @param range
+     * @param range range of attack
      * @param price the cost of the turret
      */
     public MachineGunTurret(String name,Point position,int totalHealth, int defPoint,int attackCoolDown, int attackPoints, int range,int price) {
@@ -33,7 +33,8 @@ public class MachineGunTurret extends Turret {
      */
 
     public MachineGunTurret(Point position){
-        this("MachineGun",position,500,1500,10,200,10,200);
+        this("MachineGun",position,500,500,
+                10,150,4,150);
     }
 
     @Override
