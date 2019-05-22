@@ -21,7 +21,7 @@ public abstract class Turret extends Structure {
      * @param defPoint defense points
      * @param attackCoolDown attack cool down
      * @param attackPoints attack points
-     * @param range
+     * @param range range of attack
      * @param price the cost in order to buy it
      * @param type the turret type
      */

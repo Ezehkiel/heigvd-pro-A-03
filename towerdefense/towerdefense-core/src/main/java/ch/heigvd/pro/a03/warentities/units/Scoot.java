@@ -5,7 +5,7 @@ import ch.heigvd.pro.a03.warentities.WarEntityType;
 import java.awt.*;
 
 /***
- * Class representing a Soldier
+ * Class representing a Scoot
  * @Author Andres Moreno
  */
 public class Scoot extends Unit {
@@ -18,7 +18,7 @@ public class Scoot extends Unit {
      * @param defPoint defense points
      * @param attackCoolDown attack cool down
      * @param attackPoints attack points
-     * @param range
+     * @param range the range of attack
      * @param price the cost in order to buy it
      */
     public Scoot(String name, Point position, int totalHealth,
@@ -36,7 +36,8 @@ public class Scoot extends Unit {
      * @param position the position at the grid
      */
     public Scoot(Point position){
-        this("Soldier", position,180,150,7,3,80,2,75);
+        this("Soldier", position,300,150,7,
+                3,100,2,100);
     }
 
     @Override

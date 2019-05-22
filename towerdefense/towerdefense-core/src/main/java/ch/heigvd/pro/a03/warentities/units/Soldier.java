@@ -37,8 +37,8 @@ public class Soldier extends Unit {
      * @param position the position at the gird
      */
     public Soldier(Point position){
-        this("Soldier", position,200,200,10,
-                5,100,3,200);
+        this("Soldier", position,400,200,10,
+                5,150,3,150);
     }
 
     @Override
