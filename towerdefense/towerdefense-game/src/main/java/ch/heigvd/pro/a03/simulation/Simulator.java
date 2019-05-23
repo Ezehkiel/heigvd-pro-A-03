@@ -190,11 +190,13 @@ public class Simulator {
 
         Point position = entity.getPosition();
 
-        int offsetX = TowerDefense.MAP_WIDTH * map.ID + map.ID;
+        TiledMapManager tiledMapManager = game.getScene().getTiledMapManager();
 
-        int displayX = position.x + offsetX;
-        int displayY = map.ID == playerId ? position.y :
-                TowerDefense.MAP_HEIGHT - position.y - 1;
+        int mapPosition = tiledMapManager.mapPosition(map.ID);
+        int offsetX = tiledMapManager.xOffset(mapPosition);
+
+        int displayX = tiledMapManager.xDisplay(position.x, offsetX);
+        int displayY = tiledMapManager.yDisplay(position.y, mapPosition);
 
         if (entity instanceof Unit) {
 

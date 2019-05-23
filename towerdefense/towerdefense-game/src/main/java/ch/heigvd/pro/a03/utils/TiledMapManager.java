@@ -96,13 +96,14 @@ public class TiledMapManager {
         TiledMapTileLayer effectLayer = (TiledMapTileLayer) tiledMap.getLayers().get(EFFECT_LAYER);
         for (int i = 0; i < MAP_COUNT; ++i) {
 
-            int offsetX = MAP_WIDTH * i + i;
+            int mapPosition = mapPosition(i);
+            int offsetX = xOffset(mapPosition);
 
             for (int x = 0; x < MAP_WIDTH; ++x) {
                 for (int y = 0; y < MAP_HEIGHT; ++y) {
 
-                    int displayX = x + offsetX;
-                    int displayY = i == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
+                    int displayX = xDisplay(x, offsetX);
+                    int displayY = yDisplay(y, mapPosition);
 
                     TiledMapTileLayer.Cell cell = layer.getCell(displayX, displayY);
                     TiledMapTileLayer.Cell effectCell = effectLayer.getCell(displayX, displayY);
@@ -124,11 +125,6 @@ public class TiledMapManager {
                             texture = baseTexture;
                         }
 
-                        Sprite sprite = new Sprite(texture);
-                        if (structure.isEntityDestroyed()) {
-                            sprite.setAlpha(0.5f);
-                        }
-
                         cell.setTile(new StaticTiledMapTile(new TextureRegion(texture)));
 
                         if (structure.isEntityDestroyed()) {
@@ -145,16 +141,16 @@ public class TiledMapManager {
                 }
             }
 
-            int displayX = maps[i].getSpawnPoint().x + offsetX;
-            int displayY = i == PLAYER_ID ? maps[i].getSpawnPoint().y : MAP_HEIGHT - maps[i].getSpawnPoint().y - 1;
+            int displayX = xDisplay(maps[i].getSpawnPoint().x, offsetX);
+            int displayY = yDisplay(maps[i].getSpawnPoint().y, mapPosition);
             layer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(spawnTexture)));
         }
     }
 
     public void addEffect(int mapId, int x, int y) {
-        int offsetX = MAP_WIDTH * mapId + mapId;
-        int displayX = x + offsetX;
-        int displayY = mapId == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
+        int mapPosition = mapPosition(mapId);
+        int displayX = xDisplay(x, xOffset(mapPosition));
+        int displayY = yDisplay(y, mapPosition);
 
         TiledMapTileLayer effectLayer = (TiledMapTileLayer) tiledMap.getLayers().get(EFFECT_LAYER);
         effectLayer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(destroyedTexture)));
@@ -166,5 +162,42 @@ public class TiledMapManager {
 
     public void dispose() {
         tiledMap.dispose();
+    }
+
+    public int mapId(int mapPosition) {
+        if (mapPosition == 0) {
+            return PLAYER_ID;
+        }
+
+        if (mapPosition - 1 < PLAYER_ID) {
+            return mapPosition - 1;
+        }
+
+        return mapPosition;
+    }
+
+    public int mapPosition(int mapId) {
+
+        if (mapId == PLAYER_ID) {
+            return 0;
+        }
+
+        if (mapId < PLAYER_ID) {
+            return mapId + 1;
+        }
+
+        return mapId;
+    }
+
+    public int xOffset(int mapPosition) {
+        return MAP_WIDTH * mapPosition + mapPosition;
+    }
+
+    public int xDisplay(int x, int xOffset) {
+        return x + xOffset;
+    }
+
+    public int yDisplay(int y, int mapPosition) {
+        return mapPosition == 0 ? y : MAP_HEIGHT - y - 1;
     }
 }
