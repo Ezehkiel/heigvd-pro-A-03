@@ -15,6 +15,10 @@ import java.awt.*;
  */
 public class ShowMapsCommand extends TowerDefenseCommand {
 
+    /**
+     * Creates a new command.
+     * @param receiver the receiver
+     */
     public ShowMapsCommand(TowerDefense receiver) {
         super(receiver);
     }
