@@ -227,4 +227,12 @@ public class GameScene extends Scene {
     public TowerDefense getGame() {
         return game;
     }
+
+    /**
+     * Gets the tiled map manager
+     * @return tiled map manager
+     */
+    public TiledMapManager getTiledMapManager() {
+        return tiledMapManager;
+    }
 }

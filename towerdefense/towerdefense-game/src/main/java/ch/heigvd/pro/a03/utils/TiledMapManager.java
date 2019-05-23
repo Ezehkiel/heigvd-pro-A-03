@@ -8,6 +8,7 @@ import ch.heigvd.pro.a03.warentities.turrets.MachineGunTurret;
 import ch.heigvd.pro.a03.warentities.turrets.MortarTurret;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
@@ -19,6 +20,7 @@ public class TiledMapManager {
 
     public static final int TILE_SIZE = 64;
     private static final int TURRET_LAYER = 1;
+    private static final int EFFECT_LAYER = 2;
 
     private final int MAP_WIDTH;
     private final int MAP_HEIGHT;
@@ -37,6 +39,7 @@ public class TiledMapManager {
     private Texture mortarTexture;
     private Texture laserGunTexture;
     private Texture tileTexture;
+    private Texture destroyedTexture;
     private final int PLAYER_ID;
 
     public TiledMapManager(int width, int height, int mapCount, int playerId) {
@@ -48,6 +51,7 @@ public class TiledMapManager {
         mortarTexture = new Texture(Gdx.files.internal("assets/turrets/Mortar.png"));
         laserGunTexture = new Texture(Gdx.files.internal("assets/turrets/LaserGun.png"));
         tileTexture = new Texture(Gdx.files.internal("assets/Tile.png"));
+        destroyedTexture = new Texture(Gdx.files.internal("assets/Destroyed.png"));
 
         MAP_WIDTH = width;
         MAP_HEIGHT = height;
@@ -60,6 +64,7 @@ public class TiledMapManager {
         tiledMap = new TiledMap();
         TiledMapTileLayer backgroundLayer = new TiledMapTileLayer(FULL_WIDTH, FULL_HEIGHT, TILE_SIZE, TILE_SIZE);
         TiledMapTileLayer turretLayer = new TiledMapTileLayer(FULL_WIDTH, FULL_HEIGHT, TILE_SIZE, TILE_SIZE);
+        TiledMapTileLayer effectLayer = new TiledMapTileLayer(FULL_WIDTH, FULL_HEIGHT, TILE_SIZE, TILE_SIZE);
 
         for (int i = 0; i < MAP_COUNT; ++i) {
 
@@ -73,12 +78,14 @@ public class TiledMapManager {
                     backgroundLayer.setCell(x + offsetX, y, cell);
 
                     turretLayer.setCell(x + offsetX, y, new TiledMapTileLayer.Cell());
+                    effectLayer.setCell(x + offsetX, y, new TiledMapTileLayer.Cell());
                 }
             }
         }
 
         tiledMap.getLayers().add(backgroundLayer); // Background Layer
         tiledMap.getLayers().add(turretLayer); // Turret Layer
+        tiledMap.getLayers().add(effectLayer); // Effect Layer
 
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
@@ -86,6 +93,7 @@ public class TiledMapManager {
     public void update(Map[] maps) {
 
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(TURRET_LAYER);
+        TiledMapTileLayer effectLayer = (TiledMapTileLayer) tiledMap.getLayers().get(EFFECT_LAYER);
         for (int i = 0; i < MAP_COUNT; ++i) {
 
             int offsetX = MAP_WIDTH * i + i;
@@ -97,6 +105,7 @@ public class TiledMapManager {
                     int displayY = i == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
 
                     TiledMapTileLayer.Cell cell = layer.getCell(displayX, displayY);
+                    TiledMapTileLayer.Cell effectCell = effectLayer.getCell(displayX, displayY);
                     Structure structure = maps[i].getStructureAt(y, x);
                     if (structure != null) {
 
@@ -115,11 +124,23 @@ public class TiledMapManager {
                             texture = baseTexture;
                         }
 
+                        Sprite sprite = new Sprite(texture);
+                        if (structure.isEntityDestroyed()) {
+                            sprite.setAlpha(0.5f);
+                        }
+
                         cell.setTile(new StaticTiledMapTile(new TextureRegion(texture)));
+
+                        if (structure.isEntityDestroyed()) {
+                            effectCell.setTile(new StaticTiledMapTile(new TextureRegion(destroyedTexture)));
+                        } else {
+                            effectCell.setTile(null);
+                        }
 
                     } else {
 
                         cell.setTile(null);
+                        effectCell.setTile(null);
                     }
                 }
             }
@@ -128,6 +149,15 @@ public class TiledMapManager {
             int displayY = i == PLAYER_ID ? maps[i].getSpawnPoint().y : MAP_HEIGHT - maps[i].getSpawnPoint().y - 1;
             layer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(spawnTexture)));
         }
+    }
+
+    public void addEffect(int mapId, int x, int y) {
+        int offsetX = MAP_WIDTH * mapId + mapId;
+        int displayX = x + offsetX;
+        int displayY = mapId == PLAYER_ID ? y : MAP_HEIGHT - y - 1;
+
+        TiledMapTileLayer effectLayer = (TiledMapTileLayer) tiledMap.getLayers().get(EFFECT_LAYER);
+        effectLayer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(destroyedTexture)));
     }
 
     public TiledMapRenderer getRenderer() {

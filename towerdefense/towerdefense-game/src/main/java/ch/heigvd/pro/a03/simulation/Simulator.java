@@ -35,14 +35,16 @@ public class Simulator {
     private HashMap<Integer, Point> offsets;
     private HashMap<Integer, Animator> animators;
     private ArrayList<Bullet> bullets;
+    private TowerDefense game;
 
     /**
      * Creates a new simulation
      * @param map map
      * @param playerId player id
      */
-    public Simulator(Map map, int playerId) {
+    public Simulator(TowerDefense game, Map map, int playerId) {
 
+        this.game = game;
         this.map = map;
         this.playerId = playerId;
         entities = new HashMap<>();
@@ -125,6 +127,12 @@ public class Simulator {
 
         WarEntity entity = entities.get(event.ENTITY_ID);
         entity.kill();
+
+        if (entity instanceof Structure) {
+            game.getScene().getTiledMapManager().addEffect(
+                    map.ID, entity.getPosition().x, entity.getPosition().y
+            );
+        }
     }
 
     /**
