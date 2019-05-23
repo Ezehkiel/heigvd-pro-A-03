@@ -18,7 +18,7 @@ public class Tank extends Unit {
      * @param defPoint defense points
      * @param attackCoolDown attack cool down
      * @param attackPoints attack points
-     * @param range
+     * @param range the range of attack
      * @param price the cost in order to buy it
      */
     public Tank(String name, Point position, int totalHealth,
@@ -37,7 +37,7 @@ public class Tank extends Unit {
      */
     public Tank(Point position){
         this("Tank", position,500,500,10,15,
-                500,4,500);
+                200,4,200);
     }
 
     @Override
