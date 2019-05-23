@@ -8,6 +8,10 @@ import ch.heigvd.pro.a03.menus.auth.AuthMenu;
  */
 public class LogoutCommand extends AuthCommand {
 
+    /**
+     * Creates a new player log out command.
+     * @param receiver the receiver
+     */
     public LogoutCommand(AuthMenu receiver) {
         super(receiver);
     }

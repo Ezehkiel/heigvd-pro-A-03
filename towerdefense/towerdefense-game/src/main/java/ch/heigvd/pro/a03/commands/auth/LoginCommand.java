@@ -12,6 +12,11 @@ public class LoginCommand extends AuthCommand {
 
     private ConnectionMenu menu;
 
+    /**
+     * Creates a new player login command.
+     * @param menu the connection menu
+     * @param receiver the receiver
+     */
     public LoginCommand(ConnectionMenu menu, AuthMenu receiver) {
         super(receiver);
         this.menu = menu;
