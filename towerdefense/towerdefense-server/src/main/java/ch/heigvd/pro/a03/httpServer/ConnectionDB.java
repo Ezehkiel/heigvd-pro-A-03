@@ -1,5 +1,7 @@
 package ch.heigvd.pro.a03.httpServer;
 
+import ch.heigvd.pro.a03.Server;
+
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -35,10 +37,9 @@ public class ConnectionDB {
         try {
             // Mise en place du driver
             Class.forName("org.postgresql.Driver");
-            String hostDB = "jdbc:postgresql://127.0.0.1:5432/towerdefense";
-            String userDB = "toweruser";
-            String passwordDB = "OTE5M2NhYmVmNjI0ZjI2ZWM0NjRhMjVl";
-            this.connection = DriverManager.getConnection(hostDB, userDB, passwordDB);
+            String url = "jdbc:postgresql://" + Server.getDatabaseAddress() +
+                    ":" + Server.getDatabasePort() + "/" + Server.getDatabaseName();
+            this.connection = DriverManager.getConnection(url, Server.getDatabaseUser(), Server.getDatabasePassword());
 
         } catch (Exception e) {
             LOG.log(Level.SEVERE, "Error with the connection to the database");
