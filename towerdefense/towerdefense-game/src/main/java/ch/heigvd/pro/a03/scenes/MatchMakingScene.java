@@ -30,7 +30,6 @@ public class MatchMakingScene extends Scene {
 
         gameClient.setMatchMakingScene(this);
         gameClient.connect(args -> connected());
-
     }
 
     private void connected() {
