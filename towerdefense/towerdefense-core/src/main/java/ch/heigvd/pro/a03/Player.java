@@ -7,30 +7,57 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
+/**
+ * Information about a player used inside the game
+ * @Author Andres Moreno
+ */
 public class Player implements Serializable {
 
     private String name;
     private int money;
     public final int ID;
 
+    /**
+     * Constructor
+     * @param ID in game id
+     * @param name the username
+     * @param money the current amount of money
+     */
     private Player(int ID, String name, int money) {
         this.ID = ID;
         this.name = name;
         this.money = money;
     }
 
+    /**
+     * Constructor
+     * @param id in game id
+     * @param name the player's username
+     */
     public Player(int id, String name) {
         this(id, name, 3500);
     }
 
+    /**
+     * Getter for the name
+     * @return the name
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for the money
+     * @return the money
+     */
     public int getMoney() {
         return money;
     }
 
+    /**
+     * Function that add an amount of monex to the player
+     * @param money
+     */
     public void addMoney(int money){
 
         if(money>=0) {
@@ -38,6 +65,10 @@ public class Player implements Serializable {
         }
     }
 
+    /**
+     * Function that remove an amount of money
+     * @param money the amount to remove
+     */
     public void removeMoney(int money) {
         if (money>=0) {
             if (this.money - money >= 0) {
@@ -48,29 +79,29 @@ public class Player implements Serializable {
 
         }
     }
+
+    /**
+     * Getter for the player throug the ObjectOutputStream
+     * @param in Object input stream
+     * @return the player
+     */
     public static Player getPlayer(ObjectInputStream in) {
         Player player = null;
         try {
             player = (Player) in.readObject();
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            //e.printStackTrace();
         }
 
         System.out.println(player);
 
         return player;
     }
-    public static void sendPlayer(Player player, ObjectOutputStream out) {
-        try {
-            out.writeObject(player);
-            out.flush();
-//            out.reset();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
+    /**
+     * Parse the player to json as a string
+     * @return the json
+     */
     public String toJson() {
 
         JSONObject player = new JSONObject();
@@ -81,6 +112,11 @@ public class Player implements Serializable {
         return player.toString();
     }
 
+    /**
+     * Creat a player from json
+     * @param json the source json
+     * @return the player created
+     */
     public static Player fromJson(String json) {
 
         JSONObject object = new JSONObject(json);
