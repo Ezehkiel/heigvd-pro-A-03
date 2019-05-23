@@ -7,11 +7,11 @@ import java.util.logging.Logger;
 /**
  * This class make the connection with the database.
  *
- * @author
+ * @author Remi Poulard
  */
 public class ConnectionDB {
 
-    final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
+    private final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
     private static ConnectionDB instance;
     private Connection connection;
 
