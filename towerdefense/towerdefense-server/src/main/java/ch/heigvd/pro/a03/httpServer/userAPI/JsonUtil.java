@@ -7,7 +7,11 @@ import com.google.gson.GsonBuilder;
 import spark.ResponseTransformer;
 
 /**
- * This class is used to format response with a JSON format
+ * This class is used to format response with a JSON format.
+ * We have an SerializationExclusionStrategy to remove password
+ * from the serialization
+ *
+ * @author Remi Poulard
  */
 public class JsonUtil {
 
