@@ -1,5 +1,6 @@
 package ch.heigvd.pro.a03.httpServer;
 
+import ch.heigvd.pro.a03.Server;
 import ch.heigvd.pro.a03.httpServer.userAPI.UserController;
 import ch.heigvd.pro.a03.httpServer.userAPI.UserService;
 import com.auth0.jwt.JWT;
@@ -18,16 +19,16 @@ import static spark.Spark.port;
  */
 public class HttpServer implements Runnable {
 
-    final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
+    private final static Logger LOG = Logger.getLogger(HttpServer.class.getName());
 
-    int port;
+    private int port;
     private String token;
     private static HttpServer instance;
 
 
     public static HttpServer getInstance() {
         if(instance == null){
-            instance = new HttpServer(3945);
+            instance = new HttpServer(Integer.parseInt(Server.getServerPort()));
         }
         return instance;
     }
