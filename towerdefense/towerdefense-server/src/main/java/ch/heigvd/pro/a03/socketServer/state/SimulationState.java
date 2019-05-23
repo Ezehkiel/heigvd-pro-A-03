@@ -56,8 +56,20 @@ public class SimulationState extends ServerState {
                                 winnerUser.getId() + "\", \"idLoser\": \"" + loserUser.getId() + "\"}";
                         HttpURLConnection connection = null;
                         try {
+                            StringBuilder url = new StringBuilder();
+                            if(Server.isHttps()){
+                                url.append("https://");
+                            }else{
+                                url.append("http://");
+                            }
+                            url.append(Server.getServerHTTP());
+                            url.append(":");
+                            url.append(Server.getServerPort());
+                            url.append("/users/scores");
 
-                            connection = (HttpURLConnection) new URL("https://ezehkiel.ch:3945/users/scores").openConnection();
+
+
+                            connection = (HttpURLConnection) new URL(url.toString()).openConnection();
                             connection.setRequestMethod("POST");
                             connection.setDoOutput(true);
                             OutputStream os = connection.getOutputStream();

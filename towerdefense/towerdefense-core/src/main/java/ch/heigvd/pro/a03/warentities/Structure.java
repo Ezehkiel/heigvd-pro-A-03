@@ -32,6 +32,10 @@ public abstract class Structure extends WarEntity {
     @Override
     public void update(int tickId, Map map) {
 
+        if (isEntityDestroyed()) {
+            return;
+        }
+
         attackTics++;
 
         if(attackTics == this.getAttackCoolDown()){

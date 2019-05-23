@@ -19,6 +19,10 @@ public class Server {
 
     public static boolean HAS_HTTP;
 
+    private static String serverHTTP;
+    private static String serverPort;
+    private static boolean https;
+
     public static void main(String[] args) {
 
 
@@ -37,7 +41,9 @@ public class Server {
                 e.printStackTrace();
             }
 
-            boolean https = Boolean.parseBoolean(defaults.getProperty("https"));
+            https = Boolean.parseBoolean(defaults.getProperty("https"));
+            serverHTTP = defaults.getProperty("serverHTTP");
+            serverPort = defaults.getProperty("serverPort");
 
             if(https){
 
@@ -55,5 +61,17 @@ public class Server {
 
         System.out.println("Launching game server ...");
         new Thread(SocketServer.getInstance()).start();
+    }
+
+    public static String getServerHTTP() {
+        return serverHTTP;
+    }
+
+    public static String getServerPort() {
+        return serverPort;
+    }
+
+    public static boolean isHttps() {
+        return https;
     }
 }
