@@ -16,6 +16,9 @@ public class SpawnEvent extends SimEvent {
         this.SPAWN_POINT = spawnPoint;
     }
 
+    /**
+     * @return Object parsed to string
+     */
     @Override
     public String toString() {
         return super.toString() + ", dest: (" + SPAWN_POINT.x + ", " + SPAWN_POINT.y + "), type: " + UNIT_TYPE.name();
