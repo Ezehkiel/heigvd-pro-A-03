@@ -44,6 +44,8 @@ public class Map implements Serializable {
         this.col = col;
         structures = new Structure[row][col];
         units = new LinkedList<>();
+        spawnedUnits = new LinkedList<>();
+        unspawnedUnits = new LinkedList<>();
         this.base = base;
         this.spawnPoint = spawnPoint;
         setStructureAt(base, base.getPosition().y, base.getPosition().x);
@@ -184,6 +186,7 @@ public class Map implements Serializable {
     }
 
     private void spawnAUnit(int tickId){
+        if(unspawnedUnits.isEmpty()) return;
         Unit u = unspawnedUnits.pop();
         spawnedUnits.add(u);
         EventManager.getInstance().addEvent(new SpawnEvent(tickId,u.getId(),u.TYPE,getSpawnPoint(),ID));
