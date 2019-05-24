@@ -1,8 +1,9 @@
 package ch.heigvd.pro.a03.httpServer;
 
+
+import ch.heigvd.pro.a03.httpServer.userAPI.UserRouter;
 import ch.heigvd.pro.a03.Server;
 import ch.heigvd.pro.a03.httpServer.userAPI.UserController;
-import ch.heigvd.pro.a03.httpServer.userAPI.UserService;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 
@@ -55,7 +56,7 @@ public class HttpServer implements Runnable {
     public void run() {
         LOG.info("Starting the http server on port :" + this.port);
 
-        new UserController(new UserService());
+        new UserRouter(new UserController());
     }
 
     /**

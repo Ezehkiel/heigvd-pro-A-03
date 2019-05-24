@@ -18,7 +18,6 @@ import static spark.Spark.secure;
 public class Server {
 
     public static boolean HAS_HTTP;
-
     private static String serverHTTP;
     private static String serverPort;
     private static String databasePort;
