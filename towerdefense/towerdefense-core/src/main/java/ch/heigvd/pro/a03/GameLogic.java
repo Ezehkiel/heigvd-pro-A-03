@@ -113,11 +113,6 @@ public class GameLogic {
         EventManager.getInstance().clearEvents();
         nbTick = 0;
 
-        for(Map m :  maps){
-            for(Unit u : m.getUnits()){
-                EventManager.getInstance().addEvent(new SpawnEvent(nbTick,u.getId(),u.TYPE,m.getSpawnPoint(),m.ID));
-            }
-        }
 
         while (!endRound && !endMatch) {
 
@@ -140,7 +135,7 @@ public class GameLogic {
         endRound = false;
 
         for(Map m: maps){
-            m.getUnits().clear();
+            m.clearUnits();
         }
     }
 

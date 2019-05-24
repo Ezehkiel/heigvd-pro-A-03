@@ -1,5 +1,6 @@
 package ch.heigvd.pro.a03;
 
+import ch.heigvd.pro.a03.event.simulation.SpawnEvent;
 import ch.heigvd.pro.a03.warentities.Base;
 import ch.heigvd.pro.a03.warentities.Structure;
 import ch.heigvd.pro.a03.warentities.WarEntity;
@@ -21,6 +22,8 @@ public class Map implements Serializable {
 
     private Structure[][] structures;
     private LinkedList<Unit> units;
+    private LinkedList<Unit> unspawnedUnits;
+    private LinkedList<Unit> spawnedUnits;
     private int row;
     private int col;
     private Base base;
@@ -41,6 +44,8 @@ public class Map implements Serializable {
         this.col = col;
         structures = new Structure[row][col];
         units = new LinkedList<>();
+        spawnedUnits = new LinkedList<>();
+        unspawnedUnits = new LinkedList<>();
         this.base = base;
         this.spawnPoint = spawnPoint;
         setStructureAt(base, base.getPosition().y, base.getPosition().x);
@@ -96,6 +101,7 @@ public class Map implements Serializable {
      */
     public void addUnit(Unit u) {
         units.add(u);
+        unspawnedUnits.add(u);
     }
 
 
@@ -109,6 +115,8 @@ public class Map implements Serializable {
 
     public void setUnits(LinkedList<Unit> units) {
         this.units = units;
+        this.unspawnedUnits = units;
+        this.spawnedUnits.clear();
     }
 
     public LinkedList<Unit> getUnits() {
@@ -139,7 +147,9 @@ public class Map implements Serializable {
             }
         }
 
-        for (Unit u : units) {
+        spawnAUnit(tickId);
+
+        for (Unit u : spawnedUnits) {
             u.update(tickId, this);
         }
     }
@@ -169,6 +179,17 @@ public class Map implements Serializable {
     public boolean isEndMatch() {
         endMatch = base.isEntityDestroyed();
         return endMatch;
+    }
+
+    public void clearUnits(){
+        units.clear();
+    }
+
+    private void spawnAUnit(int tickId){
+        if(unspawnedUnits.isEmpty()) return;
+        Unit u = unspawnedUnits.pop();
+        spawnedUnits.add(u);
+        EventManager.getInstance().addEvent(new SpawnEvent(tickId,u.getId(),u.TYPE,getSpawnPoint(),ID));
     }
 
 
