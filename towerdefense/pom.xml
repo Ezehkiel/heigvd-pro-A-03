@@ -6,7 +6,7 @@
     <groupId>ch.heigvd.pro.a03</groupId>
     <artifactId>towerdefense</artifactId>
     <packaging>pom</packaging>
-    <version>0.0</version>
+    <version>1.0</version>
 
     <name>Tower Defense</name>
     <build>
