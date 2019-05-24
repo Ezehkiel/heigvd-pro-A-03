@@ -19,6 +19,7 @@ public class GameLogic {
     private boolean endMatch;
     private boolean endRound;
     private int nbTick;
+    private int nbRound;
 
 
     /**
@@ -33,6 +34,7 @@ public class GameLogic {
         endRound = false;
         entityCount = 0;
         nbTick = 0;
+        nbRound = 0;
     }
 
     /***
@@ -110,14 +112,11 @@ public class GameLogic {
      */
     public void playRound() {
 
+        nbRound++;
+
         EventManager.getInstance().clearEvents();
         nbTick = 0;
 
-        for(Map m :  maps){
-            for(Unit u : m.getUnits()){
-                EventManager.getInstance().addEvent(new SpawnEvent(nbTick,u.getId(),u.TYPE,m.getSpawnPoint(),m.ID));
-            }
-        }
 
         while (!endRound && !endMatch) {
 
@@ -140,7 +139,7 @@ public class GameLogic {
         endRound = false;
 
         for(Map m: maps){
-            m.getUnits().clear();
+            m.clearUnits();
         }
     }
 
@@ -149,7 +148,7 @@ public class GameLogic {
      */
     public void giveMoneyToPlayers() {
         for (Player p : players) {
-            p.addMoney(1000);
+            p.addMoney(1000 + nbRound * 100);
         }
     }
 

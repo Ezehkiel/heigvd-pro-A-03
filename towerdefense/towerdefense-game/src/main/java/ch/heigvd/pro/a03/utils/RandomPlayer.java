@@ -4,6 +4,9 @@ import ch.heigvd.pro.a03.users.User;
 
 import java.util.Random;
 
+/**
+ * Generates a random player
+ */
 public class RandomPlayer {
     public static final User USER;
 
