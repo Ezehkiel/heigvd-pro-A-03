@@ -52,9 +52,9 @@ public class ScoreBoardScene extends Scene {
         table.row().expandX().fillX();
 
         /* for each score, create 3 labels and add them to the table */
-        for(Score score : HttpServerUtils.allScore()){
+        for (Score score : HttpServerUtils.allScore()) {
             Label username = new Label(score.getUsername(), getSkin());
-            Label playedGame = new Label(Integer.toString(score.getNbPartieJoue()) , getSkin());
+            Label playedGame = new Label(Integer.toString(score.getNbPartieJoue()), getSkin());
             Label wonGame = new Label(Integer.toString(score.getNbPartieGagne()), getSkin());
             table.add(username).center();
             table.add(playedGame).center();
@@ -62,6 +62,7 @@ public class ScoreBoardScene extends Scene {
             table.row().expandX().fillX().padBottom(5);
 
         }
+
 
         table.row();
 

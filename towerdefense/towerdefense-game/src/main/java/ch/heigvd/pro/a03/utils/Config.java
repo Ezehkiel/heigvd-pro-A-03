@@ -170,7 +170,9 @@ public class Config {
     public static void store() {
         try {
             FileHandle fileHandle = getInstance().getFileHandle();
-            if (!fileHandle.exists() && !fileHandle.file().createNewFile()) {
+            if (!fileHandle.exists()
+                    && !fileHandle.file().getParentFile().mkdirs()
+                    && fileHandle.file().createNewFile()) {
                 return;
             }
 
