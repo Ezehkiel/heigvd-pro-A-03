@@ -8,6 +8,10 @@ import ch.heigvd.pro.a03.commands.Command;
  */
 public abstract class TowerDefenseCommand extends Command<TowerDefense> {
 
+    /**
+     * Creates a new command
+     * @param receiver the receiver
+     */
     public TowerDefenseCommand(TowerDefense receiver) {
         super(receiver);
     }

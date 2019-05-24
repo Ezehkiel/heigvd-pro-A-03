@@ -11,6 +11,11 @@ public class RegisterCommand extends AuthCommand {
 
     private RegistrationMenu menu;
 
+    /**
+     * Creates a new player register command.
+     * @param menu the connection menu
+     * @param receiver the receiver
+     */
     public RegisterCommand(RegistrationMenu menu, AuthMenu receiver) {
         super(receiver);
         this.menu = menu;

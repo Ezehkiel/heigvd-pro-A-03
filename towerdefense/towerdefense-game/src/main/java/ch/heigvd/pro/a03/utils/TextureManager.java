@@ -4,6 +4,9 @@ import ch.heigvd.pro.a03.warentities.WarEntityType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 
+/**
+ * Manages the textures
+ */
 public class TextureManager {
 
     private static TextureManager instance;
@@ -14,6 +17,9 @@ public class TextureManager {
     private Texture tank;
     private Texture scoot;
 
+    /**
+     * Constructor
+     */
     private TextureManager() {
 
         notFound = new Texture(Gdx.files.internal("assets/NotFound.png"));
@@ -25,6 +31,10 @@ public class TextureManager {
         scoot = new Texture(Gdx.files.internal("assets/units/Scoot.png"));
     }
 
+    /**
+     * Gets the instance of the singleton
+     * @return texture manager
+     */
     public static TextureManager getInstance() {
 
         if (instance == null) {
@@ -34,6 +44,11 @@ public class TextureManager {
         return instance;
     }
 
+    /**
+     * Gets the texture of a unit
+     * @param type unit type
+     * @return texture
+     */
     public static Texture getUnitTexture(WarEntityType.UnitType type) {
 
         switch (type) {

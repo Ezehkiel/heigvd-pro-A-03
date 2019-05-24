@@ -6,6 +6,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
+/**
+ * Utility class for UI properties.
+ */
 public class UI {
 
     private static FreeTypeFontGenerator fontGenerator = null;
@@ -36,7 +39,10 @@ public class UI {
         }
     }
 
-    /* LibGDX Scene2D Skin */
+    /**
+     * Create a libGDX scene 2d skin
+     * @return skin
+     */
     public static Skin createSkin() {
 
         if (fontGenerator == null) {
