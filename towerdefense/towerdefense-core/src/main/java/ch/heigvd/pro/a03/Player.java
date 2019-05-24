@@ -35,7 +35,7 @@ public class Player implements Serializable {
      * @param name the player's username
      */
     public Player(int id, String name) {
-        this(id, name, 3500);
+        this(id, name, 1000);
     }
 
     /**

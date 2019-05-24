@@ -36,8 +36,8 @@ public class Tank extends Unit {
      * @param position the position at the grid
      */
     public Tank(Point position){
-        this("Tank", position,500,500,10,15,
-                200,4,200);
+        this("Tank", position,650,350,10,10,
+                150,2,200);
     }
 
     @Override

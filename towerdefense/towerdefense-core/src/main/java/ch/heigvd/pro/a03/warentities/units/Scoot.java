@@ -36,7 +36,7 @@ public class Scoot extends Unit {
      * @param position the position at the grid
      */
     public Scoot(Point position){
-        this("Soldier", position,300,150,7,
+        this("Soldier", position,350,150,5,
                 3,100,2,100);
     }
 

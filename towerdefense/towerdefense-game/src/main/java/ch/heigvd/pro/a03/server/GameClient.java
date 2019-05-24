@@ -390,7 +390,7 @@ public class GameClient {
      */
     public void close() {
         try {
-            if (!socket.isClosed()) {
+            if (socket != null && !socket.isClosed()) {
                 socket.close();
             }
         } catch (IOException e) {
