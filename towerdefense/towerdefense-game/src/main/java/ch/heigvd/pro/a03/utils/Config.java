@@ -3,6 +3,7 @@ package ch.heigvd.pro.a03.utils;
 import ch.heigvd.pro.a03.GameLauncher;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import org.lwjgl.Sys;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -169,12 +170,15 @@ public class Config {
     public static void store() {
         try {
             FileHandle fileHandle = getInstance().getFileHandle();
-            if (!fileHandle.exists() || fileHandle.file().createNewFile()) {
-                getInstance().properties.store(
-                        fileHandle.writer(false),
-                        null
-                );
+            if (!fileHandle.exists() && !fileHandle.file().createNewFile()) {
+                return;
             }
+
+            getInstance().properties.store(
+                    fileHandle.writer(false),
+                    null
+            );
+
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
