@@ -33,7 +33,7 @@ public class LaserGunTurret extends Turret {
      */
     public LaserGunTurret(Point position){
         this("LaserGun",position,1500,200,
-                10,500,2,250);
+                10,500,2,350);
     }
 
     @Override

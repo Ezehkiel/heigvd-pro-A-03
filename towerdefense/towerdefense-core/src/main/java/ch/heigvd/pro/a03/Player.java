@@ -20,7 +20,7 @@ public class Player implements Serializable {
     }
 
     public Player(int id, String name) {
-        this(id, name, 2000);
+        this(id, name, 1000);
     }
 
     public String getName() {

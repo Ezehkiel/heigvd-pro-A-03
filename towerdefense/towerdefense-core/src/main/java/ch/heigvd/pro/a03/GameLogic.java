@@ -148,7 +148,7 @@ public class GameLogic {
      */
     public void giveMoneyToPlayers() {
         for (Player p : players) {
-            p.addMoney(1000 + (nbRound - 1) * 10);
+            p.addMoney(1000 + nbRound * 100);
         }
     }
 

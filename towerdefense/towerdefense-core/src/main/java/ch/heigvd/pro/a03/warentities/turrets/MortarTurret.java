@@ -36,7 +36,7 @@ public class MortarTurret extends Turret {
      */
     public MortarTurret(Point position){
         this("Mortar",position,1000,400,15,
-                500,5,200);
+                500,5,250);
     }
 
     @Override
