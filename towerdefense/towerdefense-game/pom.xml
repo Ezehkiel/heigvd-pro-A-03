@@ -6,7 +6,7 @@
   <parent>
     <groupId>ch.heigvd.pro.a03</groupId>
     <artifactId>towerdefense</artifactId>
-    <version>0.0</version>
+    <version>1.0</version>
   </parent>
 
   <artifactId>towerdefense-game</artifactId>
@@ -47,7 +47,7 @@
     <dependency>
       <groupId>ch.heigvd.pro.a03</groupId>
       <artifactId>towerdefense-core</artifactId>
-      <version>0.0</version>
+      <version>1.0</version>
     </dependency>
 
     <!-- libGDX -->
