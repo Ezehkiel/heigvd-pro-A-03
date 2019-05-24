@@ -115,7 +115,7 @@ public class Map implements Serializable {
 
     public void setUnits(LinkedList<Unit> units) {
         this.units = units;
-        this.unspawnedUnits = units;
+        this.unspawnedUnits = (LinkedList<Unit>) units.clone();
         this.spawnedUnits.clear();
     }
 
