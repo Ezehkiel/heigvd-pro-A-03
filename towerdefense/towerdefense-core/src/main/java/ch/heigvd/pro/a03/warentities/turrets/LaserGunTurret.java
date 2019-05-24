@@ -32,8 +32,8 @@ public class LaserGunTurret extends Turret {
      * @param position the position at the gird
      */
     public LaserGunTurret(Point position){
-        this("LaserGun",position,500,400,
-                10,250,4,250);
+        this("LaserGun",position,1500,200,
+                10,500,2,250);
     }
 
     @Override

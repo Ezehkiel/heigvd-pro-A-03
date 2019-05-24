@@ -33,8 +33,8 @@ public class MachineGunTurret extends Turret {
      */
 
     public MachineGunTurret(Point position){
-        this("MachineGun",position,500,500,
-                10,150,4,150);
+        this("MachineGun",position,1500,300,
+                5,200,3,150);
     }
 
     @Override
