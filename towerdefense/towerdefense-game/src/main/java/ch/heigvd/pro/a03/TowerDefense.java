@@ -128,7 +128,7 @@ public class TowerDefense {
     public void setupSimulators() {
         simulators = new Simulator[gameClient.PLAYERS_COUNT];
         for (Map map : maps) {
-            simulators[map.ID] = new Simulator(map, gameClient.getPlayer().ID);
+            simulators[map.ID] = new Simulator(this, map, gameClient.getPlayer().ID);
         }
     }
 

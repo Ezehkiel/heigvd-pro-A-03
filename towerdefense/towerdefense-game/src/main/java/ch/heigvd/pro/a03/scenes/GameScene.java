@@ -158,7 +158,8 @@ public class GameScene extends Scene {
 
         int tmpX = (int) Math.floor(mousePosition.x / TiledMapManager.TILE_SIZE);
 
-        int mapId = tmpX / (TowerDefense.MAP_WIDTH + 1);
+        int mapPosition = tmpX / (TowerDefense.MAP_WIDTH + 1);
+        int mapId = tiledMapManager.mapId(mapPosition);
         int x = tmpX % (TowerDefense.MAP_WIDTH + 1);
         int y = (int) Math.floor(mousePosition.y / TiledMapManager.TILE_SIZE);
 
@@ -226,5 +227,13 @@ public class GameScene extends Scene {
      */
     public TowerDefense getGame() {
         return game;
+    }
+
+    /**
+     * Gets the tiled map manager
+     * @return tiled map manager
+     */
+    public TiledMapManager getTiledMapManager() {
+        return tiledMapManager;
     }
 }

@@ -38,7 +38,6 @@ public class MainMenu extends Menu {
         offlineButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
             public void execute(Object... args) {
-                //GameLauncher.getInstance().getSceneManager().add(new GameModeScene());
                 getReceiver().getSceneManager().add(new MatchMakingScene(false));
             }
         }));

@@ -10,7 +10,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * In this class we have all the request for the database
+ * This class contain all requests for the database
  *
  * @author Remi Poulard
  */
@@ -51,7 +51,7 @@ public class SqlRequest {
     }
 
     /**
-     * In this method we select all info about a user with his id
+     * This method select all info about a user with his id
      *
      * @param id the id of the user that we want to find
      * @return a new user
@@ -79,22 +79,24 @@ public class SqlRequest {
     }
 
     /**
-     * In this method we select all info about a user with his username
+     * This method select all info about a user with his username
      *
      * @param username the username of the user that we want to find
-     * @return User a new user
+     * @return a new user
      */
     static public User getUserDBWithUsername(String username) {
 
         try {
+
             PreparedStatement stmt;
             stmt = con.prepareStatement("SELECT * FROM " +
                     "public.towerdefense_user WHERE username = ?;");
             stmt.setString(1, username);
             ResultSet rs = stmt.executeQuery();
             if(rs.next()){
-                return new User(rs.getInt("id"), rs.getString("username"), rs.getString("password"),
-                        rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"), rs.getDate("lastLogin"));
+                return new User(rs.getInt("id"), rs.getString("username"),
+                        rs.getString("password"), rs.getInt("nbPartieJoue"),
+                        rs.getInt("nbPartieGagne"), rs.getDate("lastLogin"));
             }
 
         } catch (SQLException e) {
@@ -107,7 +109,7 @@ public class SqlRequest {
     /**
      * In this method we want to get all the user that are in the database
      *
-     * @return List<User> a list with all the users
+     * @return a list with all the users
      */
     static public List<User> getAllUserDB() {
 
@@ -135,9 +137,9 @@ public class SqlRequest {
     }
 
     /**
-     * @param username
-     * @param password
-     * @return User
+     * @param username the username of the user to update
+     * @param password the new password of the user
+     * @return the user updated
      */
     static public User updateUserDB(String username, String password) {
 
@@ -261,13 +263,14 @@ public class SqlRequest {
     static public Score getUserScoreDB(long id) {
         try {
             PreparedStatement stmt = null;
-            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue, nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
+            stmt = con.prepareStatement("SELECT id, username, nbPartieJoue, " +
+                    "nbPartieGagne FROM public.towerdefense_user WHERE id=?;");
             stmt.setLong(1, id);
             ResultSet rs = stmt.executeQuery();
 
             while (rs.next()) {
-                return new Score(rs.getInt("id"),rs.getString("username"), rs.getInt("nbPartieJoue"),
-                        rs.getInt("nbPartieGagne"));
+                return new Score(rs.getInt("id"),rs.getString("username"),
+                        rs.getInt("nbPartieJoue"), rs.getInt("nbPartieGagne"));
             }
 
         } catch (SQLException e) {

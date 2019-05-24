@@ -41,7 +41,7 @@ public class MatchMakingMenu extends Menu {
 
         getMenu().add(title).spaceBottom(UI.SPACING);
         getMenu().row();
-        getMenu().add(readyButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
+        getMenu().add(readyButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT).spaceBottom(UI.SPACING);
         getMenu().row();
         getMenu().add(quitButton).prefWidth(UI.BUTTON_WIDTH).prefHeight(UI.BUTTON_HEIGHT);
     }

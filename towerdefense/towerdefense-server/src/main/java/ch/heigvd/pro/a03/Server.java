@@ -18,9 +18,14 @@ import static spark.Spark.secure;
 public class Server {
 
     public static boolean HAS_HTTP;
-
     private static String serverHTTP;
     private static String serverPort;
+    private static String databasePort;
+    private static String databaseAddress;
+    private static String databasePassword;
+    private static String databaseName;
+    private static String databaseUser;
+
     private static boolean https;
 
     public static void main(String[] args) {
@@ -44,6 +49,11 @@ public class Server {
             https = Boolean.parseBoolean(defaults.getProperty("https"));
             serverHTTP = defaults.getProperty("serverHTTP");
             serverPort = defaults.getProperty("serverPort");
+            databaseAddress = defaults.getProperty("databaseAddress");
+            databasePort = defaults.getProperty("databasePort");
+            databasePassword = defaults.getProperty("databasePassword");
+            databaseName = defaults.getProperty("databaseName");
+            databaseUser = defaults.getProperty("databaseUser");
 
             if(https){
 
@@ -73,5 +83,25 @@ public class Server {
 
     public static boolean isHttps() {
         return https;
+    }
+
+    public static String getDatabasePort() {
+        return databasePort;
+    }
+
+    public static String getDatabaseAddress() {
+        return databaseAddress;
+    }
+
+    public static String getDatabasePassword() {
+        return databasePassword;
+    }
+
+    public static String getDatabaseName() {
+        return databaseName;
+    }
+
+    public static String getDatabaseUser() {
+        return databaseUser;
     }
 }
