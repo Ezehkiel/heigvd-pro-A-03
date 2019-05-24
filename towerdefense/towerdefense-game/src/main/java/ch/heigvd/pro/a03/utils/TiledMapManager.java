@@ -16,6 +16,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.maps.tiled.tiles.StaticTiledMapTile;
 
+/**
+ * Manages the display of the maps on the scren with a libGDX tiled map.
+ */
 public class TiledMapManager {
 
     public static final int TILE_SIZE = 64;
@@ -42,6 +45,13 @@ public class TiledMapManager {
     private Texture destroyedTexture;
     private final int PLAYER_ID;
 
+    /**
+     * Constructor
+     * @param width map width
+     * @param height map height
+     * @param mapCount maps count
+     * @param playerId player id
+     */
     public TiledMapManager(int width, int height, int mapCount, int playerId) {
 
         notFoundTexture = new Texture(Gdx.files.internal("assets/NotFound.png"));
@@ -90,6 +100,10 @@ public class TiledMapManager {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
     }
 
+    /**
+     * Update the display.
+     * @param maps new maps to display
+     */
     public void update(Map[] maps) {
 
         TiledMapTileLayer layer = (TiledMapTileLayer) tiledMap.getLayers().get(TURRET_LAYER);
@@ -147,6 +161,12 @@ public class TiledMapManager {
         }
     }
 
+    /**
+     * Adds an effect to the map.
+     * @param mapId map id
+     * @param x x-axis coordinate
+     * @param y y-axis coordinate
+     */
     public void addEffect(int mapId, int x, int y) {
         int mapPosition = mapPosition(mapId);
         int displayX = xDisplay(x, xOffset(mapPosition));
@@ -156,14 +176,26 @@ public class TiledMapManager {
         effectLayer.getCell(displayX, displayY).setTile(new StaticTiledMapTile( new TextureRegion(destroyedTexture)));
     }
 
+    /**
+     * Gets the renderer
+     * @return tiled map renderer
+     */
     public TiledMapRenderer getRenderer() {
         return tiledMapRenderer;
     }
 
+    /**
+     * Disposes disposable resources
+     */
     public void dispose() {
         tiledMap.dispose();
     }
 
+    /**
+     * Gets the ma id from it's position on the screen
+     * @param mapPosition map position on the screen
+     * @return map id
+     */
     public int mapId(int mapPosition) {
         if (mapPosition == 0) {
             return PLAYER_ID;
@@ -176,6 +208,11 @@ public class TiledMapManager {
         return mapPosition;
     }
 
+    /**
+     * Gets the map position on the screen from it's id
+     * @param mapId map id
+     * @return map position on the screen
+     */
     public int mapPosition(int mapId) {
 
         if (mapId == PLAYER_ID) {
@@ -189,14 +226,31 @@ public class TiledMapManager {
         return mapId;
     }
 
+    /**
+     * Calculate the x-axis offset
+     * @param mapPosition map position on the screen
+     * @return x-axis offset
+     */
     public int xOffset(int mapPosition) {
         return MAP_WIDTH * mapPosition + mapPosition;
     }
 
+    /**
+     * Calculates the x-axis coordinate for display
+     * @param x x-axis on the map
+     * @param xOffset x-axis offset
+     * @return x-axis coordinate for the display
+     */
     public int xDisplay(int x, int xOffset) {
         return x + xOffset;
     }
 
+    /**
+     * Calculates the y-axis coordinate for display
+     * @param y y-axis on the map
+     * @param mapPosition map position on the screen
+     * @return y-axis coordinate for the display
+     */
     public int yDisplay(int y, int mapPosition) {
         return mapPosition == 0 ? y : MAP_HEIGHT - y - 1;
     }
