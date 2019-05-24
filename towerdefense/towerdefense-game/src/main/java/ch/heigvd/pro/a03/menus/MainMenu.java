@@ -46,7 +46,11 @@ public class MainMenu extends Menu {
         scoresButton.addListener(new ButtonCommand(new Command<GameLauncher>(GameLauncher.getInstance()) {
             @Override
             public void execute(Object... args) {
-                getReceiver().getSceneManager().add(new ScoreBoardScene());
+                try {
+                    getReceiver().getSceneManager().add(new ScoreBoardScene());
+                } catch (Exception e) {
+                    System.out.println("Couldn't load scores.");
+                }
             }
         }));
 

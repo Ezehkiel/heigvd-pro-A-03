@@ -325,7 +325,7 @@ public class GameClient {
      */
     private void receiveMaps(Executable showMaps) {
 
-        String json =null;
+        String json = null;
         try {
              json = Protocole.receiveJson(in);
         } catch (SocketException e) {
@@ -333,7 +333,12 @@ public class GameClient {
         }
         if (json == null) { return; }
 
-        showMaps.execute(json);
+        try {
+            showMaps.execute(json);
+        } catch(Exception e) {
+            System.out.println("Show map error: " + e.getMessage());
+            quitGame();
+        }
     }
 
     /**
